@@ -1,7 +1,7 @@
 'use client';
 
 import { Canvas } from '@react-three/fiber';
-import { Environment } from '@react-three/drei';
+import { Environment, Lightformer } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { useEffect, useState } from 'react';
 import { CandleField } from './CandleField';
@@ -45,9 +45,25 @@ export function Scene({
       <CandleField scrollProgress={scrollProgress} bias={signalBias} isMobile={isMobile} />
       {/* Env map drives the candles' glass reflections/clearcoat highlight
           — desktop only, same reasoning as Bloom below (it's a real render
-          cost, not free polish). A static low-res capture, not a live
-          per-frame render, so it doesn't fight Bloom for frame budget. */}
-      {!isMobile && <Environment preset="night" resolution={256} />}
+          cost, not free polish). Built from in-scene Lightformers instead
+          of an HDR `preset` — preset/`files` fetch a texture from a remote
+          CDN, which on first paint of a marketing hero left the candle
+          field blank behind a stuck loader for 10+ seconds (worse, hangs
+          forever if that CDN is unreachable). Lightformers render a small
+          local cubemap with zero network dependency. */}
+      {!isMobile && (
+        <Environment resolution={256}>
+          <Lightformer intensity={2} color="#7ef9ff" position={[3, 2, 4]} scale={[4, 4, 1]} />
+          <Lightformer intensity={1.5} color="#b98bff" position={[-3, -2, -2]} scale={[4, 4, 1]} />
+          <Lightformer
+            intensity={0.6}
+            color="#ffffff"
+            position={[0, 5, 0]}
+            rotation={[Math.PI / 2, 0, 0]}
+            scale={[6, 6, 1]}
+          />
+        </Environment>
+      )}
       {/* Bloom off entirely on mobile — postprocessing is a full extra
           render pass, not just a quality knob, and the phone GPUs this
           genre of site tends to run on can't eat it for free. */}
