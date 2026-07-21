@@ -1,0 +1,39 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    background-color: theme('colors.void');
+    scroll-behavior: smooth;
+  }
+
+  body {
+    @apply bg-void text-mist font-body antialiased;
+    overflow-x: hidden;
+  }
+
+  ::selection {
+    background: theme('colors.iris.violet');
+    color: theme('colors.void');
+  }
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+
+  /* Canvas sits behind content; content needs its own stacking context
+     so scroll-driven opacity/blur on text never clips the 3D layer. */
+  .canvas-layer {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .content-layer {
+    position: relative;
+    z-index: 10;
+  }
+}
