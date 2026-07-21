@@ -29,85 +29,94 @@ export function Nav() {
         <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
       )}
 
-      {/* centered logo — placeholder mark, swap Logo.tsx once the real
-          one is ready */}
-      <motion.div
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed left-1/2 top-5 z-50 -translate-x-1/2"
-      >
-        <Link
-          href="/#top"
-          className="flex items-center rounded-full border border-white/10 bg-ink/60 px-5 py-2.5 backdrop-blur-xl"
+      {/* A single full-width 3-column grid, not three independently
+          `left-1/2`-centered elements — percentage-based centering on a
+          `position: fixed` element reads off the LAYOUT viewport on
+          mobile Safari, which can be wider than what's actually visible
+          whenever anything on the page overflows horizontally, so the
+          logo drifted right instead of sitting in the true center. Equal
+          side columns in a grid center the middle column reliably
+          regardless of that quirk. */}
+      <div className="fixed inset-x-0 top-5 z-50 grid grid-cols-3 items-start px-4">
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="relative flex justify-start"
         >
-          <Logo />
-        </Link>
-      </motion.div>
+          <button
+            onClick={() => setOpen((v) => !v)}
+            aria-label="Menu"
+            className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full border border-white/10 bg-ink/60 backdrop-blur-xl"
+          >
+            <span className={`h-px w-4 bg-mist/70 transition-transform ${open ? 'translate-y-[3px] rotate-45' : ''}`} />
+            <span className={`h-px w-4 bg-mist/70 transition-opacity ${open ? 'opacity-0' : ''}`} />
+            <span className={`h-px w-4 bg-mist/70 transition-transform ${open ? '-translate-y-[3px] -rotate-45' : ''}`} />
+          </button>
 
-      {/* menu trigger — top-left, icon only */}
-      <motion.div
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed left-4 top-5 z-50"
-      >
-        <button
-          onClick={() => setOpen((v) => !v)}
-          aria-label="Menu"
-          className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full border border-white/10 bg-ink/60 backdrop-blur-xl"
+          <AnimatePresence>
+            {open && (
+              <motion.nav
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -8 }}
+                transition={{ duration: 0.15 }}
+                className="absolute left-0 top-full mt-2 w-56 overflow-hidden rounded-2xl border border-white/10 bg-ink/90 py-2 backdrop-blur-xl"
+              >
+                {LINKS.map((l) => (
+                  <Link
+                    key={l.href}
+                    href={l.href}
+                    onClick={() => setOpen(false)}
+                    className="block px-4 py-2.5 font-body text-sm text-mist/70 transition-colors hover:bg-white/5 hover:text-mist"
+                  >
+                    {l.label}
+                  </Link>
+                ))}
+              </motion.nav>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        {/* centered logo — placeholder mark, swap Logo.tsx once the real
+            one is ready */}
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="flex justify-center"
         >
-          <span className={`h-px w-4 bg-mist/70 transition-transform ${open ? 'translate-y-[3px] rotate-45' : ''}`} />
-          <span className={`h-px w-4 bg-mist/70 transition-opacity ${open ? 'opacity-0' : ''}`} />
-          <span className={`h-px w-4 bg-mist/70 transition-transform ${open ? '-translate-y-[3px] -rotate-45' : ''}`} />
-        </button>
+          <Link
+            href="/#top"
+            className="flex items-center rounded-full border border-white/10 bg-ink/60 px-5 py-2.5 backdrop-blur-xl"
+          >
+            <Logo />
+          </Link>
+        </motion.div>
 
-        <AnimatePresence>
-          {open && (
-            <motion.nav
-              initial={{ opacity: 0, y: -8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -8 }}
-              transition={{ duration: 0.15 }}
-              className="absolute left-0 mt-2 w-56 overflow-hidden rounded-2xl border border-white/10 bg-ink/90 py-2 backdrop-blur-xl"
+        <motion.div
+          initial={{ opacity: 0, y: -16 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+          className="flex justify-end"
+        >
+          {status === 'authenticated' ? (
+            <button
+              onClick={() => signOut()}
+              className="rounded-full border border-white/15 px-4 py-2.5 font-body text-[13px] text-mist/80 transition-colors hover:border-white/30 hover:text-mist"
             >
-              {LINKS.map((l) => (
-                <Link
-                  key={l.href}
-                  href={l.href}
-                  onClick={() => setOpen(false)}
-                  className="block px-4 py-2.5 font-body text-sm text-mist/70 transition-colors hover:bg-white/5 hover:text-mist"
-                >
-                  {l.label}
-                </Link>
-              ))}
-            </motion.nav>
+              {session.user?.name?.split(' ')[0] ?? 'Account'} · Sign out
+            </button>
+          ) : (
+            <button
+              onClick={() => signIn('google')}
+              className="rounded-full bg-mist px-5 py-2.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
+            >
+              Sign in
+            </button>
           )}
-        </AnimatePresence>
-      </motion.div>
-
-      <motion.div
-        initial={{ opacity: 0, y: -16 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed right-4 top-5 z-50"
-      >
-        {status === 'authenticated' ? (
-          <button
-            onClick={() => signOut()}
-            className="rounded-full border border-white/15 px-4 py-2.5 font-body text-[13px] text-mist/80 transition-colors hover:border-white/30 hover:text-mist"
-          >
-            {session.user?.name?.split(' ')[0] ?? 'Account'} · Sign out
-          </button>
-        ) : (
-          <button
-            onClick={() => signIn('google')}
-            className="rounded-full bg-mist px-5 py-2.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
-          >
-            Sign in
-          </button>
-        )}
-      </motion.div>
+        </motion.div>
+      </div>
     </>
   );
 }
