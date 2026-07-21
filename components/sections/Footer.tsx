@@ -15,7 +15,7 @@ export function Footer() {
           Contact
         </a>
       </div>
-      <p className="mt-8 text-[11px] text-mist/30">
+      <p className="mt-8 text-[11px] text-mist/50">
         Not investment advice. Nothing here is a solicitation to trade.
       </p>
     </footer>

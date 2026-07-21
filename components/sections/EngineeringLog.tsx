@@ -60,7 +60,7 @@ export function EngineeringLog() {
             className="rounded-2xl border border-white/10 bg-ink/50 p-6 backdrop-blur-xl sm:p-8"
           >
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-              <span className="font-body text-xs text-mist/40">{inc.date}</span>
+              <span className="font-body text-xs text-mist/55">{inc.date}</span>
               <h3 className="font-display text-lg font-light sm:text-xl">{inc.title}</h3>
             </div>
             <p className="mt-3 font-body text-sm leading-relaxed text-mist/60">{inc.body}</p>

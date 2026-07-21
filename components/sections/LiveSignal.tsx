@@ -36,7 +36,7 @@ export function LiveSignal({ feed }: { feed: SignalFeed | null }) {
           Live signal
         </span>
         {age && (
-          <span className="font-body text-xs text-mist/40">{age}</span>
+          <span className="font-body text-xs text-mist/55">{age}</span>
         )}
       </div>
 
@@ -81,7 +81,7 @@ export function LiveSignal({ feed }: { feed: SignalFeed | null }) {
         </div>
       )}
 
-      <p className="mt-6 border-t border-white/10 pt-4 font-body text-[11px] leading-relaxed text-mist/35">
+      <p className="mt-6 border-t border-white/10 pt-4 font-body text-[11px] leading-relaxed text-mist/50">
         {feed?.disclaimer ??
           'Informational and analytical output only. Not financial advice. Past performance does not guarantee future results.'}
       </p>

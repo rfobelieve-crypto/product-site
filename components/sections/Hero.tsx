@@ -53,7 +53,7 @@ export function Hero() {
         transition={{ delay: 1.2, duration: 1 }}
         className="absolute bottom-10 flex flex-col items-center gap-2"
       >
-        <span className="text-[10px] uppercase tracking-[0.3em] text-mist/40">
+        <span className="text-[10px] uppercase tracking-[0.3em] text-mist/55">
           Scroll
         </span>
         <motion.div

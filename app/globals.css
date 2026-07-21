@@ -11,6 +11,14 @@
   body {
     @apply bg-void text-mist font-body antialiased;
     overflow-x: hidden;
+    /* The 3D candle field drifts behind every section, not just the
+       hero — bright, moving, high-contrast shapes directly behind text
+       otherwise cut through it. A dark halo on every text node fixes
+       legibility without touching per-component opacity values one by
+       one, and reads as "cinematic" rather than "a shadow was added". */
+    text-shadow:
+      0 2px 16px rgba(0, 0, 0, 0.75),
+      0 1px 3px rgba(0, 0, 0, 0.9);
   }
 
   ::selection {

@@ -18,7 +18,7 @@ function CIBar({ ci95, point }: { ci95: [number, number] | null; point: number |
           style={{ left: `${point}%` }}
         />
       </div>
-      <div className="mt-1.5 flex justify-between font-body text-[10px] text-mist/40">
+      <div className="mt-1.5 flex justify-between font-body text-[10px] text-mist/55">
         <span>{lo.toFixed(0)}%</span>
         <span>95% CI</span>
         <span>{hi.toFixed(0)}%</span>
@@ -51,13 +51,13 @@ function Metric({
         <span className="font-display text-4xl font-light">
           {winRate != null ? `${winRate.toFixed(1)}%` : '—'}
         </span>
-        <span className="font-body text-xs text-mist/40">win rate</span>
+        <span className="font-body text-xs text-mist/55">win rate</span>
       </div>
       <CIBar ci95={ci95} point={winRate} />
       <div className="mt-4 font-body text-xs text-mist/50">
         n = {n.toLocaleString()} {nLabel}
       </div>
-      <p className="mt-2 font-body text-xs leading-relaxed text-mist/35">{note}</p>
+      <p className="mt-2 font-body text-xs leading-relaxed text-mist/50">{note}</p>
     </div>
   );
 }
@@ -116,12 +116,12 @@ export function TrackRecord({ data }: { data: TrackRecordData | null }) {
       )}
 
       {data?.mdd_pct != null && (
-        <div className="mt-6 font-body text-xs text-mist/40">
+        <div className="mt-6 font-body text-xs text-mist/55">
           Max drawdown, compounding closed-trade returns only: {data.mdd_pct.toFixed(1)}%
         </div>
       )}
 
-      <p className="mt-6 max-w-xl font-body text-xs leading-relaxed text-mist/35">
+      <p className="mt-6 max-w-xl font-body text-xs leading-relaxed text-mist/50">
         {data?.caveat ?? 'Signal accuracy is not the same as trading profit.'}{' '}
         {data?.disclaimer}
       </p>
