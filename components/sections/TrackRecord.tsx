@@ -117,7 +117,7 @@ export function TrackRecord({ data }: { data: TrackRecordData | null }) {
 
       {data?.mdd_pct != null && (
         <div className="mt-6 font-body text-xs text-mist/40">
-          Max drawdown since capital base reset: {data.mdd_pct.toFixed(1)}%
+          Max drawdown, compounding closed-trade returns only: {data.mdd_pct.toFixed(1)}%
         </div>
       )}
 
