@@ -1,6 +1,7 @@
 'use client';
 
 import { Canvas } from '@react-three/fiber';
+import { Environment } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { useEffect, useState } from 'react';
 import { CandleField } from './CandleField';
@@ -41,7 +42,12 @@ export function Scene({
       <pointLight position={[3, 2, 4]} intensity={1.0} color="#7ef9ff" />
       <pointLight position={[-3, -2, -2]} intensity={0.7} color="#b98bff" />
       <ParticleField scrollProgress={scrollProgress} density={isMobile ? 0.5 : 1} />
-      <CandleField scrollProgress={scrollProgress} bias={signalBias} />
+      <CandleField scrollProgress={scrollProgress} bias={signalBias} isMobile={isMobile} />
+      {/* Env map drives the candles' glass reflections/clearcoat highlight
+          — desktop only, same reasoning as Bloom below (it's a real render
+          cost, not free polish). A static low-res capture, not a live
+          per-frame render, so it doesn't fight Bloom for frame budget. */}
+      {!isMobile && <Environment preset="night" resolution={256} />}
       {/* Bloom off entirely on mobile — postprocessing is a full extra
           render pass, not just a quality knob, and the phone GPUs this
           genre of site tends to run on can't eat it for free. */}

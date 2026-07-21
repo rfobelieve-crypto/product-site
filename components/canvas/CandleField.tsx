@@ -1,8 +1,19 @@
 'use client';
 
 import { useMemo, useRef } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { extend, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
+import { RoundedBoxGeometry } from 'three-stdlib';
+
+// Registers <roundedBoxGeometry> as a JSX intrinsic — three-stdlib ships
+// the geometry class but not a fiber binding.
+extend({ RoundedBoxGeometry });
+
+declare module '@react-three/fiber' {
+  interface ThreeElements {
+    roundedBoxGeometry: ThreeElements['boxGeometry'];
+  }
+}
 
 // A drifting field of 3D candlesticks — replaces the earlier abstract
 // "galaxy" hero object with something that reads as *this system's*
@@ -14,6 +25,13 @@ import * as THREE from 'three';
 // material.color each, rather than one mesh with per-instance
 // vertexColors — instanceColor didn't reliably read in this stack, flat
 // material.color always does.
+//
+// Glass look: rounded-edge geometry (vs. sharp boxGeometry, which read as
+// "pixelated" at this size) + meshPhysicalMaterial with transmission /
+// clearcoat / iridescence for the frosted-glass feel. Transmission is a
+// full extra render pass per material, so it's desktop-only — mobile gets
+// the same rounded shape with a cheaper opaque clearcoat finish instead of
+// dropping the glass look entirely.
 
 const COUNT = 48;
 const SPACING = 0.34;
@@ -48,9 +66,11 @@ function nextCandle(prevClose: number, x: number): Candle {
 export function CandleField({
   scrollProgress = 0,
   bias = 0,
+  isMobile = false,
 }: {
   scrollProgress?: number;
   bias?: number;
+  isMobile?: boolean;
 }) {
   const bodiesUp = useRef<THREE.InstancedMesh>(null);
   const wicksUp = useRef<THREE.InstancedMesh>(null);
@@ -140,20 +160,124 @@ export function CandleField({
           the un-instanced geometry's, which would incorrectly cull the
           whole batch since instances are scattered far outside it. */}
       <instancedMesh ref={bodiesUp} args={[undefined, undefined, COUNT]} frustumCulled={false}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color={UP_COLOR} toneMapped={false} />
+        <roundedBoxGeometry args={[1, 1, 1, 4, 0.16]} />
+        {isMobile ? (
+          <meshPhysicalMaterial
+            color={UP_COLOR}
+            roughness={0.28}
+            metalness={0.1}
+            clearcoat={0.6}
+            clearcoatRoughness={0.25}
+            envMapIntensity={0.7}
+            toneMapped={false}
+          />
+        ) : (
+          <meshPhysicalMaterial
+            color={UP_COLOR}
+            roughness={0.15}
+            metalness={0.05}
+            transmission={0.55}
+            thickness={0.5}
+            ior={1.45}
+            clearcoat={1}
+            clearcoatRoughness={0.1}
+            iridescence={0.3}
+            iridescenceIOR={1.3}
+            envMapIntensity={1.3}
+            toneMapped={false}
+          />
+        )}
       </instancedMesh>
       <instancedMesh ref={wicksUp} args={[undefined, undefined, COUNT]} frustumCulled={false}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color={UP_COLOR} toneMapped={false} transparent opacity={0.85} />
+        <roundedBoxGeometry args={[1, 1, 1, 4, 0.4]} />
+        {isMobile ? (
+          <meshPhysicalMaterial
+            color={UP_COLOR}
+            roughness={0.28}
+            metalness={0.1}
+            clearcoat={0.6}
+            clearcoatRoughness={0.25}
+            envMapIntensity={0.7}
+            transparent
+            opacity={0.9}
+            toneMapped={false}
+          />
+        ) : (
+          <meshPhysicalMaterial
+            color={UP_COLOR}
+            roughness={0.1}
+            metalness={0.05}
+            transmission={0.7}
+            thickness={0.2}
+            ior={1.45}
+            clearcoat={1}
+            clearcoatRoughness={0.08}
+            iridescence={0.3}
+            iridescenceIOR={1.3}
+            envMapIntensity={1.3}
+            toneMapped={false}
+          />
+        )}
       </instancedMesh>
       <instancedMesh ref={bodiesDown} args={[undefined, undefined, COUNT]} frustumCulled={false}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color={DOWN_COLOR} toneMapped={false} />
+        <roundedBoxGeometry args={[1, 1, 1, 4, 0.16]} />
+        {isMobile ? (
+          <meshPhysicalMaterial
+            color={DOWN_COLOR}
+            roughness={0.28}
+            metalness={0.1}
+            clearcoat={0.6}
+            clearcoatRoughness={0.25}
+            envMapIntensity={0.7}
+            toneMapped={false}
+          />
+        ) : (
+          <meshPhysicalMaterial
+            color={DOWN_COLOR}
+            roughness={0.15}
+            metalness={0.05}
+            transmission={0.55}
+            thickness={0.5}
+            ior={1.45}
+            clearcoat={1}
+            clearcoatRoughness={0.1}
+            iridescence={0.3}
+            iridescenceIOR={1.3}
+            envMapIntensity={1.3}
+            toneMapped={false}
+          />
+        )}
       </instancedMesh>
       <instancedMesh ref={wicksDown} args={[undefined, undefined, COUNT]} frustumCulled={false}>
-        <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color={DOWN_COLOR} toneMapped={false} transparent opacity={0.85} />
+        <roundedBoxGeometry args={[1, 1, 1, 4, 0.4]} />
+        {isMobile ? (
+          <meshPhysicalMaterial
+            color={DOWN_COLOR}
+            roughness={0.28}
+            metalness={0.1}
+            clearcoat={0.6}
+            clearcoatRoughness={0.25}
+            envMapIntensity={0.7}
+            transparent
+            opacity={0.9}
+            toneMapped={false}
+          />
+        ) : (
+          <meshPhysicalMaterial
+            color={DOWN_COLOR}
+            roughness={0.1}
+            metalness={0.05}
+            transmission={0.7}
+            thickness={0.2}
+            ior={1.45}
+            clearcoat={1}
+            clearcoatRoughness={0.08}
+            iridescence={0.3}
+            iridescenceIOR={1.3}
+            envMapIntensity={1.3}
+            toneMapped={false}
+          />
+        )}
       </instancedMesh>
     </group>
   );
