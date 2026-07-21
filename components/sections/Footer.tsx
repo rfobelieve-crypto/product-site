@@ -1,3 +1,5 @@
+import Link from 'next/link';
+
 export function Footer() {
   return (
     <footer className="relative flex flex-col items-center gap-4 px-6 py-24 text-center">
@@ -11,9 +13,9 @@ export function Footer() {
         <a href="#" className="transition hover:text-iris-cyan">
           GitHub
         </a>
-        <a href="#" className="transition hover:text-iris-cyan">
+        <Link href="/#contact" className="transition hover:text-iris-cyan">
           Contact
-        </a>
+        </Link>
       </div>
       <p className="mt-8 text-[11px] text-mist/50">
         Not investment advice. Nothing here is a solicitation to trade.

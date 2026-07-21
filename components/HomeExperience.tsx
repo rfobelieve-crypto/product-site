@@ -10,9 +10,12 @@ import { Nav } from './sections/Nav';
 import { Hero } from './sections/Hero';
 import { Story } from './sections/Story';
 import { Architecture } from './sections/Architecture';
+import { Features } from './sections/Features';
 import { Stats } from './sections/Stats';
 import { EngineeringLog } from './sections/EngineeringLog';
 import { LiveSignal } from './sections/LiveSignal';
+import { FAQ } from './sections/FAQ';
+import { Waitlist } from './sections/Waitlist';
 import { Footer } from './sections/Footer';
 
 // UP/DOWN + confidence → -1..1 lean for the candle field's random walk
@@ -41,11 +44,14 @@ export function HomeExperience({ feed }: { feed: SignalFeed | null }) {
         <Hero />
         <Story />
         <Architecture />
+        <Features />
         <Stats />
         <EngineeringLog />
         <div id="live-signal" className="mx-auto max-w-md px-6 pb-32 sm:px-16">
           <LiveSignal feed={feed} />
         </div>
+        <FAQ />
+        <Waitlist />
         <Footer />
       </div>
     </div>
