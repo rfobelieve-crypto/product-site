@@ -1,10 +1,14 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
+// Root-relative so these work identically from the home page (scrolls)
+// and from other routes (navigates home, then scrolls) — plain "#anchor"
+// only resolves on the page it's declared on.
 const LINKS = [
-  { label: 'System', href: '#system' },
-  { label: 'Track record', href: '#track-record' },
+  { label: 'System', href: '/#system' },
+  { label: 'Track record', href: '/track-record' },
 ];
 
 export function Nav() {
@@ -16,27 +20,27 @@ export function Nav() {
       className="fixed inset-x-0 top-5 z-50 flex justify-center px-4"
     >
       <nav className="flex w-full max-w-3xl items-center justify-between rounded-full border border-white/10 bg-ink/60 px-5 py-2.5 backdrop-blur-xl">
-        <a href="#top" className="flex items-center gap-2 font-display text-sm tracking-tight">
+        <Link href="/#top" className="flex items-center gap-2 font-display text-sm tracking-tight">
           <span className="h-2 w-2 rounded-full bg-iris-cyan shadow-[0_0_8px_2px_rgba(126,249,255,0.6)]" />
           flowbot
-        </a>
+        </Link>
 
         <ul className="hidden items-center gap-7 font-body text-[13px] text-mist/60 sm:flex">
           {LINKS.map((l) => (
             <li key={l.href}>
-              <a href={l.href} className="transition-colors hover:text-mist">
+              <Link href={l.href} className="transition-colors hover:text-mist">
                 {l.label}
-              </a>
+              </Link>
             </li>
           ))}
         </ul>
 
-        <a
-          href="#live-signal"
+        <Link
+          href="/#live-signal"
           className="rounded-full bg-mist px-4 py-1.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
         >
           Live signal
-        </a>
+        </Link>
       </nav>
     </motion.header>
   );

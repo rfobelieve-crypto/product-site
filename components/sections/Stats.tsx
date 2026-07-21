@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import Link from 'next/link';
 
 // Methodology numbers only — no performance/$ figures. Swap these for
 // reviewed values before shipping; treat this array as the one place a
@@ -34,6 +35,12 @@ export function Stats() {
           </motion.div>
         ))}
       </div>
+      <Link
+        href="/track-record"
+        className="mt-10 inline-flex items-center gap-2 font-body text-xs uppercase tracking-[0.2em] text-iris-cyan/80 transition hover:text-iris-cyan"
+      >
+        Live win rate + confidence intervals →
+      </Link>
     </section>
   );
 }

@@ -64,7 +64,7 @@ function Metric({
 
 export function TrackRecord({ data }: { data: TrackRecordData | null }) {
   return (
-    <section id="track-record" className="relative px-6 py-32 sm:px-16">
+    <section className="relative px-6 py-32 sm:px-16">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -73,7 +73,7 @@ export function TrackRecord({ data }: { data: TrackRecordData | null }) {
         className="mb-10"
       >
         <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-cyan/80">
-          05 — Track record
+          Track record
         </span>
         <h2 className="mt-4 font-display text-3xl font-light leading-tight sm:text-4xl">
           Win rate, with the uncertainty attached.
