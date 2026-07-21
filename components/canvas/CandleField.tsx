@@ -20,6 +20,11 @@ const SPACING = 0.34;
 const DRIFT_SPEED = 0.09; // world units / second, right → left
 const HIDDEN_SCALE = 0.0001; // effectively invisible without branching in the shader
 
+// Classic terminal red/green — punchy enough to survive Bloom's
+// luminance threshold instead of washing out to grey.
+const UP_COLOR = '#00ffa3';
+const DOWN_COLOR = '#ff3860';
+
 type Candle = { open: number; high: number; low: number; close: number; x: number };
 
 function nextCandle(prevClose: number, x: number): Candle {
@@ -136,19 +141,19 @@ export function CandleField({
           whole batch since instances are scattered far outside it. */}
       <instancedMesh ref={bodiesUp} args={[undefined, undefined, COUNT]} frustumCulled={false}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color="#7ef9ff" toneMapped={false} />
+        <meshBasicMaterial color={UP_COLOR} toneMapped={false} />
       </instancedMesh>
       <instancedMesh ref={wicksUp} args={[undefined, undefined, COUNT]} frustumCulled={false}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color="#7ef9ff" toneMapped={false} transparent opacity={0.85} />
+        <meshBasicMaterial color={UP_COLOR} toneMapped={false} transparent opacity={0.85} />
       </instancedMesh>
       <instancedMesh ref={bodiesDown} args={[undefined, undefined, COUNT]} frustumCulled={false}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color="#ff8fb1" toneMapped={false} />
+        <meshBasicMaterial color={DOWN_COLOR} toneMapped={false} />
       </instancedMesh>
       <instancedMesh ref={wicksDown} args={[undefined, undefined, COUNT]} frustumCulled={false}>
         <boxGeometry args={[1, 1, 1]} />
-        <meshBasicMaterial color="#ff8fb1" toneMapped={false} transparent opacity={0.85} />
+        <meshBasicMaterial color={DOWN_COLOR} toneMapped={false} transparent opacity={0.85} />
       </instancedMesh>
     </group>
   );

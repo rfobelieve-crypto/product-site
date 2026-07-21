@@ -4,6 +4,7 @@ import { Canvas } from '@react-three/fiber';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import { useEffect, useState } from 'react';
 import { CandleField } from './CandleField';
+import { ParticleField } from './ParticleField';
 
 function useIsMobile() {
   const [isMobile, setIsMobile] = useState(false);
@@ -39,6 +40,7 @@ export function Scene({
       <ambientLight intensity={0.3} />
       <pointLight position={[3, 2, 4]} intensity={1.0} color="#7ef9ff" />
       <pointLight position={[-3, -2, -2]} intensity={0.7} color="#b98bff" />
+      <ParticleField scrollProgress={scrollProgress} density={isMobile ? 0.5 : 1} />
       <CandleField scrollProgress={scrollProgress} bias={signalBias} />
       {/* Bloom off entirely on mobile — postprocessing is a full extra
           render pass, not just a quality knob, and the phone GPUs this
@@ -46,9 +48,9 @@ export function Scene({
       {!isMobile && (
         <EffectComposer multisampling={0}>
           <Bloom
-            intensity={1.1}
-            luminanceThreshold={0.15}
-            luminanceSmoothing={0.25}
+            intensity={0.55}
+            luminanceThreshold={0.45}
+            luminanceSmoothing={0.2}
             mipmapBlur
           />
         </EffectComposer>
