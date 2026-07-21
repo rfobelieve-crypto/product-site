@@ -6,10 +6,7 @@ import Link from 'next/link';
 // Root-relative so these work identically from the home page (scrolls)
 // and from other routes (navigates home, then scrolls) — plain "#anchor"
 // only resolves on the page it's declared on.
-const LINKS = [
-  { label: 'System', href: '/#system' },
-  { label: 'Track record', href: '/track-record' },
-];
+const LINKS = [{ label: 'System', href: '/#system' }];
 
 export function Nav() {
   return (
@@ -35,12 +32,20 @@ export function Nav() {
           ))}
         </ul>
 
-        <Link
-          href="/#live-signal"
-          className="rounded-full bg-mist px-4 py-1.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
-        >
-          Live signal
-        </Link>
+        <div className="flex items-center gap-2">
+          <Link
+            href="/track-record"
+            className="rounded-full border border-white/15 px-4 py-1.5 font-body text-[13px] text-mist/80 transition-colors hover:border-white/30 hover:text-mist"
+          >
+            Track record
+          </Link>
+          <Link
+            href="/#live-signal"
+            className="rounded-full bg-mist px-4 py-1.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
+          >
+            Live signal
+          </Link>
+        </div>
       </nav>
     </motion.header>
   );
