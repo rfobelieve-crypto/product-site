@@ -6,10 +6,14 @@ import { useState } from 'react';
 import { SceneWrapper } from './canvas/SceneWrapper';
 import { useScrollProgress } from '@/lib/hooks/useScrollProgress';
 import type { SignalFeed } from '@/lib/signalFeed';
+import type { TrackRecord as TrackRecordData } from '@/lib/trackRecord';
 import { Nav } from './sections/Nav';
 import { Hero } from './sections/Hero';
 import { Story } from './sections/Story';
+import { Architecture } from './sections/Architecture';
 import { Stats } from './sections/Stats';
+import { TrackRecord } from './sections/TrackRecord';
+import { EngineeringLog } from './sections/EngineeringLog';
 import { LiveSignal } from './sections/LiveSignal';
 import { Footer } from './sections/Footer';
 
@@ -22,7 +26,13 @@ function signalToBias(feed: SignalFeed | null): number {
   return feed.direction === 'UP' ? magnitude : -magnitude;
 }
 
-export function HomeExperience({ feed }: { feed: SignalFeed | null }) {
+export function HomeExperience({
+  feed,
+  trackRecord,
+}: {
+  feed: SignalFeed | null;
+  trackRecord: TrackRecordData | null;
+}) {
   const pageRef = useRef<HTMLDivElement>(null);
   const scrollProgress = useScrollProgress(pageRef);
 
@@ -38,8 +48,11 @@ export function HomeExperience({ feed }: { feed: SignalFeed | null }) {
       <div className="content-layer">
         <Hero />
         <Story />
+        <Architecture />
         <Stats />
-        <div className="mx-auto max-w-md px-6 pb-32 sm:px-16">
+        <TrackRecord data={trackRecord} />
+        <EngineeringLog />
+        <div id="live-signal" className="mx-auto max-w-md px-6 pb-32 sm:px-16">
           <LiveSignal feed={feed} />
         </div>
         <Footer />

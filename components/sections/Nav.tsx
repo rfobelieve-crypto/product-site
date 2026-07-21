@@ -4,7 +4,7 @@ import { motion } from 'framer-motion';
 
 const LINKS = [
   { label: 'System', href: '#system' },
-  { label: 'Track record', href: '#data' },
+  { label: 'Track record', href: '#track-record' },
 ];
 
 export function Nav() {
@@ -32,7 +32,7 @@ export function Nav() {
         </ul>
 
         <a
-          href="#data"
+          href="#live-signal"
           className="rounded-full bg-mist px-4 py-1.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
         >
           Live signal
