@@ -6,7 +6,10 @@ import Link from 'next/link';
 // Root-relative so these work identically from the home page (scrolls)
 // and from other routes (navigates home, then scrolls) — plain "#anchor"
 // only resolves on the page it's declared on.
-const LINKS = [{ label: 'System', href: '/#system' }];
+const LINKS = [
+  { label: 'System', href: '/#system' },
+  { label: 'Signals', href: '/signals' },
+];
 
 export function Nav() {
   return (
