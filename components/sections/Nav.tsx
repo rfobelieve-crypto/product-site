@@ -4,6 +4,7 @@ import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
 import { useSession, signIn, signOut } from 'next-auth/react';
+import { Logo } from './Logo';
 
 // Root-relative so these work identically from the home page (scrolls)
 // and from other routes (navigates home, then scrolls) — plain "#anchor"
@@ -28,6 +29,23 @@ export function Nav() {
         <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
       )}
 
+      {/* centered logo — placeholder mark, swap Logo.tsx once the real
+          one is ready */}
+      <motion.div
+        initial={{ opacity: 0, y: -16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
+        className="fixed left-1/2 top-5 z-50 -translate-x-1/2"
+      >
+        <Link
+          href="/#top"
+          className="flex items-center rounded-full border border-white/10 bg-ink/60 px-5 py-2.5 backdrop-blur-xl"
+        >
+          <Logo />
+        </Link>
+      </motion.div>
+
+      {/* menu trigger — top-left, icon only */}
       <motion.div
         initial={{ opacity: 0, y: -16 }}
         animate={{ opacity: 1, y: 0 }}
@@ -36,13 +54,12 @@ export function Nav() {
       >
         <button
           onClick={() => setOpen((v) => !v)}
-          className="flex items-center gap-2 rounded-full border border-white/10 bg-ink/60 px-5 py-2.5 font-display text-sm tracking-tight backdrop-blur-xl"
+          aria-label="Menu"
+          className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full border border-white/10 bg-ink/60 backdrop-blur-xl"
         >
-          <span className="h-2 w-2 rounded-full bg-iris-cyan shadow-[0_0_8px_2px_rgba(126,249,255,0.6)]" />
-          flowbot
-          <span className={`ml-1 text-xs text-mist/50 transition-transform ${open ? 'rotate-180' : ''}`}>
-            ▾
-          </span>
+          <span className={`h-px w-4 bg-mist/70 transition-transform ${open ? 'translate-y-[3px] rotate-45' : ''}`} />
+          <span className={`h-px w-4 bg-mist/70 transition-opacity ${open ? 'opacity-0' : ''}`} />
+          <span className={`h-px w-4 bg-mist/70 transition-transform ${open ? '-translate-y-[3px] -rotate-45' : ''}`} />
         </button>
 
         <AnimatePresence>
