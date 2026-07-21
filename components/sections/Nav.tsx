@@ -7,8 +7,9 @@ import Link from 'next/link';
 // and from other routes (navigates home, then scrolls) — plain "#anchor"
 // only resolves on the page it's declared on.
 const LINKS = [
-  { label: 'System', href: '/#system' },
+  { label: 'System', href: '/system' },
   { label: 'Signals', href: '/signals' },
+  { label: 'Incidents', href: '/incidents' },
 ];
 
 export function Nav() {

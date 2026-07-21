@@ -75,7 +75,7 @@ export function Architecture() {
         className="mb-12"
       >
         <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet">
-          04 — Pipeline
+          At a glance
         </span>
         <h2 className="mt-4 max-w-xl font-display text-3xl font-light leading-tight sm:text-4xl">
           Raw exchange data to a published signal, four stages, no shortcuts.

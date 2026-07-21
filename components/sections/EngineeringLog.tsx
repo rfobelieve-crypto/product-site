@@ -38,7 +38,7 @@ export function EngineeringLog() {
         className="mb-10"
       >
         <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-rose">
-          06 — Incidents
+          Incidents
         </span>
         <h2 className="mt-4 max-w-xl font-display text-3xl font-light leading-tight sm:text-4xl">
           What broke, and what changed because of it.

@@ -8,11 +8,7 @@ import { useScrollProgress } from '@/lib/hooks/useScrollProgress';
 import type { SignalFeed } from '@/lib/signalFeed';
 import { Nav } from './sections/Nav';
 import { Hero } from './sections/Hero';
-import { Story } from './sections/Story';
-import { Architecture } from './sections/Architecture';
-import { Features } from './sections/Features';
-import { Stats } from './sections/Stats';
-import { EngineeringLog } from './sections/EngineeringLog';
+import { Explore } from './sections/Explore';
 import { LiveSignal } from './sections/LiveSignal';
 import { FAQ } from './sections/FAQ';
 import { Waitlist } from './sections/Waitlist';
@@ -42,14 +38,10 @@ export function HomeExperience({ feed }: { feed: SignalFeed | null }) {
       <SceneWrapper scrollProgress={progress} signalBias={signalToBias(feed)} />
       <div className="content-layer">
         <Hero />
-        <Story />
-        <Architecture />
-        <Features />
-        <Stats />
-        <EngineeringLog />
-        <div id="live-signal" className="mx-auto max-w-md px-6 pb-32 sm:px-16">
+        <div id="live-signal" className="mx-auto max-w-md px-6 pb-20 pt-32 sm:px-16">
           <LiveSignal feed={feed} />
         </div>
+        <Explore />
         <FAQ />
         <Waitlist />
         <Footer />
