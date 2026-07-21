@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
-import { auth, signIn, signOut } from '@/auth';
+import Link from 'next/link';
+import { auth, signOut } from '@/auth';
 import { Nav } from '@/components/sections/Nav';
 import { Footer } from '@/components/sections/Footer';
 import { getSignalHistory } from '@/lib/signalHistory';
@@ -39,20 +40,12 @@ export default async function SignalsPage() {
                 tier, confidence, regime, and realized outcome) instead of
                 just the aggregate win rate on the Track Record page.
               </p>
-              <form
-                action={async () => {
-                  'use server';
-                  await signIn('google', { redirectTo: '/signals' });
-                }}
-                className="mt-6"
+              <Link
+                href="/login"
+                className="mt-6 inline-block rounded-full bg-mist px-6 py-2.5 font-body text-sm font-medium text-void transition-opacity hover:opacity-85"
               >
-                <button
-                  type="submit"
-                  className="rounded-full bg-mist px-6 py-2.5 font-body text-sm font-medium text-void transition-opacity hover:opacity-85"
-                >
-                  Sign in with Google
-                </button>
-              </form>
+                Sign in
+              </Link>
             </div>
           ) : (
             <>

@@ -3,7 +3,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import Link from 'next/link';
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signOut } from 'next-auth/react';
 import { Logo } from './Logo';
 
 // Root-relative so these work identically from the home page (scrolls)
@@ -105,15 +105,15 @@ export function Nav() {
               onClick={() => signOut()}
               className="rounded-full border border-white/15 px-4 py-2.5 font-body text-[13px] text-mist/80 transition-colors hover:border-white/30 hover:text-mist"
             >
-              {session.user?.name?.split(' ')[0] ?? 'Account'} · Sign out
+              {session.user?.email?.split('@')[0] ?? 'Account'} · Sign out
             </button>
           ) : (
-            <button
-              onClick={() => signIn('google')}
+            <Link
+              href="/login"
               className="rounded-full bg-mist px-5 py-2.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
             >
               Sign in
-            </button>
+            </Link>
           )}
         </motion.div>
       </div>
