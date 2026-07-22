@@ -13,6 +13,7 @@
     "trackRecord": "Track record",
     "signals": "Signals",
     "incidents": "Incidents",
+    "charts": "Charts",
     "liveSignal": "Live signal",
     "signIn": "Sign in",
     "signOut": "Sign out"
@@ -322,6 +323,21 @@
     "meta": {
       "title": "Incidents — flowbot",
       "description": "A running log of real failures in the system, and the rule that shipped because of each one."
+    }
+  },
+  "chartsPage": {
+    "meta": {
+      "title": "Charts — flowbot",
+      "description": "Live chart output from the V7 signal engine and the cancel-flow indicator, straight off the same Railway services that run the real system."
+    },
+    "unavailable": "Chart temporarily unavailable — try refreshing in a moment.",
+    "v7": {
+      "label": "V7 signal engine",
+      "title": "4h prediction chart"
+    },
+    "cancelFlow": {
+      "label": "Cancel-flow indicator",
+      "title": "Order-book cancellation state"
     }
   }
 }

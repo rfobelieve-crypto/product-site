@@ -13,6 +13,7 @@
     "trackRecord": "績效紀錄",
     "signals": "訊號",
     "incidents": "事故紀錄",
+    "charts": "圖表",
     "liveSignal": "即時訊號",
     "signIn": "登入",
     "signOut": "登出"
@@ -322,6 +323,21 @@
     "meta": {
       "title": "事故紀錄 — flowbot",
       "description": "系統真實故障的持續紀錄，以及每次故障後上線的規則。"
+    }
+  },
+  "chartsPage": {
+    "meta": {
+      "title": "圖表 — flowbot",
+      "description": "V7 訊號引擎與撤單流指標的即時圖表輸出，直接來自跑正式系統的同一組 Railway 服務。"
+    },
+    "unavailable": "圖表暫時無法讀取，稍後重新整理再試。",
+    "v7": {
+      "label": "V7 訊號引擎",
+      "title": "4 小時預測圖"
+    },
+    "cancelFlow": {
+      "label": "撤單流指標",
+      "title": "訂單簿撤單狀態"
     }
   }
 }

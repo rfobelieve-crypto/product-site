@@ -23,6 +23,7 @@ export function Nav() {
     { label: t('trackRecord'), href: '/track-record' },
     { label: t('signals'), href: '/signals' },
     { label: t('incidents'), href: '/incidents' },
+    { label: t('charts'), href: '/charts' },
     { label: t('liveSignal'), href: '/#live-signal' },
   ];
 
