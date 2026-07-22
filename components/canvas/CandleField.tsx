@@ -164,6 +164,8 @@ export function CandleField({
         {isMobile ? (
           <meshPhysicalMaterial
             color={UP_COLOR}
+            emissive={UP_COLOR}
+            emissiveIntensity={0.14}
             roughness={0.28}
             metalness={0.1}
             clearcoat={0.6}
@@ -174,6 +176,8 @@ export function CandleField({
         ) : (
           <meshPhysicalMaterial
             color={UP_COLOR}
+            emissive={UP_COLOR}
+            emissiveIntensity={0.18}
             roughness={0.15}
             metalness={0.05}
             transmission={0.55}
@@ -193,6 +197,8 @@ export function CandleField({
         {isMobile ? (
           <meshPhysicalMaterial
             color={UP_COLOR}
+            emissive={UP_COLOR}
+            emissiveIntensity={0.14}
             roughness={0.28}
             metalness={0.1}
             clearcoat={0.6}
@@ -205,6 +211,8 @@ export function CandleField({
         ) : (
           <meshPhysicalMaterial
             color={UP_COLOR}
+            emissive={UP_COLOR}
+            emissiveIntensity={0.2}
             roughness={0.1}
             metalness={0.05}
             transmission={0.7}
@@ -224,6 +232,8 @@ export function CandleField({
         {isMobile ? (
           <meshPhysicalMaterial
             color={DOWN_COLOR}
+            emissive={DOWN_COLOR}
+            emissiveIntensity={0.14}
             roughness={0.28}
             metalness={0.1}
             clearcoat={0.6}
@@ -234,6 +244,8 @@ export function CandleField({
         ) : (
           <meshPhysicalMaterial
             color={DOWN_COLOR}
+            emissive={DOWN_COLOR}
+            emissiveIntensity={0.18}
             roughness={0.15}
             metalness={0.05}
             transmission={0.55}
@@ -253,6 +265,8 @@ export function CandleField({
         {isMobile ? (
           <meshPhysicalMaterial
             color={DOWN_COLOR}
+            emissive={DOWN_COLOR}
+            emissiveIntensity={0.14}
             roughness={0.28}
             metalness={0.1}
             clearcoat={0.6}
@@ -265,6 +279,8 @@ export function CandleField({
         ) : (
           <meshPhysicalMaterial
             color={DOWN_COLOR}
+            emissive={DOWN_COLOR}
+            emissiveIntensity={0.2}
             roughness={0.1}
             metalness={0.05}
             transmission={0.7}
