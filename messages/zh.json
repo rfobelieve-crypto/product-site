@@ -3,6 +3,9 @@
     "siteTitle": "flowbot — 一個會自我監督的 BTC 系統",
     "siteDescription": "雙模型訊號引擎、分階段風控框架，加上正在 OKX 實盤運行的執行層——全程公開建置與驗證。"
   },
+  "intro": {
+    "enter": "進入"
+  },
   "nav": {
     "menuLabel": "選單",
     "home": "首頁",

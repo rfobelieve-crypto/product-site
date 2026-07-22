@@ -3,6 +3,9 @@
     "siteTitle": "flowbot — a BTC system that watches itself",
     "siteDescription": "Dual-model signal engine, staged risk framework, and a live OKX execution layer — built and validated in the open."
   },
+  "intro": {
+    "enter": "Enter"
+  },
   "nav": {
     "menuLabel": "Menu",
     "home": "Home",

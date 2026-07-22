@@ -1,5 +1,6 @@
 import { setRequestLocale } from 'next-intl/server';
 import { HomeExperience } from '@/components/HomeExperience';
+import { IntroGate } from '@/components/intro/IntroGate';
 import { getSignalFeed } from '@/lib/signalFeed';
 
 export default async function Home({
@@ -10,5 +11,9 @@ export default async function Home({
   const { locale } = await params;
   setRequestLocale(locale);
   const feed = await getSignalFeed();
-  return <HomeExperience feed={feed} />;
+  return (
+    <IntroGate>
+      <HomeExperience feed={feed} />
+    </IntroGate>
+  );
 }
