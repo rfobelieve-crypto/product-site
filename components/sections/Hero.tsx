@@ -2,17 +2,15 @@
 
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-import { PixelDrift } from '@/components/effects/PixelDrift';
+import { MeshTextHover } from '@/components/effects/MeshTextHover';
 
-const PIXEL_COLORS = ['#ffffff'];
-
-// var(--font-display) resolves through the container's real inline style
-// (see PixelDrift's getComputedStyle fix) rather than being handed to
+// var(--font-display) resolves through the wrapper's real inline style
+// (see MeshTextHover's getComputedStyle fix) rather than being handed to
 // Canvas directly, which doesn't understand CSS custom properties. Space
 // Grotesk has no CJK coverage, so explicit bold-capable CJK fallbacks are
 // listed too — otherwise zh renders through some unpredictable, possibly
 // non-bold system substitute.
-const PIXEL_FONT_FAMILY =
+const MESH_FONT_FAMILY =
   "var(--font-display), 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif";
 
 const fadeUp = {
@@ -24,41 +22,25 @@ const fadeUp = {
   }),
 };
 
-// One line of the particle headline. `className` carries the responsive
-// height (and top margin, for lines after the first) — every other prop is
-// shared across every line/breakpoint.
-function TitleParticleLine({
-  text,
-  className,
-  particleSize = 12,
-}: {
-  text: string;
-  className: string;
-  // Mobile's 3-line headline autoFits to a much shorter container
-  // (h-16 vs sm:h-24/md:h-28), so the default dot size reads relatively
-  // bigger against the smaller glyphs — chunkier/lower-res-looking even
-  // though the render pipeline is identical. Passing a smaller value here
-  // keeps the dot-to-glyph ratio close to what the desktop lines use.
-  particleSize?: number;
-}) {
+// One line of the headline. Unlike the particle effect this replaced, the
+// text here is real anti-aliased Canvas2D glyphs warped onto a WebGL mesh —
+// no density/legibility tradeoff at small sizes, so mobile and desktop can
+// share the same 2-line copy; only `fontSize` needs to vary per breakpoint
+// (a plain number prop, not something Tailwind can express, hence the
+// separate size tiers below rather than one responsive className).
+function TitleMeshLine({ text, fontSize, className }: { text: string; fontSize: number; className: string }) {
   return (
-    <div aria-hidden className={className}>
-      <PixelDrift
-        text={text}
-        colors={PIXEL_COLORS}
-        fontFamily={PIXEL_FONT_FAMILY}
-        fontSize={160}
-        particleCount={200}
-        particleSize={particleSize}
-        autoFit
-        mode="onEnter"
-        transition={{ type: 'tween', duration: 0.7, ease: 'easeOut' }}
-        mouseEnabled
-        mouseRadius={70}
-        mouseForce={22}
-        style={{ minWidth: 0 }}
-      />
-    </div>
+    <MeshTextHover
+      text={text}
+      color="#ffffff"
+      fontFamily={MESH_FONT_FAMILY}
+      fontWeight={700}
+      fontSize={fontSize}
+      colorSplit
+      customColors={['#7ef9ff', '#b98bff']}
+      force={18}
+      className={className}
+    />
   );
 }
 
@@ -82,32 +64,29 @@ export function Hero() {
         animate="show"
         variants={fadeUp}
         className="mx-auto w-full max-w-4xl"
+        aria-hidden
       >
-        {/* Canvas text isn't selectable/crawlable — this stands in for
-            screen readers/SEO regardless of which breakpoint's particle
-            lines are visible. */}
-        <h1 className="sr-only">
-          {t('titleLine1')} {t('titleLine2')}
-        </h1>
-
-        {/* Below `sm`: 3 shorter lines. An 8-character CJK line only gets
-            ~40px/char at mobile widths, and particle sampling (verified via
-            screenshot) can't hold CJK strokes legible below roughly
-            desktop-size characters, however fine the stride — splitting
-            into 3 shorter lines keeps each character large enough to read. */}
+        {/* Canvas text isn't selectable/crawlable — a separate sr-only <h1>
+            below stands in for screen readers/SEO. Three size tiers render
+            in parallel, CSS-hidden outside their own breakpoint range —
+            fontSize is a plain number prop MeshTextHover bakes into the
+            texture, not something a single responsive className can vary. */}
         <div className="sm:hidden">
-          <TitleParticleLine text={t('titleMobileLine1')} className="h-16" particleSize={7} />
-          <TitleParticleLine text={t('titleMobileLine2')} className="mt-1 h-16" particleSize={7} />
-          <TitleParticleLine text={t('titleMobileLine3')} className="mt-1 h-16" particleSize={7} />
+          <TitleMeshLine text={t('titleLine1')} fontSize={42} className="h-14" />
+          <TitleMeshLine text={t('titleLine2')} fontSize={42} className="h-14" />
         </div>
-
-        {/* `sm` and up: original 2-line copy — already verified legible at
-            this width. */}
-        <div className="hidden sm:block">
-          <TitleParticleLine text={t('titleLine1')} className="sm:h-24 md:h-28" />
-          <TitleParticleLine text={t('titleLine2')} className="mt-1 sm:h-24 md:h-28" />
+        <div className="hidden sm:block md:hidden">
+          <TitleMeshLine text={t('titleLine1')} fontSize={74} className="h-24" />
+          <TitleMeshLine text={t('titleLine2')} fontSize={74} className="h-24" />
+        </div>
+        <div className="hidden md:block">
+          <TitleMeshLine text={t('titleLine1')} fontSize={100} className="h-28" />
+          <TitleMeshLine text={t('titleLine2')} fontSize={100} className="h-28" />
         </div>
       </motion.div>
+      <h1 className="sr-only">
+        {t('titleLine1')} {t('titleLine2')}
+      </h1>
 
       <motion.p
         custom={2}
