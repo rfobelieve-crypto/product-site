@@ -38,6 +38,18 @@ const SPACING = 0.34;
 const DRIFT_SPEED = 0.09; // world units / second, right → left
 const HIDDEN_SCALE = 0.0001; // effectively invisible without branching in the shader
 
+// Body was 0.26 wide (76% of SPACING) with a 0.16 corner radius — thick
+// enough relative to its own width, with rounding soft enough, to read as
+// a Duplo brick rather than a chart bar. Slimmer + crisper edges (just
+// enough bevel left to catch a clearcoat highlight) reads as cut glass
+// instead. Wick radius was 0.4, within a hair of RoundedBoxGeometry's 0.5
+// ceiling on a unit cube — that close to the limit it renders as a
+// bulbous capsule rather than a thin rod, however thin the scaled width.
+const BODY_WIDTH = 0.17;
+const BODY_CORNER_RADIUS = 0.06;
+const WICK_WIDTH = 0.035;
+const WICK_CORNER_RADIUS = 0.16;
+
 // Classic terminal red/green — punchy enough to survive Bloom's
 // luminance threshold instead of washing out to grey.
 const UP_COLOR = '#00ffa3';
@@ -105,7 +117,7 @@ export function CandleField({
     const bodyH = Math.max(Math.abs(c.close - c.open), 0.03);
     const bodyY = (c.open + c.close) / 2;
     dummy.position.set(c.x, bodyY, 0);
-    dummy.scale.set(0.26, bodyH, 0.26);
+    dummy.scale.set(BODY_WIDTH, bodyH, BODY_WIDTH);
     dummy.updateMatrix();
     (up ? bodiesUp : bodiesDown).current?.setMatrixAt(i, dummy.matrix);
     (up ? bodiesDown : bodiesUp).current?.setMatrixAt(i, hidden);
@@ -113,7 +125,7 @@ export function CandleField({
     const wickH = Math.max(c.high - c.low, 0.03);
     const wickY = (c.high + c.low) / 2;
     dummy.position.set(c.x, wickY, 0);
-    dummy.scale.set(0.045, wickH, 0.045);
+    dummy.scale.set(WICK_WIDTH, wickH, WICK_WIDTH);
     dummy.updateMatrix();
     (up ? wicksUp : wicksDown).current?.setMatrixAt(i, dummy.matrix);
     (up ? wicksDown : wicksUp).current?.setMatrixAt(i, hidden);
@@ -160,7 +172,7 @@ export function CandleField({
           the un-instanced geometry's, which would incorrectly cull the
           whole batch since instances are scattered far outside it. */}
       <instancedMesh ref={bodiesUp} args={[undefined, undefined, COUNT]} frustumCulled={false}>
-        <roundedBoxGeometry args={[1, 1, 1, 4, 0.16]} />
+        <roundedBoxGeometry args={[1, 1, 1, 4, BODY_CORNER_RADIUS]} />
         {isMobile ? (
           <meshPhysicalMaterial
             color={UP_COLOR}
@@ -193,7 +205,7 @@ export function CandleField({
         )}
       </instancedMesh>
       <instancedMesh ref={wicksUp} args={[undefined, undefined, COUNT]} frustumCulled={false}>
-        <roundedBoxGeometry args={[1, 1, 1, 4, 0.4]} />
+        <roundedBoxGeometry args={[1, 1, 1, 4, WICK_CORNER_RADIUS]} />
         {isMobile ? (
           <meshPhysicalMaterial
             color={UP_COLOR}
@@ -228,7 +240,7 @@ export function CandleField({
         )}
       </instancedMesh>
       <instancedMesh ref={bodiesDown} args={[undefined, undefined, COUNT]} frustumCulled={false}>
-        <roundedBoxGeometry args={[1, 1, 1, 4, 0.16]} />
+        <roundedBoxGeometry args={[1, 1, 1, 4, BODY_CORNER_RADIUS]} />
         {isMobile ? (
           <meshPhysicalMaterial
             color={DOWN_COLOR}
@@ -261,7 +273,7 @@ export function CandleField({
         )}
       </instancedMesh>
       <instancedMesh ref={wicksDown} args={[undefined, undefined, COUNT]} frustumCulled={false}>
-        <roundedBoxGeometry args={[1, 1, 1, 4, 0.4]} />
+        <roundedBoxGeometry args={[1, 1, 1, 4, WICK_CORNER_RADIUS]} />
         {isMobile ? (
           <meshPhysicalMaterial
             color={DOWN_COLOR}
