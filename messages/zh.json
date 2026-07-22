@@ -1,0 +1,324 @@
+{
+  "meta": {
+    "siteTitle": "flowbot — 一個會自我監督的 BTC 系統",
+    "siteDescription": "雙模型訊號引擎、分階段風控框架，加上正在 OKX 實盤運行的執行層——全程公開建置與驗證。"
+  },
+  "nav": {
+    "menuLabel": "選單",
+    "home": "首頁",
+    "system": "系統",
+    "trackRecord": "績效紀錄",
+    "signals": "訊號",
+    "incidents": "事故紀錄",
+    "liveSignal": "即時訊號",
+    "signIn": "登入",
+    "signOut": "登出"
+  },
+  "hero": {
+    "eyebrow": "OKX 實盤運行中 · 雙模型訊號引擎",
+    "titleLine1": "一個會自我監督的",
+    "titleLine2": "系統。",
+    "subtitle": "每一個 kill switch、每一道回撤閘門、每一次誠實記錄的失敗——全程公開建置，用最硬的方式驗證。",
+    "scroll": "捲動"
+  },
+  "explore": {
+    "eyebrow": "探索",
+    "title": "四個頁面，不重複。",
+    "open": "打開",
+    "cards": {
+      "system": {
+        "kicker": "系統",
+        "title": "實際運作原理",
+        "body": "資料管線、雙模型引擎、驗證流程、風控框架——集中在一個頁面,不重複。"
+      },
+      "trackRecord": {
+        "kicker": "績效紀錄",
+        "title": "勝率，附帶不確定性",
+        "body": "訊號與交易勝率（附 Wilson 信賴區間），以及最大回撤。"
+      },
+      "signals": {
+        "kicker": "訊號",
+        "title": "完整訊號追蹤紀錄",
+        "body": "每一筆判斷，從方向到實際結果——登入查看完整列表。"
+      },
+      "incidents": {
+        "kicker": "事故紀錄",
+        "title": "壞過什麼、改了什麼",
+        "body": "真實故障的持續紀錄，以及每次故障後上線的規則。"
+      }
+    }
+  },
+  "liveSignal": {
+    "eyebrow": "即時訊號",
+    "unavailable": "訊號目前暫時無法取得——不影響系統其他部分。",
+    "confidence": "信心分數",
+    "regime": "市場狀態",
+    "nearPrice": "參考價位",
+    "defaultDisclaimer": "僅供資訊與分析參考，非投資建議。過去績效不代表未來表現。",
+    "direction": {
+      "UP": "偏多",
+      "DOWN": "偏空",
+      "NEUTRAL": "中性"
+    },
+    "time": {
+      "justNow": "剛剛",
+      "minutesAgo": "{count} 分鐘前",
+      "hoursAgo": "{count} 小時前"
+    }
+  },
+  "faq": {
+    "eyebrow": "常見問題",
+    "title": "值得直接回答的問題。",
+    "items": {
+      "advice": {
+        "q": "這是投資建議，還是可以訂閱的服務？",
+        "a": "都不是。這個網站上沒有任何可以直接照做的交易訊號，也沒有付費訂閱或訊號存取產品。這個網站記錄的是一個真實系統怎麼被建置與驗證——全站的免責聲明都是字面意思，不是走過場的樣板文字。"
+      },
+      "strongTier": {
+        "q": "「Strong 級訊號」實際上是什麼意思？",
+        "a": "方向模型輸出的是連續預測值；滾動百分位解碼把近期預測分成 Strong / Moderate / Weak 三級。Strong 代表當前預測落在近期模型輸出的前段——這是一個排名，不是保證。"
+      },
+      "confidenceInterval": {
+        "q": "為什麼顯示信賴區間，而不是只給一個勝率？",
+        "a": "小樣本算出來的勝率，不管背後是真的有 edge 還是純粹運氣好，數字可能長得一模一樣。信賴區間是同一個數字的誠實版本——詳見績效紀錄頁面。"
+      },
+      "automated": {
+        "q": "系統是完全自動化的嗎？",
+        "a": "執行是在分階段風控框架內自動化的——部位大小、槓桿、單日/總虧損上限都是寫死在程式碼裡，不是臨場決定。要放大到下一個資金階段，必須通過事先定義好的統計門檻，不是「這週感覺不錯」就能加碼。"
+      },
+      "breaks": {
+        "q": "系統出問題的時候會怎麼樣？",
+        "a": "會被修好，而且修法會被記錄下來——詳見事故紀錄區塊。Kill switch 的存在，就是因為系統遲早會用一種沒人預料到的方式犯錯。"
+      }
+    }
+  },
+  "waitlist": {
+    "eyebrow": "保持追蹤",
+    "title": "文章更新與方法論進展，第一時間通知你。",
+    "subtitle": "這不是訊號存取名單——不會有交易訊息從這裡發出去，只有工程日誌跟績效紀錄的更新。",
+    "success": "已加入名單，謝謝追蹤。",
+    "emailPlaceholder": "you@domain.com",
+    "submit": "通知我",
+    "submitting": "傳送中…",
+    "preferEmail": "比較習慣用 email？",
+    "errors": {
+      "invalidEmail": "這個 email 看起來不太對。",
+      "generic": "出了點問題——稍後再試一次。",
+      "network": "網路錯誤——稍後再試一次。"
+    }
+  },
+  "footer": {
+    "tagline": "全程公開建置，仍在驗證中。",
+    "writeUps": "文章",
+    "github": "GitHub",
+    "contact": "聯絡",
+    "disclaimer": "非投資建議，本站任何內容都不構成交易招攬。"
+  },
+  "architecture": {
+    "eyebrow": "一覽",
+    "title": "從交易所原始資料到發布訊號，四個階段，沒有捷徑。",
+    "stages": {
+      "data": {
+        "kicker": "資料",
+        "title": "三個交易所，沒有缺口",
+        "items": [
+          "Binance klines / 深度簿 / 聚合成交",
+          "Coinglass v4 — 24 個端點",
+          "Deribit DVOL + 選擇權摘要"
+        ]
+      },
+      "features": {
+        "kicker": "特徵",
+        "title": "200+ 個工程特徵，全部 trailing-only",
+        "items": [
+          "12 個特徵群組",
+          "merge_asof，向後對齊",
+          "任何地方都沒有前視偏差"
+        ]
+      },
+      "models": {
+        "kicker": "模型",
+        "title": "雙 XGBoost，各自獨立",
+        "items": [
+          "方向回歸模型",
+          "幅度回歸模型",
+          "各自管線、各自驗證"
+        ]
+      },
+      "signal": {
+        "kicker": "訊號",
+        "title": "分級、信心分數、市場狀態",
+        "items": [
+          "滾動百分位解碼",
+          "walk-forward 驗證通過",
+          "附信心分數發布，不是打包票"
+        ]
+      }
+    }
+  },
+  "systemDetail": {
+    "chapters": {
+      "data": {
+        "kicker": "01 — 資料",
+        "title": "三個來源，同一套語言。",
+        "body": "Binance、Coinglass、Deribit 三家的資料格式跟時間基準都不一樣。每個欄位進模型之前都要先正規化——merge_asof、向後對齊，確保下游任何一步都不會看到來自未來的值。",
+        "items": [
+          "Binance REST — K線、L20 深度簿、聚合成交",
+          "Coinglass v4 — 24 個端點，時序資料 + 快照",
+          "Deribit — DVOL 波動率指數、選擇權摘要"
+        ]
+      },
+      "modeling": {
+        "kicker": "02 — 建模",
+        "title": "兩個模型，從不只猜一次。",
+        "body": "方向跟幅度是兩個獨立的 XGBoost 回歸模型，各自有獨立的管線跟獨立的驗證——「有信心的方向判斷」跟「有信心的幅度判斷」是兩個不同的問題，分開回答。",
+        "items": [
+          "200+ 個 trailing-only 工程特徵，12 個群組",
+          "市場狀態偵測——多頭趨勢 / 空頭趨勢 / 盤整 / 暖機",
+          "帶絕對值下限的滾動百分位解碼",
+          "每個 Strong 級訊號都有 SHAP 驅動因子解釋"
+        ]
+      },
+      "validation": {
+        "kicker": "03 — 驗證",
+        "title": "沒有 walk-forward，就當沒發生過。",
+        "body": "任何關於訊號衰退、特徵有效性、或市場狀態轉變的論述，都要用樣本外預測回答。樣本內的數字在這裡不算證據，不管看起來多漂亮。",
+        "items": [
+          "77 個 walk-forward 折——含 purge + embargo，無資料洩漏",
+          "每折都要過的健檢：平均提升量、正向折數比例、bootstrap 信賴區間",
+          "雙關卡晉升制——先過統計優勢關，再過實盤執行驗證關",
+          "滾動 IC 監控帶衰退警報，不是設完就不管"
+        ],
+        "ctaLabel": "查看即時勝率與信賴區間"
+      },
+      "risk": {
+        "kicker": "04 — 風控與執行",
+        "title": "紀律寫成程式碼。",
+        "body": "回撤觸發、槓桿上限、單日虧損上限——由執行器強制執行，不是靠意志力。觸發 kill switch 代表強制退回上一個資金階段，沒有例外。",
+        "items": [
+          "31 條寫死的 kill switch——回撤、斷線、部位上限、單日虧損",
+          "槓桿階梯由 Kelly 公式 + 波動率拖累數學推導，不是憑感覺",
+          "分階段資金階梯——部位大小隨已驗證的績效紀錄放大",
+          "每個新階段的第一筆實盤訂單需要人工核准"
+        ]
+      }
+    }
+  },
+  "trackRecord": {
+    "eyebrow": "績效紀錄",
+    "title": "勝率，附帶不確定性。",
+    "subtitle": "給的是信賴區間，不是一個吸睛的頭條數字——小樣本落在硬幣線範圍內的情況會被揭露，不會被藏起來。",
+    "winRate": "勝率",
+    "confidenceInterval": "95% 信賴區間",
+    "sampleSize": "n = {count} {label}",
+    "signalLayer": "訊號層",
+    "tradeLayer": "交易層",
+    "strongTierLabel": "Strong 級訊號",
+    "closedTradesLabel": "已平倉實盤交易",
+    "maxDrawdown": "最大回撤（僅計算已平倉交易複利報酬）：{value}%",
+    "unavailable": "績效紀錄暫時無法取得。",
+    "defaultCaveat": "訊號準確率不等於交易獲利。"
+  },
+  "incidents": {
+    "eyebrow": "事故紀錄",
+    "title": "壞過什麼，又因此改了什麼。",
+    "subtitle": "真實故障的持續紀錄——之所以留著，是因為每次故障後訂出的規則，才是這個錯誤真正的產出。",
+    "list": {
+      "facade": {
+        "date": "2026-06-17",
+        "title": "同一個 bug，發生了三次",
+        "body": "一個保證金模式切換功能，悄悄讓所有實盤訂單都送不出去。根因是：呼叫端跟底層 API client 都有這個方法，但連接兩者的 facade 層從沒更新過——同一類型的 bug 這已經是第三次上線了。測試全綠是因為測試替身會自動生成被呼叫到的任何方法。",
+        "fix": "把 mock 換成基於 AST 的結構性測試，一旦 facade 跟呼叫端實際需要的介面產生落差就會失敗——刪掉一個方法、看著測試抓到它，驗證過確實有效。"
+      },
+      "outlierFold": {
+        "date": "2026-06-02",
+        "title": "一次不存在的提升",
+        "body": "一次 ensemble A/B 測試顯示總體準確率有乾淨、過門檻的提升。花五分鐘做的健檢——每折平均值、正向提升的折數比例、bootstrap 信賴區間——顯示這個總體數字是被一兩個離群折撐起來的；中位數提升其實是負的。",
+        "fix": "現在任何宣稱的模型提升，都必須同時通過四項檢查（總體提升、每折平均值、正向比例、bootstrap 信賴區間不含零），不能只看頭條數字。"
+      },
+      "staleCache": {
+        "date": "2026-07-05",
+        "title": "一次其實是快取過期的「衰退」",
+        "body": "一份排程的模型健康報告顯示準確率逐月悄悄下滑——原本值得寫一篇關於模型衰退的公開文章。真正的原因是每晚資料更新時的一次網路異常；報告在悄悄地用 16 天前的過期快取特徵運行，而不是明確地失敗。",
+        "fix": "現在任何自動化判定都會把資料新鮮度當成判定的一部分——過期的輸入會強制回傳明確的「無法判定」狀態，而不是一個看起來合理的 PASS 或 FAIL。"
+      }
+    }
+  },
+  "auth": {
+    "emailPlaceholder": "you@domain.com",
+    "passwordPlaceholder": "密碼",
+    "passwordMinPlaceholder": "密碼（至少 8 個字元）",
+    "confirmPasswordPlaceholder": "確認密碼",
+    "loginPage": {
+      "eyebrow": "登入",
+      "title": "歡迎回來。"
+    },
+    "registerPage": {
+      "eyebrow": "註冊",
+      "title": "建立帳號。"
+    },
+    "login": {
+      "submit": "登入",
+      "submitting": "登入中…",
+      "error": "帳號或密碼不正確。",
+      "noAccount": "還沒有帳號？",
+      "registerLink": "註冊"
+    },
+    "register": {
+      "submit": "註冊",
+      "submitting": "建立帳號中…",
+      "accountCreated": "帳號已建立。",
+      "signInLink": "登入",
+      "haveAccount": "已經有帳號了？",
+      "errors": {
+        "mismatch": "兩次密碼不一致。",
+        "emailTaken": "這個 email 已經註冊過了——改用登入吧。",
+        "passwordTooShort": "密碼至少需要 8 個字元。",
+        "generic": "出了點問題——稍後再試一次。",
+        "network": "網路錯誤——稍後再試一次。"
+      }
+    }
+  },
+  "signals": {
+    "meta": {
+      "title": "訊號紀錄 — flowbot",
+      "description": "完整訊號追蹤紀錄，登入查看。"
+    },
+    "eyebrow": "訊號紀錄",
+    "title": "每一筆訊號，不只是總體數字。",
+    "gatedBody": "登入查看完整訊號追蹤列表（方向、分級、信心分數、市場狀態、實際結果），而不只是績效紀錄頁面上的總體勝率。",
+    "signIn": "登入",
+    "signedInAs": "目前登入身分：{email}",
+    "signOut": "登出",
+    "unavailable": "訊號紀錄目前暫時無法取得。",
+    "table": {
+      "time": "時間（UTC）",
+      "direction": "方向",
+      "tier": "分級",
+      "confidence": "信心分數",
+      "regime": "市場狀態",
+      "outcome": "結果",
+      "pending": "判定中",
+      "hit": "命中",
+      "miss": "未命中"
+    }
+  },
+  "system": {
+    "meta": {
+      "title": "系統 — flowbot",
+      "description": "資料管線、雙模型訊號引擎、walk-forward 驗證、風控框架——實際運作原理。"
+    }
+  },
+  "trackRecordPage": {
+    "meta": {
+      "title": "績效紀錄 — flowbot",
+      "description": "即時訊號與交易勝率（附 Wilson 信賴區間），以及已平倉交易複利報酬算出的最大回撤。"
+    }
+  },
+  "incidentsPage": {
+    "meta": {
+      "title": "事故紀錄 — flowbot",
+      "description": "系統真實故障的持續紀錄，以及每次故障後上線的規則。"
+    }
+  }
+}

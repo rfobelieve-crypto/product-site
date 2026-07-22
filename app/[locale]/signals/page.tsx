@@ -1,21 +1,34 @@
 import type { Metadata } from 'next';
-import Link from 'next/link';
+import { getTranslations, setRequestLocale } from 'next-intl/server';
+import { Link } from '@/i18n/navigation';
 import { auth, signOut } from '@/auth';
 import { Nav } from '@/components/sections/Nav';
 import { Footer } from '@/components/sections/Footer';
 import { getSignalHistory } from '@/lib/signalHistory';
 
-export const metadata: Metadata = {
-  title: 'Signal history — flowbot',
-  description: 'Full tracked-signal history, signed in.',
-};
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: 'signals.meta' });
+  return { title: t('title'), description: t('description') };
+}
 
 const DIRECTION_COLOR: Record<string, string> = {
   UP: 'text-[#00ffa3]',
   DOWN: 'text-[#ff3860]',
 };
 
-export default async function SignalsPage() {
+export default async function SignalsPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  setRequestLocale(locale);
+  const t = await getTranslations('signals');
   // Falls back to "signed out" instead of a 500 if AUTH_SECRET / Google
   // credentials aren't configured yet in this environment — an anonymous
   // visitor should always see the sign-in prompt, never a crashed page.
@@ -27,30 +40,28 @@ export default async function SignalsPage() {
       <main className="content-layer pt-32">
         <section className="px-6 py-16 sm:px-16">
           <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-cyan/80">
-            Signal history
+            {t('eyebrow')}
           </span>
           <h1 className="mt-4 font-display text-3xl font-light leading-tight sm:text-4xl">
-            Every tracked signal, not just the aggregate.
+            {t('title')}
           </h1>
 
           {!session ? (
             <div className="glass-panel mt-10 max-w-md rounded-2xl border border-white/10 bg-ink/60 p-8 backdrop-blur-xl">
-              <p className="font-body text-sm leading-relaxed text-mist/60">
-                Sign in to see the full tracked-signal list (direction,
-                tier, confidence, regime, and realized outcome) instead of
-                just the aggregate win rate on the Track Record page.
-              </p>
+              <p className="font-body text-sm leading-relaxed text-mist/60">{t('gatedBody')}</p>
               <Link
                 href="/login"
                 className="mt-6 inline-block rounded-full bg-mist px-6 py-2.5 font-body text-sm font-medium text-void transition-opacity hover:opacity-85"
               >
-                Sign in
+                {t('signIn')}
               </Link>
             </div>
           ) : (
             <>
               <div className="mt-6 flex items-center gap-3 font-body text-xs text-mist/50">
-                <span>Signed in as {session.user?.email ?? session.user?.name}</span>
+                <span>
+                  {t('signedInAs', { email: session.user?.email ?? session.user?.name ?? '' })}
+                </span>
                 <form
                   action={async () => {
                     'use server';
@@ -58,7 +69,7 @@ export default async function SignalsPage() {
                   }}
                 >
                   <button type="submit" className="text-iris-cyan/80 hover:text-iris-cyan">
-                    Sign out
+                    {t('signOut')}
                   </button>
                 </form>
               </div>
@@ -73,25 +84,22 @@ export default async function SignalsPage() {
 }
 
 async function SignalTable() {
+  const t = await getTranslations('signals');
   const history = await getSignalHistory();
   if (!history || history.signals.length === 0) {
-    return (
-      <p className="mt-10 font-body text-sm text-mist/50">
-        Signal history unavailable right now.
-      </p>
-    );
+    return <p className="mt-10 font-body text-sm text-mist/50">{t('unavailable')}</p>;
   }
   return (
     <div className="glass-panel mt-10 overflow-x-auto rounded-2xl border border-white/10 bg-ink/50 backdrop-blur-xl">
       <table className="w-full min-w-[560px] font-body text-sm">
         <thead>
           <tr className="border-b border-white/10 text-left text-xs uppercase tracking-wider text-mist/50">
-            <th className="px-5 py-3">Time (UTC)</th>
-            <th className="px-5 py-3">Direction</th>
-            <th className="px-5 py-3">Tier</th>
-            <th className="px-5 py-3">Confidence</th>
-            <th className="px-5 py-3">Regime</th>
-            <th className="px-5 py-3">Outcome</th>
+            <th className="px-5 py-3">{t('table.time')}</th>
+            <th className="px-5 py-3">{t('table.direction')}</th>
+            <th className="px-5 py-3">{t('table.tier')}</th>
+            <th className="px-5 py-3">{t('table.confidence')}</th>
+            <th className="px-5 py-3">{t('table.regime')}</th>
+            <th className="px-5 py-3">{t('table.outcome')}</th>
           </tr>
         </thead>
         <tbody>
@@ -107,7 +115,7 @@ async function SignalTable() {
               </td>
               <td className="px-5 py-3 text-mist/60">{s.regime ?? '—'}</td>
               <td className="px-5 py-3 text-mist/60">
-                {s.correct == null ? 'pending' : s.correct ? 'hit' : 'miss'}
+                {s.correct == null ? t('table.pending') : s.correct ? t('table.hit') : t('table.miss')}
               </td>
             </tr>
           ))}

@@ -1,6 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -12,6 +13,7 @@ const fadeUp = {
 };
 
 export function Hero() {
+  const t = useTranslations('hero');
   return (
     <section className="relative flex h-screen flex-col items-center justify-center px-6 text-center">
       <motion.p
@@ -21,7 +23,7 @@ export function Hero() {
         variants={fadeUp}
         className="mb-4 font-body text-xs uppercase tracking-[0.3em] text-iris-cyan/80"
       >
-        Live on OKX · Dual-model signal engine
+        {t('eyebrow')}
       </motion.p>
 
       <motion.h1
@@ -31,9 +33,9 @@ export function Hero() {
         variants={fadeUp}
         className="text-balance font-display text-5xl font-light leading-[1.05] tracking-tightest sm:text-7xl md:text-8xl"
       >
-        A system that
+        {t('titleLine1')}
         <br />
-        <span className="font-medium">watches itself.</span>
+        <span className="font-medium">{t('titleLine2')}</span>
       </motion.h1>
 
       <motion.p
@@ -43,8 +45,7 @@ export function Hero() {
         variants={fadeUp}
         className="mt-6 max-w-md text-balance font-body text-sm text-mist/60 sm:text-base"
       >
-        Every kill switch, every drawdown gate, every honest failure — built
-        in the open and validated the hard way.
+        {t('subtitle')}
       </motion.p>
 
       <motion.div
@@ -54,7 +55,7 @@ export function Hero() {
         className="absolute bottom-10 flex flex-col items-center gap-2"
       >
         <span className="text-[10px] uppercase tracking-[0.3em] text-mist/55">
-          Scroll
+          {t('scroll')}
         </span>
         <motion.div
           animate={{ y: [0, 8, 0] }}

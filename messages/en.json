@@ -1,0 +1,324 @@
+{
+  "meta": {
+    "siteTitle": "flowbot — a BTC system that watches itself",
+    "siteDescription": "Dual-model signal engine, staged risk framework, and a live OKX execution layer — built and validated in the open."
+  },
+  "nav": {
+    "menuLabel": "Menu",
+    "home": "Home",
+    "system": "System",
+    "trackRecord": "Track record",
+    "signals": "Signals",
+    "incidents": "Incidents",
+    "liveSignal": "Live signal",
+    "signIn": "Sign in",
+    "signOut": "Sign out"
+  },
+  "hero": {
+    "eyebrow": "Live on OKX · Dual-model signal engine",
+    "titleLine1": "A system that",
+    "titleLine2": "watches itself.",
+    "subtitle": "Every kill switch, every drawdown gate, every honest failure — built in the open and validated the hard way.",
+    "scroll": "Scroll"
+  },
+  "explore": {
+    "eyebrow": "Explore",
+    "title": "Four pages. No repeats.",
+    "open": "Open",
+    "cards": {
+      "system": {
+        "kicker": "System",
+        "title": "How it actually works",
+        "body": "Data pipeline, dual-model engine, validation, and the risk framework — one page, no repeats."
+      },
+      "trackRecord": {
+        "kicker": "Track record",
+        "title": "Win rate, with the uncertainty attached",
+        "body": "Signal and trade win rates with Wilson confidence intervals, and max drawdown."
+      },
+      "signals": {
+        "kicker": "Signals",
+        "title": "Full tracked-signal history",
+        "body": "Every call, direction to realized outcome — sign in to see the whole list."
+      },
+      "incidents": {
+        "kicker": "Incidents",
+        "title": "What broke, and what changed",
+        "body": "A running log of real failures and the rule that shipped because of each one."
+      }
+    }
+  },
+  "liveSignal": {
+    "eyebrow": "Live signal",
+    "unavailable": "Signal feed unavailable right now — the rest of the system is unaffected.",
+    "confidence": "confidence",
+    "regime": "regime",
+    "nearPrice": "near price",
+    "defaultDisclaimer": "Informational and analytical output only. Not financial advice. Past performance does not guarantee future results.",
+    "direction": {
+      "UP": "Long lean",
+      "DOWN": "Short lean",
+      "NEUTRAL": "Flat"
+    },
+    "time": {
+      "justNow": "just now",
+      "minutesAgo": "{count}m ago",
+      "hoursAgo": "{count}h ago"
+    }
+  },
+  "faq": {
+    "eyebrow": "FAQ",
+    "title": "Questions worth answering directly.",
+    "items": {
+      "advice": {
+        "q": "Is this financial advice, or something I can subscribe to?",
+        "a": "No. Nothing on this site is a trading signal you can act on, and there is no paid subscription or signal-access product. This site documents how a real system is built and validated — the disclaimers throughout are literal, not boilerplate."
+      },
+      "strongTier": {
+        "q": "What does \"Strong-tier signal\" actually mean?",
+        "a": "The direction model outputs a continuous prediction; a rolling-percentile decode sorts recent predictions into Strong / Moderate / Weak. Strong means the current prediction sits in the top slice of recent model output — not a guarantee, a rank."
+      },
+      "confidenceInterval": {
+        "q": "Why show a confidence interval instead of just a win rate?",
+        "a": "A win rate on a small sample can look identical whether the edge is real or the sample got lucky. The interval is the honest version of the same number — see the Track Record page."
+      },
+      "automated": {
+        "q": "Is the system fully automated?",
+        "a": "Execution is automated within a staged risk framework — position size, leverage, and daily/total loss caps are hard-coded, not discretionary. Scaling to a new capital stage requires clearing pre-defined statistical gates, not \"it felt like a good week.\""
+      },
+      "breaks": {
+        "q": "What happens when something breaks?",
+        "a": "It gets fixed, and the fix is written down — see the Incidents section. Kill switches exist specifically because the system is expected to eventually be wrong in a way nobody anticipated."
+      }
+    }
+  },
+  "waitlist": {
+    "eyebrow": "Stay in the loop",
+    "title": "Get notified on write-ups and methodology updates.",
+    "subtitle": "Not a signal-access list — no trading calls go out here. Just the engineering log and track-record updates as they happen.",
+    "success": "You're on the list. Thanks for following along.",
+    "emailPlaceholder": "you@domain.com",
+    "submit": "Notify me",
+    "submitting": "Sending…",
+    "preferEmail": "Prefer email?",
+    "errors": {
+      "invalidEmail": "That doesn’t look like a valid email.",
+      "generic": "Something went wrong — try again shortly.",
+      "network": "Network error — try again shortly."
+    }
+  },
+  "footer": {
+    "tagline": "Built in the open. Still being proven.",
+    "writeUps": "Write-ups",
+    "github": "GitHub",
+    "contact": "Contact",
+    "disclaimer": "Not investment advice. Nothing here is a solicitation to trade."
+  },
+  "architecture": {
+    "eyebrow": "At a glance",
+    "title": "Raw exchange data to a published signal, four stages, no shortcuts.",
+    "stages": {
+      "data": {
+        "kicker": "Data",
+        "title": "Three exchanges, no gaps",
+        "items": [
+          "Binance klines / depth / aggTrades",
+          "Coinglass v4 — 24 endpoints",
+          "Deribit DVOL + options summary"
+        ]
+      },
+      "features": {
+        "kicker": "Features",
+        "title": "200+ engineered, trailing-only",
+        "items": [
+          "12 feature groups",
+          "merge_asof, backward-aligned",
+          "no look-ahead, anywhere"
+        ]
+      },
+      "models": {
+        "kicker": "Models",
+        "title": "Dual XGBoost, independent",
+        "items": [
+          "Direction regressor",
+          "Magnitude regressor",
+          "separate pipelines, separate validation"
+        ]
+      },
+      "signal": {
+        "kicker": "Signal",
+        "title": "Tier, confidence, regime",
+        "items": [
+          "rolling-percentile decode",
+          "walk-forward validated",
+          "published with a confidence number, not certainty"
+        ]
+      }
+    }
+  },
+  "systemDetail": {
+    "chapters": {
+      "data": {
+        "kicker": "01 — Data",
+        "title": "Three sources, one language.",
+        "body": "Binance, Coinglass, and Deribit each speak a different schema and a different clock. Every field gets normalized before it touches a model — merge_asof, backward-aligned, so nothing downstream ever sees a value from the future.",
+        "items": [
+          "Binance REST — klines, L20 depth, aggTrades",
+          "Coinglass v4 — 24 endpoints, timeseries + snapshot",
+          "Deribit — DVOL volatility index, options summary"
+        ]
+      },
+      "modeling": {
+        "kicker": "02 — Modeling",
+        "title": "Two models, never one guess.",
+        "body": "Direction and magnitude are separate XGBoost regressors with independent pipelines and independent validation — a confident direction call and a confident size call are two different questions, answered separately.",
+        "items": [
+          "200+ trailing-only engineered features, 12 groups",
+          "Regime detection — trending bull / bear / choppy / warmup",
+          "Rolling-percentile decode with an absolute-value floor",
+          "SHAP-driven explanation on every Strong-tier call"
+        ]
+      },
+      "validation": {
+        "kicker": "03 — Validation",
+        "title": "Walk-forward, or it didn’t happen.",
+        "body": "Every claim about signal decay, feature value, or regime shift is answered with out-of-sample prediction. In-sample numbers are not evidence here, no matter how clean they look.",
+        "items": [
+          "77 walk-forward folds — purge + embargo, no leakage",
+          "Per-fold sanity gate: mean lift, fraction positive, bootstrap CI",
+          "Two-gate promotion — statistical edge, then live execution proof",
+          "Rolling IC monitoring with a decay alert, not set-and-forget"
+        ],
+        "ctaLabel": "See the live win rate + confidence intervals"
+      },
+      "risk": {
+        "kicker": "04 — Risk & execution",
+        "title": "Discipline written as code.",
+        "body": "Drawdown triggers, leverage caps, daily loss limits — enforced by the executor, not by willpower. A kill trigger means a forced step back down the stage ladder, no exceptions.",
+        "items": [
+          "31 hard-coded kill triggers — drawdown, connection loss, position limit, daily loss",
+          "Leverage ladder derived from Kelly + volatility-drag math, not vibes",
+          "Staged capital ladder — position size scales with proven track record",
+          "Manual approval on the first live order of any new stage"
+        ]
+      }
+    }
+  },
+  "trackRecord": {
+    "eyebrow": "Track record",
+    "title": "Win rate, with the uncertainty attached.",
+    "subtitle": "A confidence interval, not a headline number — a small sample lying in the same range as a coin flip is disclosed, not hidden.",
+    "winRate": "win rate",
+    "confidenceInterval": "95% CI",
+    "sampleSize": "n = {count} {label}",
+    "signalLayer": "Signal layer",
+    "tradeLayer": "Trade layer",
+    "strongTierLabel": "Strong-tier signals",
+    "closedTradesLabel": "closed live trades",
+    "maxDrawdown": "Max drawdown, compounding closed-trade returns only: {value}%",
+    "unavailable": "Track record feed unavailable right now.",
+    "defaultCaveat": "Signal accuracy is not the same as trading profit."
+  },
+  "incidents": {
+    "eyebrow": "Incidents",
+    "title": "What broke, and what changed because of it.",
+    "subtitle": "A running log of real failures — kept because the rule that came out of each one is the actual product of the mistake.",
+    "list": {
+      "facade": {
+        "date": "2026-06-17",
+        "title": "The same bug, three times",
+        "body": "A margin-mode toggle silently stopped every live order from going out. Root cause: a method existed at the call site and at the low-level API client, but the facade layer connecting them was never updated — the third time this exact class of bug had shipped. Tests stayed green because the test double auto-created whatever method was called on it.",
+        "fix": "Replaced the mock with an AST-based structural test that fails if the facade drifts from what the call sites actually need — verified by deleting a method and watching the test catch it."
+      },
+      "outlierFold": {
+        "date": "2026-06-02",
+        "title": "A lift that wasn’t there",
+        "body": "An ensemble A/B test showed a clean, above-threshold accuracy improvement in aggregate. A five-minute sanity pass — per-fold mean, fraction of folds with positive lift, bootstrap CI — showed the aggregate number was propped up by one or two outlier folds; the median lift was negative.",
+        "fix": "Any claimed model improvement now has to clear four checks together (aggregate lift, per-fold mean, fraction positive, bootstrap CI excludes zero), not just the headline number."
+      },
+      "staleCache": {
+        "date": "2026-07-05",
+        "title": "A drift that was a stale cache",
+        "body": "A scheduled model-health report showed accuracy quietly degrading month over month — worth a public post about model decay. The underlying cause was a network blip during a nightly data refresh; the report had silently run on 16-day-old cached features instead of failing loudly.",
+        "fix": "Any automated verdict now checks data freshness as part of the verdict itself — stale input forces an explicit \"cannot determine\" state instead of a plausible-looking PASS or FAIL."
+      }
+    }
+  },
+  "auth": {
+    "emailPlaceholder": "you@domain.com",
+    "passwordPlaceholder": "Password",
+    "passwordMinPlaceholder": "Password (min. 8 characters)",
+    "confirmPasswordPlaceholder": "Confirm password",
+    "loginPage": {
+      "eyebrow": "Sign in",
+      "title": "Welcome back."
+    },
+    "registerPage": {
+      "eyebrow": "Register",
+      "title": "Create an account."
+    },
+    "login": {
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "error": "Email or password didn’t match.",
+      "noAccount": "No account yet?",
+      "registerLink": "Register"
+    },
+    "register": {
+      "submit": "Register",
+      "submitting": "Creating account…",
+      "accountCreated": "Account created.",
+      "signInLink": "Sign in",
+      "haveAccount": "Already have an account?",
+      "errors": {
+        "mismatch": "Passwords don’t match.",
+        "emailTaken": "That email is already registered — try signing in instead.",
+        "passwordTooShort": "Password needs to be at least 8 characters.",
+        "generic": "Something went wrong — try again shortly.",
+        "network": "Network error — try again shortly."
+      }
+    }
+  },
+  "signals": {
+    "meta": {
+      "title": "Signal history — flowbot",
+      "description": "Full tracked-signal history, signed in."
+    },
+    "eyebrow": "Signal history",
+    "title": "Every tracked signal, not just the aggregate.",
+    "gatedBody": "Sign in to see the full tracked-signal list (direction, tier, confidence, regime, and realized outcome) instead of just the aggregate win rate on the Track Record page.",
+    "signIn": "Sign in",
+    "signedInAs": "Signed in as {email}",
+    "signOut": "Sign out",
+    "unavailable": "Signal history unavailable right now.",
+    "table": {
+      "time": "Time (UTC)",
+      "direction": "Direction",
+      "tier": "Tier",
+      "confidence": "Confidence",
+      "regime": "Regime",
+      "outcome": "Outcome",
+      "pending": "pending",
+      "hit": "hit",
+      "miss": "miss"
+    }
+  },
+  "system": {
+    "meta": {
+      "title": "System — flowbot",
+      "description": "Data pipeline, dual-model signal engine, walk-forward validation, and the risk framework — how it actually works."
+    }
+  },
+  "trackRecordPage": {
+    "meta": {
+      "title": "Track record — flowbot",
+      "description": "Live signal and trade win rates with Wilson confidence intervals, and max drawdown from compounded closed-trade returns."
+    }
+  },
+  "incidentsPage": {
+    "meta": {
+      "title": "Incidents — flowbot",
+      "description": "A running log of real failures in the system, and the rule that shipped because of each one."
+    }
+  }
+}

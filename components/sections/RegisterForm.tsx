@@ -2,24 +2,27 @@
 
 import { useState } from 'react';
 import { signIn } from 'next-auth/react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
+import { useTranslations } from 'next-intl';
+import { useRouter, Link } from '@/i18n/navigation';
 
 type Status = 'idle' | 'submitting' | 'error' | 'done';
+type ErrorKey = 'mismatch' | 'emailTaken' | 'passwordTooShort' | 'generic' | 'network';
 
 export function RegisterForm() {
   const router = useRouter();
+  const t = useTranslations('auth');
+  const tReg = useTranslations('auth.register');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirm, setConfirm] = useState('');
   const [status, setStatus] = useState<Status>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorKey, setErrorKey] = useState<ErrorKey | null>(null);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (password !== confirm) {
       setStatus('error');
-      setErrorMsg('Passwords don’t match.');
+      setErrorKey('mismatch');
       return;
     }
     setStatus('submitting');
@@ -32,12 +35,12 @@ export function RegisterForm() {
       const data = await res.json();
       if (!res.ok || !data.ok) {
         setStatus('error');
-        setErrorMsg(
+        setErrorKey(
           data.error === 'email already registered'
-            ? 'That email is already registered — try signing in instead.'
+            ? 'emailTaken'
             : data.error === 'password must be at least 8 characters'
-              ? 'Password needs to be at least 8 characters.'
-              : 'Something went wrong — try again shortly.',
+              ? 'passwordTooShort'
+              : 'generic',
         );
         return;
       }
@@ -50,16 +53,16 @@ export function RegisterForm() {
       router.push('/signals');
     } catch {
       setStatus('error');
-      setErrorMsg('Network error — try again shortly.');
+      setErrorKey('network');
     }
   }
 
   if (status === 'done') {
     return (
       <p className="mx-auto max-w-sm text-center font-body text-sm text-iris-cyan">
-        Account created.{' '}
+        {tReg('accountCreated')}{' '}
         <Link href="/login" className="underline hover:text-mist">
-          Sign in
+          {tReg('signInLink')}
         </Link>
         .
       </p>
@@ -74,7 +77,7 @@ export function RegisterForm() {
           required
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          placeholder="you@domain.com"
+          placeholder={t('emailPlaceholder')}
           className="w-full rounded-full border border-white/15 bg-ink/60 px-5 py-2.5 font-body text-sm text-mist placeholder:text-mist/35 focus:border-iris-cyan/60 focus:outline-none"
         />
         <input
@@ -83,7 +86,7 @@ export function RegisterForm() {
           minLength={8}
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          placeholder="Password (min. 8 characters)"
+          placeholder={t('passwordMinPlaceholder')}
           className="w-full rounded-full border border-white/15 bg-ink/60 px-5 py-2.5 font-body text-sm text-mist placeholder:text-mist/35 focus:border-iris-cyan/60 focus:outline-none"
         />
         <input
@@ -91,7 +94,7 @@ export function RegisterForm() {
           required
           value={confirm}
           onChange={(e) => setConfirm(e.target.value)}
-          placeholder="Confirm password"
+          placeholder={t('confirmPasswordPlaceholder')}
           className="w-full rounded-full border border-white/15 bg-ink/60 px-5 py-2.5 font-body text-sm text-mist placeholder:text-mist/35 focus:border-iris-cyan/60 focus:outline-none"
         />
         <button
@@ -99,16 +102,16 @@ export function RegisterForm() {
           disabled={status === 'submitting'}
           className="mt-2 rounded-full bg-mist px-6 py-2.5 font-body text-sm font-medium text-void transition-opacity hover:opacity-85 disabled:opacity-50"
         >
-          {status === 'submitting' ? 'Creating account…' : 'Register'}
+          {status === 'submitting' ? tReg('submitting') : tReg('submit')}
         </button>
       </form>
-      {status === 'error' && (
-        <p className="mt-3 font-body text-xs text-iris-rose">{errorMsg}</p>
+      {status === 'error' && errorKey && (
+        <p className="mt-3 font-body text-xs text-iris-rose">{tReg(`errors.${errorKey}`)}</p>
       )}
       <p className="mt-6 text-center font-body text-xs text-mist/50">
-        Already have an account?{' '}
+        {tReg('haveAccount')}{' '}
         <Link href="/login" className="text-iris-cyan/80 hover:text-iris-cyan">
-          Sign in
+          {tReg('signInLink')}
         </Link>
       </p>
     </div>

@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
 // TODO: replace before shipping — this is a placeholder so the button
 // doesn't silently point nowhere. Not a real inbox yet.
@@ -10,14 +11,15 @@ const CONTACT_EMAIL = 'hello@flowbot.example';
 type Status = 'idle' | 'submitting' | 'ok' | 'error';
 
 export function Waitlist() {
+  const t = useTranslations('waitlist');
   const [email, setEmail] = useState('');
   const [status, setStatus] = useState<Status>('idle');
-  const [errorMsg, setErrorMsg] = useState('');
+  const [errorKey, setErrorKey] = useState<'invalidEmail' | 'generic' | 'network' | null>(null);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     setStatus('submitting');
-    setErrorMsg('');
+    setErrorKey(null);
     try {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
@@ -27,13 +29,13 @@ export function Waitlist() {
       const data = await res.json();
       if (!res.ok || !data.ok) {
         setStatus('error');
-        setErrorMsg(data.error === 'invalid email' ? 'That doesn’t look like a valid email.' : 'Something went wrong — try again shortly.');
+        setErrorKey(data.error === 'invalid email' ? 'invalidEmail' : 'generic');
         return;
       }
       setStatus('ok');
     } catch {
       setStatus('error');
-      setErrorMsg('Network error — try again shortly.');
+      setErrorKey('network');
     }
   }
 
@@ -47,20 +49,15 @@ export function Waitlist() {
         className="mx-auto max-w-lg text-center"
       >
         <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-cyan/80">
-          Stay in the loop
+          {t('eyebrow')}
         </span>
         <h2 className="mt-4 font-display text-3xl font-light leading-tight sm:text-4xl">
-          Get notified on write-ups and methodology updates.
+          {t('title')}
         </h2>
-        <p className="mt-4 font-body text-sm leading-relaxed text-mist/60">
-          Not a signal-access list — no trading calls go out here. Just the
-          engineering log and track-record updates as they happen.
-        </p>
+        <p className="mt-4 font-body text-sm leading-relaxed text-mist/60">{t('subtitle')}</p>
 
         {status === 'ok' ? (
-          <p className="mt-8 font-body text-sm text-iris-cyan">
-            You&rsquo;re on the list. Thanks for following along.
-          </p>
+          <p className="mt-8 font-body text-sm text-iris-cyan">{t('success')}</p>
         ) : (
           <form
             onSubmit={onSubmit}
@@ -71,7 +68,7 @@ export function Waitlist() {
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="you@domain.com"
+              placeholder={t('emailPlaceholder')}
               className="w-full rounded-full border border-white/15 bg-ink/60 px-5 py-2.5 font-body text-sm text-mist placeholder:text-mist/35 focus:border-iris-cyan/60 focus:outline-none sm:w-72"
             />
             <button
@@ -79,16 +76,16 @@ export function Waitlist() {
               disabled={status === 'submitting'}
               className="rounded-full bg-mist px-6 py-2.5 font-body text-sm font-medium text-void transition-opacity hover:opacity-85 disabled:opacity-50"
             >
-              {status === 'submitting' ? 'Sending…' : 'Notify me'}
+              {status === 'submitting' ? t('submitting') : t('submit')}
             </button>
           </form>
         )}
-        {status === 'error' && (
-          <p className="mt-3 font-body text-xs text-iris-rose">{errorMsg}</p>
+        {status === 'error' && errorKey && (
+          <p className="mt-3 font-body text-xs text-iris-rose">{t(`errors.${errorKey}`)}</p>
         )}
 
         <p className="mt-10 font-body text-xs text-mist/50">
-          Prefer email?{' '}
+          {t('preferEmail')}{' '}
           <a href={`mailto:${CONTACT_EMAIL}`} className="text-iris-cyan/80 hover:text-iris-cyan">
             {CONTACT_EMAIL}
           </a>

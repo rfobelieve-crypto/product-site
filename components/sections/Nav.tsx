@@ -2,25 +2,29 @@
 
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import Link from 'next/link';
+import { useLocale, useTranslations } from 'next-intl';
 import { useSession, signOut } from 'next-auth/react';
+import { Link, usePathname } from '@/i18n/navigation';
 import { Logo } from './Logo';
-
-// Root-relative so these work identically from the home page (scrolls)
-// and from other routes (navigates home, then scrolls) — plain "#anchor"
-// only resolves on the page it's declared on.
-const LINKS = [
-  { label: 'Home', href: '/#top' },
-  { label: 'System', href: '/system' },
-  { label: 'Track record', href: '/track-record' },
-  { label: 'Signals', href: '/signals' },
-  { label: 'Incidents', href: '/incidents' },
-  { label: 'Live signal', href: '/#live-signal' },
-];
 
 export function Nav() {
   const [open, setOpen] = useState(false);
   const { data: session, status } = useSession();
+  const t = useTranslations('nav');
+  const locale = useLocale();
+  const pathname = usePathname();
+
+  // Root-relative so these work identically from the home page (scrolls)
+  // and from other routes (navigates home, then scrolls) — plain "#anchor"
+  // only resolves on the page it's declared on.
+  const LINKS = [
+    { label: t('home'), href: '/#top' },
+    { label: t('system'), href: '/system' },
+    { label: t('trackRecord'), href: '/track-record' },
+    { label: t('signals'), href: '/signals' },
+    { label: t('incidents'), href: '/incidents' },
+    { label: t('liveSignal'), href: '/#live-signal' },
+  ];
 
   return (
     <>
@@ -46,7 +50,7 @@ export function Nav() {
         >
           <button
             onClick={() => setOpen((v) => !v)}
-            aria-label="Menu"
+            aria-label={t('menuLabel')}
             className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full border border-white/10 bg-ink/60 backdrop-blur-xl"
           >
             <span className={`h-px w-4 bg-mist/70 transition-transform ${open ? 'translate-y-[3px] rotate-45' : ''}`} />
@@ -98,21 +102,45 @@ export function Nav() {
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
-          className="flex justify-end"
+          className="flex items-center justify-end gap-2"
         >
+          {/* Language switcher — re-links to the exact same page (pathname
+              from next-intl's usePathname is already locale-stripped) in
+              the other locale, rather than bouncing to the home page. */}
+          <div className="flex overflow-hidden rounded-full border border-white/10 bg-ink/60 font-body text-[12px] backdrop-blur-xl">
+            <Link
+              href={pathname}
+              locale="en"
+              className={`px-3 py-2 transition-colors ${
+                locale === 'en' ? 'bg-white/10 text-mist' : 'text-mist/50 hover:text-mist'
+              }`}
+            >
+              EN
+            </Link>
+            <Link
+              href={pathname}
+              locale="zh"
+              className={`px-3 py-2 transition-colors ${
+                locale === 'zh' ? 'bg-white/10 text-mist' : 'text-mist/50 hover:text-mist'
+              }`}
+            >
+              中
+            </Link>
+          </div>
+
           {status === 'authenticated' ? (
             <button
               onClick={() => signOut()}
               className="rounded-full border border-white/15 px-4 py-2.5 font-body text-[13px] text-mist/80 transition-colors hover:border-white/30 hover:text-mist"
             >
-              {session.user?.email?.split('@')[0] ?? 'Account'} · Sign out
+              {session.user?.email?.split('@')[0] ?? 'Account'} · {t('signOut')}
             </button>
           ) : (
             <Link
               href="/login"
               className="rounded-full bg-mist px-5 py-2.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
             >
-              Sign in
+              {t('signIn')}
             </Link>
           )}
         </motion.div>

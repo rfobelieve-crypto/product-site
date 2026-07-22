@@ -2,29 +2,15 @@
 
 import { useState } from 'react';
 import { motion } from 'framer-motion';
+import { useTranslations } from 'next-intl';
 
-const ITEMS = [
-  {
-    q: 'Is this financial advice, or something I can subscribe to?',
-    a: 'No. Nothing on this site is a trading signal you can act on, and there is no paid subscription or signal-access product. This site documents how a real system is built and validated — the disclaimers throughout are literal, not boilerplate.',
-  },
-  {
-    q: 'What does "Strong-tier signal" actually mean?',
-    a: 'The direction model outputs a continuous prediction; a rolling-percentile decode sorts recent predictions into Strong / Moderate / Weak. Strong means the current prediction sits in the top slice of recent model output — not a guarantee, a rank.',
-  },
-  {
-    q: 'Why show a confidence interval instead of just a win rate?',
-    a: 'A win rate on a small sample can look identical whether the edge is real or the sample got lucky. The interval is the honest version of the same number — see the Track Record page.',
-  },
-  {
-    q: 'Is the system fully automated?',
-    a: 'Execution is automated within a staged risk framework — position size, leverage, and daily/total loss caps are hard-coded, not discretionary. Scaling to a new capital stage requires clearing pre-defined statistical gates, not "it felt like a good week."',
-  },
-  {
-    q: 'What happens when something breaks?',
-    a: 'It gets fixed, and the fix is written down — see the Incidents section. Kill switches exist specifically because the system is expected to eventually be wrong in a way nobody anticipated.',
-  },
-];
+const ITEM_KEYS = [
+  'advice',
+  'strongTier',
+  'confidenceInterval',
+  'automated',
+  'breaks',
+] as const;
 
 function Item({ q, a, index }: { q: string; a: string; index: number }) {
   const [open, setOpen] = useState(false);
@@ -62,6 +48,7 @@ function Item({ q, a, index }: { q: string; a: string; index: number }) {
 }
 
 export function FAQ() {
+  const t = useTranslations('faq');
   return (
     <section id="faq" className="relative px-6 py-32 sm:px-16">
       <motion.div
@@ -72,15 +59,15 @@ export function FAQ() {
         className="mb-10"
       >
         <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet">
-          FAQ
+          {t('eyebrow')}
         </span>
         <h2 className="mt-4 font-display text-3xl font-light leading-tight sm:text-4xl">
-          Questions worth answering directly.
+          {t('title')}
         </h2>
       </motion.div>
       <div className="mx-auto flex max-w-2xl flex-col gap-4">
-        {ITEMS.map((item, i) => (
-          <Item key={item.q} q={item.q} a={item.a} index={i} />
+        {ITEM_KEYS.map((key, i) => (
+          <Item key={key} q={t(`items.${key}.q`)} a={t(`items.${key}.a`)} index={i} />
         ))}
       </div>
     </section>
