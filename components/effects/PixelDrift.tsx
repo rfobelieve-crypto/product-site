@@ -573,7 +573,13 @@ export function PixelDrift(props: Partial<Props>) {
         ctx.fillStyle = palette[b];
         for (let k = 0; k < bucket.length; k++) {
           const i = bucket[k];
-          ctx.fillRect(px[i] - half, py[i] - half, drawSize, drawSize);
+          // Circles, not squares — square dots have hard 90° corners that
+          // read as a blocky pixel-grid right where glyph edges most need
+          // to look smooth. A filled circle at the same footprint softens
+          // that without changing density/positioning at all.
+          ctx.beginPath();
+          ctx.arc(px[i], py[i], half, 0, Math.PI * 2);
+          ctx.fill();
         }
       }
       ctx.globalAlpha = 1;
