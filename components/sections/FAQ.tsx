@@ -34,11 +34,11 @@ function Item({ q, a, index }: { q: string; a: string; index: number }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
       transition={{ duration: 0.4, delay: index * 0.05 }}
-      className="border-b border-white/10 py-5"
+      className="glass-panel rounded-2xl border border-white/10 bg-ink/50 backdrop-blur-xl"
     >
       <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-full items-center justify-between gap-4 text-left"
+        className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left sm:px-8"
       >
         <span className="font-display text-base font-light sm:text-lg">{q}</span>
         <span
@@ -52,7 +52,7 @@ function Item({ q, a, index }: { q: string; a: string; index: number }) {
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           transition={{ duration: 0.25 }}
-          className="mt-3 font-body text-sm leading-relaxed text-mist/60"
+          className="overflow-hidden px-6 pb-6 font-body text-sm leading-relaxed text-mist/60 sm:px-8"
         >
           {a}
         </motion.p>
@@ -78,7 +78,7 @@ export function FAQ() {
           Questions worth answering directly.
         </h2>
       </motion.div>
-      <div className="mx-auto max-w-2xl">
+      <div className="mx-auto flex max-w-2xl flex-col gap-4">
         {ITEMS.map((item, i) => (
           <Item key={item.q} q={item.q} a={item.a} index={i} />
         ))}

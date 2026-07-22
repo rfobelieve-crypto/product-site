@@ -33,7 +33,7 @@ function Node({ stage, index }: { stage: (typeof STAGES)[number]; index: number 
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
       transition={{ duration: 0.5, delay: index * 0.12 }}
-      className="relative flex-1 rounded-2xl border border-white/10 bg-ink/50 p-6 backdrop-blur-xl"
+      className="glass-panel flex-1 rounded-2xl border border-white/10 bg-ink/50 p-6 backdrop-blur-xl"
     >
       <span className="font-body text-[11px] uppercase tracking-[0.3em] text-iris-cyan/70">
         {stage.kicker}

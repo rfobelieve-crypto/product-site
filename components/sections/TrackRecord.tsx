@@ -43,7 +43,7 @@ function Metric({
   note: string;
 }) {
   return (
-    <div className="rounded-2xl border border-white/10 bg-ink/60 p-6 backdrop-blur-xl sm:p-8">
+    <div className="glass-panel rounded-2xl border border-white/10 bg-ink/60 p-6 backdrop-blur-xl sm:p-8">
       <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet/80">
         {label}
       </span>

@@ -29,7 +29,7 @@ export function LiveSignal({ feed }: { feed: SignalFeed | null }) {
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: '-10%' }}
       transition={{ duration: 0.6 }}
-      className="rounded-2xl border border-white/10 bg-ink/60 p-6 backdrop-blur-xl sm:p-8"
+      className="glass-panel rounded-2xl border border-white/10 bg-ink/60 p-6 backdrop-blur-xl sm:p-8"
     >
       <div className="flex items-center justify-between">
         <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-cyan/80">

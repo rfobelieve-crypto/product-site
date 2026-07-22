@@ -57,7 +57,7 @@ export function EngineeringLog() {
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true, margin: '-10%' }}
             transition={{ duration: 0.5, delay: i * 0.08 }}
-            className="rounded-2xl border border-white/10 bg-ink/50 p-6 backdrop-blur-xl sm:p-8"
+            className="glass-panel rounded-2xl border border-white/10 bg-ink/50 p-6 backdrop-blur-xl sm:p-8"
           >
             <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
               <span className="font-body text-xs text-mist/55">{inc.date}</span>

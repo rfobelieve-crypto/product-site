@@ -34,7 +34,7 @@ export default async function SignalsPage() {
           </h1>
 
           {!session ? (
-            <div className="mt-10 max-w-md rounded-2xl border border-white/10 bg-ink/60 p-8 backdrop-blur-xl">
+            <div className="glass-panel mt-10 max-w-md rounded-2xl border border-white/10 bg-ink/60 p-8 backdrop-blur-xl">
               <p className="font-body text-sm leading-relaxed text-mist/60">
                 Sign in to see the full tracked-signal list (direction,
                 tier, confidence, regime, and realized outcome) instead of
@@ -82,7 +82,7 @@ async function SignalTable() {
     );
   }
   return (
-    <div className="mt-10 overflow-x-auto rounded-2xl border border-white/10 bg-ink/50 backdrop-blur-xl">
+    <div className="glass-panel mt-10 overflow-x-auto rounded-2xl border border-white/10 bg-ink/50 backdrop-blur-xl">
       <table className="w-full min-w-[560px] font-body text-sm">
         <thead>
           <tr className="border-b border-white/10 text-left text-xs uppercase tracking-wider text-mist/50">

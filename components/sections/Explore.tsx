@@ -62,7 +62,7 @@ export function Explore() {
           >
             <Link
               href={c.href}
-              className="group block rounded-2xl border border-white/10 bg-ink/50 p-6 backdrop-blur-xl transition-colors hover:border-iris-cyan/40 sm:p-8"
+              className="glass-panel group block rounded-2xl border border-white/10 bg-ink/50 p-6 backdrop-blur-xl transition-colors hover:border-iris-cyan/40 sm:p-8"
             >
               <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet">
                 {c.kicker}

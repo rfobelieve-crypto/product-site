@@ -44,4 +44,57 @@
     position: relative;
     z-index: 10;
   }
+
+  /* Frosted-glass card polish: a gradient edge-light (bright top-left,
+     cyan-tinted bottom-right), a top-corner sheen, and a soft ambient
+     glow — so the flat backdrop-blur panels used across every content
+     page read as lit glass instead of a plain translucent box, echoing
+     the cyan/violet point lights already lighting the 3D hero.
+     Additive: pairs with the existing border/backdrop-blur classes on a
+     card, doesn't replace them. Needs `position: relative` +
+     `overflow: hidden` on the target (for the sheen to clip to the
+     rounded corner), which this sets. */
+  .glass-panel {
+    position: relative;
+    overflow: hidden;
+    box-shadow:
+      0 24px 70px -20px rgba(126, 249, 255, 0.16),
+      0 12px 32px -10px rgba(185, 139, 255, 0.1),
+      0 10px 30px -12px rgba(0, 0, 0, 0.55);
+  }
+  .glass-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    border-radius: inherit;
+    padding: 1.5px;
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.4),
+      rgba(255, 255, 255, 0) 30%,
+      rgba(255, 255, 255, 0) 70%,
+      rgba(126, 249, 255, 0.35)
+    );
+    -webkit-mask:
+      linear-gradient(#000 0 0) content-box,
+      linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+  .glass-panel::after {
+    content: '';
+    position: absolute;
+    top: -60%;
+    left: -30%;
+    width: 75%;
+    height: 130%;
+    background: radial-gradient(
+      closest-side,
+      rgba(255, 255, 255, 0.12),
+      rgba(255, 255, 255, 0) 70%
+    );
+    pointer-events: none;
+  }
 }
