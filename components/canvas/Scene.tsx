@@ -2,9 +2,10 @@
 
 import { Canvas } from '@react-three/fiber';
 import { Environment, Lightformer } from '@react-three/drei';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { Bloom, DepthOfField, EffectComposer } from '@react-three/postprocessing';
 import { useEffect, useState } from 'react';
 import { CandleField } from './CandleField';
+import { LightShaft } from './LightShaft';
 import { ParticleField } from './ParticleField';
 
 function useIsMobile() {
@@ -43,6 +44,9 @@ export function Scene({
       <pointLight position={[-3, -2, -2]} intensity={0.7} color="#b98bff" />
       <ParticleField scrollProgress={scrollProgress} density={isMobile ? 0.5 : 1} />
       <CandleField scrollProgress={scrollProgress} bias={signalBias} isMobile={isMobile} />
+      {/* Cheap on both tiers — two additive-blended planes, no full-screen
+          pass — unlike Bloom/DepthOfField/Environment below. */}
+      <LightShaft />
       {/* Env map drives the candles' glass reflections/clearcoat highlight
           — desktop only, same reasoning as Bloom below (it's a real render
           cost, not free polish). Built from in-scene Lightformers instead
@@ -64,15 +68,30 @@ export function Scene({
           />
         </Environment>
       )}
-      {/* Bloom off entirely on mobile — postprocessing is a full extra
-          render pass, not just a quality knob, and the phone GPUs this
-          genre of site tends to run on can't eat it for free. */}
+      {/* Bloom + DepthOfField off entirely on mobile — postprocessing is a
+          full extra render pass each, not just a quality knob, and the
+          phone GPUs this genre of site tends to run on can't eat them for
+          free. DepthOfField's world-focus is set to the candle plane
+          (camera sits at z=6.5, candles render at z=0) so the candles
+          stay legible while the particle layers — spread from z=-1.5 to
+          z=-4.5 — fall outside the focus range and blur into soft bokeh
+          circles, matching the reference look's hazy floating orbs.
+          Bloom's threshold/intensity nudged up from the original tuning
+          for the extra glow that look wants. */}
       {!isMobile && (
         <EffectComposer multisampling={0}>
+          <DepthOfField
+            worldFocusDistance={6.5}
+            worldFocusRange={3}
+            focalLength={0.05}
+            bokehScale={3}
+            resolutionScale={0.6}
+            height={480}
+          />
           <Bloom
-            intensity={0.55}
-            luminanceThreshold={0.45}
-            luminanceSmoothing={0.2}
+            intensity={0.6}
+            luminanceThreshold={0.42}
+            luminanceSmoothing={0.22}
             mipmapBlur
           />
         </EffectComposer>
