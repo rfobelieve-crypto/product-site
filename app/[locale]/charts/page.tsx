@@ -3,7 +3,6 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { LiveCharts } from '@/components/sections/LiveCharts';
 import { Footer } from '@/components/sections/Footer';
-import { V7_CHART_URL, CANCEL_FLOW_CHART_URL } from '@/lib/charts';
 
 export async function generateMetadata({
   params,
@@ -26,7 +25,7 @@ export default async function ChartsPage({
     <div className="relative min-h-screen">
       <Nav />
       <main className="content-layer pb-24 pt-24">
-        <LiveCharts v7ChartUrl={V7_CHART_URL} cancelFlowChartUrl={CANCEL_FLOW_CHART_URL} />
+        <LiveCharts />
       </main>
       <Footer />
     </div>

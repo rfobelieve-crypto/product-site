@@ -331,13 +331,32 @@
       "description": "V7 訊號引擎與撤單流指標的即時圖表輸出，直接來自跑正式系統的同一組 Railway 服務。"
     },
     "unavailable": "圖表暫時無法讀取，稍後重新整理再試。",
+    "enter": "由此進入",
+    "backToCharts": "圖表",
     "v7": {
       "label": "V7 訊號引擎",
-      "title": "4 小時預測圖"
+      "title": "4 小時預測圖",
+      "body": "模型自己在跑的同一張靜態圖——信心熱力圖、regime 條帶、帶 Strong/Moderate 方向三角形的 K 線，以及幅度面板。"
     },
     "cancelFlow": {
       "label": "撤單流指標",
-      "title": "訂單簿撤單狀態"
+      "title": "訂單簿撤單狀態",
+      "body": "研究工具，不是訊號——過去 24 小時圍繞現價的訂單簿撤單不對稱與強度。專家模式把它拆成三個獨立面板。",
+      "expertNote": "專家模式——同一張圖，拆成三個各自獨立的面板方便逐一判讀。",
+      "panels": {
+        "price": {
+          "label": "價格",
+          "title": "15 分鐘 K 線 · v7 Strong 標記"
+        },
+        "imbalance": {
+          "label": "撤單不對稱",
+          "title": "15 分鐘平滑，賣側 vs 買側"
+        },
+        "intensity": {
+          "label": "撤單強度",
+          "title": "兩側總量"
+        }
+      }
     }
   }
 }

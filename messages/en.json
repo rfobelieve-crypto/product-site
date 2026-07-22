@@ -331,13 +331,32 @@
       "description": "Live chart output from the V7 signal engine and the cancel-flow indicator, straight off the same Railway services that run the real system."
     },
     "unavailable": "Chart temporarily unavailable — try refreshing in a moment.",
+    "enter": "Enter",
+    "backToCharts": "Charts",
     "v7": {
       "label": "V7 signal engine",
-      "title": "4h prediction chart"
+      "title": "4h prediction chart",
+      "body": "The same static chart the model renders for itself — confidence heatmap, regime strip, candles with Strong/Moderate direction triangles, and the magnitude panel."
     },
     "cancelFlow": {
       "label": "Cancel-flow indicator",
-      "title": "Order-book cancellation state"
+      "title": "Order-book cancellation state",
+      "body": "A research instrument, not a signal — 24h of order-book cancellation asymmetry and intensity around the live price. Expert mode breaks it into its three component panels.",
+      "expertNote": "Expert mode — the same chart, split into its three component panels so each one reads on its own.",
+      "panels": {
+        "price": {
+          "label": "Price",
+          "title": "15m candles · v7 Strong markers"
+        },
+        "imbalance": {
+          "label": "Cancellation asymmetry",
+          "title": "15m-smoothed, sell-side vs. buy-side"
+        },
+        "intensity": {
+          "label": "Cancellation intensity",
+          "title": "Combined two-sided volume"
+        }
+      }
     }
   }
 }
