@@ -107,8 +107,14 @@ export function Nav() {
         >
           {/* Language switcher — re-links to the exact same page (pathname
               from next-intl's usePathname is already locale-stripped) in
-              the other locale, rather than bouncing to the home page. */}
-          <div className="flex overflow-hidden rounded-full border border-white/10 bg-ink/60 font-body text-[12px] backdrop-blur-xl">
+              the other locale, rather than bouncing to the home page.
+              Two-option pill needs ~90px; next to the Sign in button that
+              doesn't fit this grid column's 1/3 share below `sm` (Tailwind's
+              grid-cols-3 is minmax(0,1fr) — the column WILL shrink below its
+              content's natural width) — a real phone screenshot showed the
+              Sign in button's text wrapping into a circle instead. Below
+              `sm`, collapse to a single toggle showing the other locale. */}
+          <div className="hidden overflow-hidden rounded-full border border-white/10 bg-ink/60 font-body text-[12px] backdrop-blur-xl sm:flex">
             <Link
               href={pathname}
               locale="en"
@@ -128,18 +134,25 @@ export function Nav() {
               中
             </Link>
           </div>
+          <Link
+            href={pathname}
+            locale={locale === 'en' ? 'zh' : 'en'}
+            className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-full border border-white/10 bg-ink/60 font-body text-[12px] text-mist/70 backdrop-blur-xl transition-colors hover:text-mist sm:hidden"
+          >
+            {locale === 'en' ? '中' : 'EN'}
+          </Link>
 
           {status === 'authenticated' ? (
             <button
               onClick={() => signOut()}
-              className="rounded-full border border-white/15 px-4 py-2.5 font-body text-[13px] text-mist/80 transition-colors hover:border-white/30 hover:text-mist"
+              className="flex-shrink-0 whitespace-nowrap rounded-full border border-white/15 px-4 py-2.5 font-body text-[13px] text-mist/80 transition-colors hover:border-white/30 hover:text-mist"
             >
               {session.user?.email?.split('@')[0] ?? 'Account'} · {t('signOut')}
             </button>
           ) : (
             <Link
               href="/login"
-              className="rounded-full bg-mist px-5 py-2.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85"
+              className="flex-shrink-0 whitespace-nowrap rounded-full bg-mist px-4 py-2.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85 sm:px-5"
             >
               {t('signIn')}
             </Link>
