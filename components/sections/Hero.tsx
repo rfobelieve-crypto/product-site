@@ -27,7 +27,20 @@ const fadeUp = {
 // One line of the particle headline. `className` carries the responsive
 // height (and top margin, for lines after the first) — every other prop is
 // shared across every line/breakpoint.
-function TitleParticleLine({ text, className }: { text: string; className: string }) {
+function TitleParticleLine({
+  text,
+  className,
+  particleSize = 12,
+}: {
+  text: string;
+  className: string;
+  // Mobile's 3-line headline autoFits to a much shorter container
+  // (h-16 vs sm:h-24/md:h-28), so the default dot size reads relatively
+  // bigger against the smaller glyphs — chunkier/lower-res-looking even
+  // though the render pipeline is identical. Passing a smaller value here
+  // keeps the dot-to-glyph ratio close to what the desktop lines use.
+  particleSize?: number;
+}) {
   return (
     <div aria-hidden className={className}>
       <PixelDrift
@@ -36,6 +49,7 @@ function TitleParticleLine({ text, className }: { text: string; className: strin
         fontFamily={PIXEL_FONT_FAMILY}
         fontSize={160}
         particleCount={200}
+        particleSize={particleSize}
         autoFit
         mode="onEnter"
         transition={{ type: 'tween', duration: 0.7, ease: 'easeOut' }}
@@ -82,9 +96,9 @@ export function Hero() {
             desktop-size characters, however fine the stride — splitting
             into 3 shorter lines keeps each character large enough to read. */}
         <div className="sm:hidden">
-          <TitleParticleLine text={t('titleMobileLine1')} className="h-16" />
-          <TitleParticleLine text={t('titleMobileLine2')} className="mt-1 h-16" />
-          <TitleParticleLine text={t('titleMobileLine3')} className="mt-1 h-16" />
+          <TitleParticleLine text={t('titleMobileLine1')} className="h-16" particleSize={7} />
+          <TitleParticleLine text={t('titleMobileLine2')} className="mt-1 h-16" particleSize={7} />
+          <TitleParticleLine text={t('titleMobileLine3')} className="mt-1 h-16" particleSize={7} />
         </div>
 
         {/* `sm` and up: original 2-line copy — already verified legible at

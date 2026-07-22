@@ -350,7 +350,11 @@ export function PixelDrift(props: Partial<Props>) {
       const w = Math.floor(rect.width);
       const h = Math.floor(rect.height);
       if (w <= 0 || h <= 0) return;
-      dpr = Math.max(1, Math.min(2, typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1));
+      // Capped at 2 in the original — most phones are 3x, and a canvas
+      // rasterized at 2x then displayed at CSS size gets bitmap-upscaled
+      // by the browser, reading as soft/blurry exactly where mobile's
+      // smaller particles most need crisp edges.
+      dpr = Math.max(1, Math.min(3, typeof window !== 'undefined' ? window.devicePixelRatio || 1 : 1));
       cssW = w;
       cssH = h;
       canvas.width = Math.floor(cssW * dpr);
