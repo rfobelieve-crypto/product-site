@@ -43,14 +43,26 @@ function useShaftTexture() {
   }, []);
 }
 
-export function LightShaft({ color = '#7ef9ff' }: { color?: string }) {
+export function LightShaft({
+  color = '#7ef9ff',
+  boost = false,
+}: {
+  color?: string;
+  // Bloom is desktop-only (a full extra render pass), and Bloom is what
+  // turns this shaft's modest additive opacity into a visible glow —
+  // without it the mobile-tier shaft was rendering essentially invisible
+  // against a black background. `boost` raises the base opacity to
+  // compensate on tiers with no Bloom pass to lean on.
+  boost?: boolean;
+}) {
   const texture = useShaftTexture();
   const matA = useRef<THREE.MeshBasicMaterial>(null);
   const matB = useRef<THREE.MeshBasicMaterial>(null);
+  const base = boost ? 0.32 : 0.13;
 
   useFrame((state) => {
     const t = state.clock.elapsedTime;
-    const pulse = 0.13 + Math.sin(t * 0.35) * 0.03;
+    const pulse = base + Math.sin(t * 0.35) * (base * 0.23);
     if (matA.current) matA.current.opacity = pulse;
     if (matB.current) matB.current.opacity = pulse * 0.55;
   });
@@ -66,7 +78,7 @@ export function LightShaft({ color = '#7ef9ff' }: { color?: string }) {
           map={texture}
           color={color}
           transparent
-          opacity={0.13}
+          opacity={base}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
           side={THREE.DoubleSide}
@@ -80,7 +92,7 @@ export function LightShaft({ color = '#7ef9ff' }: { color?: string }) {
           map={texture}
           color={color}
           transparent
-          opacity={0.08}
+          opacity={base * 0.55}
           blending={THREE.AdditiveBlending}
           depthWrite={false}
           side={THREE.DoubleSide}
