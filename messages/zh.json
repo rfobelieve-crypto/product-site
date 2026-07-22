@@ -20,8 +20,11 @@
   },
   "hero": {
     "eyebrow": "OKX 實盤運行中 · 雙模型訊號引擎",
-    "titleLine1": "一個會自我監督的",
-    "titleLine2": "系統。",
+    "titleMobileLine1": "會犯錯的",
+    "titleMobileLine2": "AI交易",
+    "titleMobileLine3": "系統",
+    "titleLine1": "會犯錯的AI交易",
+    "titleLine2": "系統",
     "subtitle": "每一個 kill switch、每一道回撤閘門、每一次誠實記錄的失敗——全程公開建置，用最硬的方式驗證。",
     "scroll": "捲動"
   },
