@@ -336,13 +336,27 @@
     "v7": {
       "label": "V7 signal engine",
       "title": "4h prediction chart",
-      "body": "The same static chart the model renders for itself — confidence heatmap, regime strip, candles with Strong/Moderate direction triangles, and the magnitude panel."
+      "body": "The same static chart the model renders for itself — confidence heatmap, regime strip, candles with Strong/Moderate direction triangles, and the magnitude panel.",
+      "kpi": {
+        "direction": "Latest signal",
+        "confidence": "Confidence",
+        "regime": "Market regime",
+        "strongWr": "Strong signal WR",
+        "tradeWr": "Trade WR (net)",
+        "mdd": "Max drawdown"
+      }
     },
     "cancelFlow": {
       "label": "Cancel-flow indicator",
       "title": "Order-book cancellation state",
       "body": "A research instrument, not a signal — 24h of order-book cancellation asymmetry and intensity around the live price. Expert mode breaks it into its three component panels.",
       "expertNote": "Expert mode — the same chart, split into its three component panels so each one reads on its own.",
+      "kpi": {
+        "title": "Multicoin cancel-flow monitor",
+        "body": "Raw order-book add/cancel activity per coin, last 2h window — not a trading signal, edge is unverified pending the 2026-08-10 pre-registered test.",
+        "accumulating": "accumulating ({n} min)",
+        "unavailable": "Stats temporarily unavailable."
+      },
       "panels": {
         "price": {
           "label": "Price",

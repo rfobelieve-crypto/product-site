@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { CancelFlowExpert } from '@/components/sections/CancelFlowExpert';
+import { CancelFlowKpiGrid } from '@/components/sections/CancelFlowKpiGrid';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
 import { CANCEL_FLOW_CHART_URL } from '@/lib/charts';
@@ -35,11 +36,14 @@ export default async function CancelFlowChartPage({
           >
             ← {t('backToCharts')}
           </Link>
-          <p className="mb-6 mt-3 max-w-2xl font-body text-sm text-mist/55">
+          <p className="mb-10 mt-3 max-w-2xl font-body text-sm text-mist/55">
             {t('cancelFlow.expertNote')}
           </p>
+          <CancelFlowKpiGrid locale={locale} />
         </div>
-        <CancelFlowExpert src={CANCEL_FLOW_CHART_URL} />
+        <div className="mt-10">
+          <CancelFlowExpert src={CANCEL_FLOW_CHART_URL} />
+        </div>
       </main>
       <Footer />
     </div>

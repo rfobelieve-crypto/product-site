@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { ChartDetail } from '@/components/sections/ChartDetail';
+import { V7KpiRow } from '@/components/sections/V7KpiRow';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
 import { V7_CHART_URL } from '@/lib/charts';
@@ -35,6 +36,9 @@ export default async function V7ChartPage({
           >
             ← {t('backToCharts')}
           </Link>
+        </div>
+        <div className="mx-auto mt-8 max-w-5xl px-6 sm:px-16">
+          <V7KpiRow locale={locale} />
         </div>
         <div className="mt-6">
           <ChartDetail src={V7_CHART_URL} label={t('v7.label')} title={t('v7.title')} />

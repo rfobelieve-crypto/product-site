@@ -336,13 +336,27 @@
     "v7": {
       "label": "V7 訊號引擎",
       "title": "4 小時預測圖",
-      "body": "模型自己在跑的同一張靜態圖——信心熱力圖、regime 條帶、帶 Strong/Moderate 方向三角形的 K 線，以及幅度面板。"
+      "body": "模型自己在跑的同一張靜態圖——信心熱力圖、regime 條帶、帶 Strong/Moderate 方向三角形的 K 線，以及幅度面板。",
+      "kpi": {
+        "direction": "最新訊號",
+        "confidence": "信心度",
+        "regime": "市場狀態",
+        "strongWr": "Strong 訊號勝率",
+        "tradeWr": "交易勝率（淨）",
+        "mdd": "最大回撤"
+      }
     },
     "cancelFlow": {
       "label": "撤單流指標",
       "title": "訂單簿撤單狀態",
       "body": "研究工具，不是訊號——過去 24 小時圍繞現價的訂單簿撤單不對稱與強度。專家模式把它拆成三個獨立面板。",
       "expertNote": "專家模式——同一張圖，拆成三個各自獨立的面板方便逐一判讀。",
+      "kpi": {
+        "title": "多幣種撤單流監控",
+        "body": "每個幣種最近 2 小時的原始訂單簿加/撤單活動——不是交易訊號，撤單流的 edge 仍待 8/10 預先登記的判決。",
+        "accumulating": "累積中（{n} 分鐘）",
+        "unavailable": "統計資料暫時無法讀取。"
+      },
       "panels": {
         "price": {
           "label": "價格",
