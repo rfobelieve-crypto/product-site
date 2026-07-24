@@ -32,7 +32,7 @@ export function ChartDetail({
         <iframe
           src={src}
           title={title}
-          className="h-[520px] w-full rounded-xl border-0 sm:h-[640px]"
+          className="h-[75vh] max-h-[900px] min-h-[500px] w-full rounded-xl border-0"
         />
       </div>
     </div>

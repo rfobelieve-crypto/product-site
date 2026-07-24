@@ -20,7 +20,7 @@ export function CancelFlowExpert({ src, title }: { src: string; title: string })
         <iframe
           src={src}
           title={title}
-          className="h-[720px] w-full rounded-xl border-0 sm:h-[820px]"
+          className="h-[85vh] max-h-[1050px] min-h-[650px] w-full rounded-xl border-0"
         />
       </div>
     </div>

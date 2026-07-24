@@ -35,6 +35,16 @@ export async function generateMetadata({
   return {
     title: t('siteTitle'),
     description: t('siteDescription'),
+    // iOS Safari doesn't read the web manifest for "Add to Home Screen" —
+    // it needs its own meta tags for standalone (no browser chrome) mode.
+    // app/apple-icon.png (auto-detected by Next.js) supplies the icon;
+    // this covers the launch-behavior half. Android/desktop Chrome read
+    // app/manifest.ts instead, which Next.js links automatically.
+    appleWebApp: {
+      capable: true,
+      statusBarStyle: 'black-translucent',
+      title: 'flowbot',
+    },
   };
 }
 
