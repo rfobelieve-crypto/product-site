@@ -1,12 +1,18 @@
-// Chart images are pure HTTP relays served by the agent-mcp service (see
-// indicator/agent/server.py `_proxy_png` in the flow_system repo) — the
-// bytes are already-rendered PNGs, not JSON, so unlike lib/signalFeed.ts
-// and its siblings these are consumed directly by an <img> tag rather
-// than fetched server-side. Same fallback-default-URL pattern as those
-// files, still overridable per-environment via env vars.
+// Interactive chart pages are pure HTTP relays served by the agent-mcp
+// service (see indicator/agent/server.py `_proxy_html` in the flow_system
+// repo) — the bytes are a full already-rendered HTML page (TradingView
+// Lightweight Charts, zoom/pan/crosshair built in), so these are consumed
+// via an <iframe> rather than fetched server-side. Same
+// fallback-default-URL pattern as lib/signalFeed.ts and its siblings,
+// still overridable per-environment via env vars.
+//
+// 2026-07-24: replaced the earlier static-PNG relays (V7_CHART_URL pointed
+// at /public/chart, a CANCEL_FLOW_CHART_URL pointed at
+// /public/cancel-flow-chart) with these interactive equivalents — "every
+// chart on the site should be operable like the interactive one."
 export const V7_CHART_URL =
-  process.env.V7_CHART_URL ?? 'https://agent-mcp-production-46d7.up.railway.app/public/chart';
+  process.env.V7_CHART_URL ?? 'https://agent-mcp-production-46d7.up.railway.app/public/live-chart';
 
-export const CANCEL_FLOW_CHART_URL =
-  process.env.CANCEL_FLOW_CHART_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/cancel-flow-chart';
+export const CANCEL_FLOW_CHART_I_URL =
+  process.env.CANCEL_FLOW_CHART_I_URL ??
+  'https://agent-mcp-production-46d7.up.railway.app/public/cancel-flow-chart-i';

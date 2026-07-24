@@ -330,13 +330,12 @@
       "title": "Charts — flowbot",
       "description": "Live chart output from the V7 signal engine and the cancel-flow indicator, straight off the same Railway services that run the real system."
     },
-    "unavailable": "Chart temporarily unavailable — try refreshing in a moment.",
     "enter": "Enter",
     "backToCharts": "Charts",
     "v7": {
       "label": "V7 signal engine",
       "title": "4h prediction chart",
-      "body": "The same static chart the model renders for itself — confidence heatmap, regime strip, candles with Strong/Moderate direction triangles, and the magnitude panel.",
+      "body": "The same interactive chart the model renders for itself — confidence heatmap, regime strip, candles with Strong/Moderate direction triangles, and the magnitude panel. Zoom, pan, and hover the crosshair like any live chart.",
       "kpi": {
         "direction": "Latest signal",
         "confidence": "Confidence",
@@ -349,27 +348,13 @@
     "cancelFlow": {
       "label": "Cancel-flow indicator",
       "title": "Order-book cancellation state",
-      "body": "A research instrument, not a signal — 24h of order-book cancellation asymmetry and intensity around the live price. Expert mode breaks it into its three component panels.",
-      "expertNote": "Expert mode — the same chart, split into its three component panels so each one reads on its own.",
+      "body": "A research instrument, not a signal — order-book cancellation asymmetry and intensity around the live price, three synced interactive panels.",
+      "expertNote": "Expert mode — price, cancellation asymmetry, and cancellation intensity as one interactive chart with synced zoom, pan, and crosshair.",
       "kpi": {
         "title": "Multicoin cancel-flow monitor",
         "body": "Raw order-book add/cancel activity per coin, last 2h window — not a trading signal, edge is unverified pending the 2026-08-10 pre-registered test.",
         "accumulating": "accumulating ({n} min)",
         "unavailable": "Stats temporarily unavailable."
-      },
-      "panels": {
-        "price": {
-          "label": "Price",
-          "title": "15m candles · v7 Strong markers"
-        },
-        "imbalance": {
-          "label": "Cancellation asymmetry",
-          "title": "15m-smoothed, sell-side vs. buy-side"
-        },
-        "intensity": {
-          "label": "Cancellation intensity",
-          "title": "Combined two-sided volume"
-        }
       }
     }
   }

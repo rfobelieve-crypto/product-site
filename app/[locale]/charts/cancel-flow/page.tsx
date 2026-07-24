@@ -5,7 +5,7 @@ import { CancelFlowExpert } from '@/components/sections/CancelFlowExpert';
 import { CancelFlowKpiGrid } from '@/components/sections/CancelFlowKpiGrid';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
-import { CANCEL_FLOW_CHART_URL } from '@/lib/charts';
+import { CANCEL_FLOW_CHART_I_URL } from '@/lib/charts';
 
 export async function generateMetadata({
   params,
@@ -42,7 +42,7 @@ export default async function CancelFlowChartPage({
           <CancelFlowKpiGrid locale={locale} />
         </div>
         <div className="mt-10">
-          <CancelFlowExpert src={CANCEL_FLOW_CHART_URL} />
+          <CancelFlowExpert src={CANCEL_FLOW_CHART_I_URL} title={t('cancelFlow.title')} />
         </div>
       </main>
       <Footer />

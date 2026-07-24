@@ -1,8 +1,5 @@
 'use client';
 
-import { useState } from 'react';
-import { useTranslations } from 'next-intl';
-
 export function ChartDetail({
   src,
   label,
@@ -12,9 +9,6 @@ export function ChartDetail({
   label: string;
   title: string;
 }) {
-  const t = useTranslations('chartsPage');
-  const [failed, setFailed] = useState(false);
-
   return (
     <div className="glass-panel overflow-hidden rounded-2xl border border-white/10 bg-ink/60 backdrop-blur-xl">
       <div className="p-6 pb-0 sm:p-8 sm:pb-0">
@@ -24,16 +18,22 @@ export function ChartDetail({
         <h1 className="mt-2 font-display text-xl font-light">{title}</h1>
       </div>
       <div className="p-4 sm:p-6">
-        {failed ? (
-          <div className="flex h-64 items-center justify-center rounded-xl border border-white/5 bg-black/20 font-body text-sm text-mist/40">
-            {t('unavailable')}
-          </div>
-        ) : (
-          // Already-rendered, already-sized PNG relayed from Railway; see
-          // lib/charts.ts.
-          // eslint-disable-next-line @next/next/no-img-element
-          <img src={src} alt={title} className="w-full rounded-xl" onError={() => setFailed(true)} />
-        )}
+        {/* Already-rendered interactive HTML (TradingView Lightweight
+            Charts — zoom/pan/crosshair built in) relayed from Railway; see
+            lib/charts.ts. The page renders its own dark background/loading
+            state and its own "not ready" fallback, so unlike the old
+            static-PNG version there's no separate failed-state to track
+            here — a bad fetch on the origin still returns readable HTML.
+            No loading="lazy": the embedded page sizes its panels from
+            window.innerHeight once at first paint, and a lazily-activated
+            iframe reads that before its CSS box has a real height,
+            collapsing every pane to 0px (confirmed via local testing,
+            2026-07-24). */}
+        <iframe
+          src={src}
+          title={title}
+          className="h-[520px] w-full rounded-xl border-0 sm:h-[640px]"
+        />
       </div>
     </div>
   );
