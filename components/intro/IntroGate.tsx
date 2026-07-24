@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
+import { SmokyText } from '@/components/effects/SmokyText';
 
 // Plain Canvas 2D, not react-three-fiber — a second WebGL context would
 // stack on top of the hero's Scene instead of standing in front of it, so
@@ -50,6 +51,36 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
             className="fixed inset-0 z-[60] flex items-center justify-center bg-void"
           >
             <SpiralField className="absolute inset-0" />
+            {/* Centered headline. Design rationale (2026-07-25 redesign):
+                - SMOKE COLOR is soft mist-white (#e8e8ef), not neon cyan —
+                  vapor reads as white/grey, so cyan smoke fought the effect.
+                  Cyan (#7ef9ff) is demoted to `glowColor`: an atmospheric
+                  halo only, tying into the site accent + the cyan spiral
+                  behind without becoming the smoke body.
+                - animationMode="inPlace": chars condense from a diffuse
+                  cloud in place (calm, "smoke coalescing into text"),
+                  instead of the chaotic skewed fly-in that read badly on a
+                  big centred title.
+                - idleGlow: after revealing ONCE (per "動畫只動一次"), the held
+                  text breathes a slow cyan halo forever — so it stays
+                  "alive" alongside the perpetually-animating spiral behind
+                  it instead of freezing, WITHOUT replaying the smoke.
+                - delay 0.3s starts the reveal almost with the spiral opening.
+                pointer-events-none so it never blocks the enter button. */}
+            <div className="pointer-events-none absolute inset-x-0 top-1/2 h-40 -translate-y-1/2 px-6">
+              <SmokyText
+                text="Trading is fantastic"
+                color="#e8e8ef"
+                glowColor="#7ef9ff"
+                idleGlow
+                animationMode="inPlace"
+                fontSize={46}
+                fontWeight={700}
+                delay={0.3}
+                duration={1.8}
+                intensity={8}
+              />
+            </div>
             {/* Bottom-anchored, not centered — the spiral's own vanishing
                 point sits dead-center, so plain text there collided with
                 the busiest part of the animation. Pill shape + border +

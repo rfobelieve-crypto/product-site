@@ -73,7 +73,14 @@ export default async function LocaleLayout({
 
   return (
     <html lang={locale} className={`${display.variable} ${body.variable}`}>
-      <body>
+      {/* suppressHydrationWarning: browser extensions (Grammarly injects
+          data-gr-ext-installed / data-new-gr-c-s-check-loaded, LastPass,
+          dark-mode tools, …) mutate <body> after SSR but before React
+          hydrates, producing a spurious attribute-mismatch warning that
+          has nothing to do with our markup. This flag is one-level-deep —
+          it only silences the mismatch on <body>'s OWN attributes, NOT its
+          children — so genuine hydration bugs inside the app still surface. */}
+      <body suppressHydrationWarning>
         <NextIntlClientProvider>
           <SessionProvider>{children}</SessionProvider>
         </NextIntlClientProvider>
