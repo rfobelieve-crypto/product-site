@@ -354,7 +354,9 @@
         "title": "Multicoin cancel-flow monitor",
         "body": "Raw order-book add/cancel activity per coin, last 2h window — not a trading signal, edge is unverified pending the 2026-08-10 pre-registered test.",
         "accumulating": "accumulating ({n} min)",
-        "unavailable": "Stats temporarily unavailable."
+        "unavailable": "Stats temporarily unavailable.",
+        "askDominant": "more sell-side cancels ({pct}%)",
+        "bidDominant": "more buy-side cancels ({pct}%)"
       }
     }
   }

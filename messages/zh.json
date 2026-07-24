@@ -354,7 +354,9 @@
         "title": "多幣種撤單流監控",
         "body": "每個幣種最近 2 小時的原始訂單簿加/撤單活動——不是交易訊號，撤單流的 edge 仍待 8/10 預先登記的判決。",
         "accumulating": "累積中（{n} 分鐘）",
-        "unavailable": "統計資料暫時無法讀取。"
+        "unavailable": "統計資料暫時無法讀取。",
+        "askDominant": "賣方撤單較多（{pct}%）",
+        "bidDominant": "買方撤單較多（{pct}%）"
       }
     }
   }

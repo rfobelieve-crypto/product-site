@@ -13,16 +13,24 @@ function CoinCard({
   nMinutes,
   cancelRatio,
   skew,
+  skewText,
   accumulatingText,
 }: {
   symbol: string;
   nMinutes: number;
   cancelRatio: number | null;
   skew: number | null;
+  skewText: string | null;
   accumulatingText: string;
 }) {
   const mature = nMinutes >= MATURE_MIN_MINUTES;
   const coin = symbol.replace('-USD', '');
+  // Neutral accent colors, not the site's green/red (those already carry
+  // "bullish/bearish" meaning elsewhere on the site — reusing them here
+  // would silently imply a directional call this metric hasn't earned;
+  // see chat, 2026-07-24). iris-violet/iris-cyan just distinguish "which
+  // side," no valence attached.
+  const skewColor = skew != null && skew >= 0 ? 'text-iris-violet/80' : 'text-iris-cyan/80';
   return (
     <div className="glass-panel rounded-2xl border border-white/10 bg-ink/60 p-5 backdrop-blur-xl">
       <div className="font-body text-xs uppercase tracking-[0.2em] text-mist/50">{coin}</div>
@@ -31,10 +39,8 @@ function CoinCard({
           <div className="mt-2 font-display text-2xl font-light leading-none text-mist sm:text-3xl">
             {cancelRatio.toFixed(1)}%
           </div>
-          <div className="mt-2 font-body text-xs text-iris-cyan/70">
-            {skew != null
-              ? `${skew >= 0 ? '↑ ask' : '↓ bid'} ${Math.abs(skew).toFixed(1)}%`
-              : '—'}
+          <div className={`mt-2 font-body text-xs ${skewColor}`}>
+            {skewText ?? '—'}
           </div>
         </>
       ) : (
@@ -64,16 +70,22 @@ export async function CancelFlowKpiGrid({ locale }: { locale: string }) {
       <h2 className="font-display text-lg font-light">{t('title')}</h2>
       <p className="mt-2 max-w-2xl font-body text-sm text-mist/55">{t('body')}</p>
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-        {stats.coins.map((c) => (
-          <CoinCard
-            key={c.symbol}
-            symbol={c.symbol}
-            nMinutes={c.n_minutes}
-            cancelRatio={c.cancel_ratio_pct}
-            skew={c.ask_bid_skew_pct}
-            accumulatingText={t('accumulating', { n: c.n_minutes })}
-          />
-        ))}
+        {stats.coins.map((c) => {
+          const skew = c.ask_bid_skew_pct;
+          const skewText = skew == null ? null : t(skew >= 0 ? 'askDominant' : 'bidDominant',
+            { pct: Math.abs(skew).toFixed(1) });
+          return (
+            <CoinCard
+              key={c.symbol}
+              symbol={c.symbol}
+              nMinutes={c.n_minutes}
+              cancelRatio={c.cancel_ratio_pct}
+              skew={skew}
+              skewText={skewText}
+              accumulatingText={t('accumulating', { n: c.n_minutes })}
+            />
+          );
+        })}
       </div>
       <p className="mt-4 font-body text-xs leading-relaxed text-mist/40">{stats.disclaimer}</p>
     </div>
