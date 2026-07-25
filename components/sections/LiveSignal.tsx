@@ -16,6 +16,18 @@ function relativeTimeParts(iso: string | null): { key: 'justNow' | 'minutesAgo' 
 
 const DIRECTION_KEYS = ['UP', 'DOWN', 'NEUTRAL'] as const;
 
+// Normalize a raw feed value ("Bull Trend", "trending-bull", "BULL_TREND")
+// to a lookup key, then translate via the regimes/tiers maps in
+// messages/*.json — unknown values fall back to the raw string.
+export function localizedFeedValue(
+  raw: string | null | undefined,
+  map: Record<string, string>,
+): string | null {
+  if (!raw) return null;
+  const key = raw.toUpperCase().replace(/[\s-]+/g, '_');
+  return map[key] ?? raw;
+}
+
 export function LiveSignal({ feed }: { feed: SignalFeed | null }) {
   const t = useTranslations('liveSignal');
   const hasFeed = !!feed?.direction;
@@ -24,6 +36,10 @@ export function LiveSignal({ feed }: { feed: SignalFeed | null }) {
     feed?.direction && (DIRECTION_KEYS as readonly string[]).includes(feed.direction)
       ? t(`direction.${feed.direction as (typeof DIRECTION_KEYS)[number]}`)
       : feed?.direction;
+  const regimes = t.raw('regimes') as Record<string, string>;
+  const tiers = t.raw('tiers') as Record<string, string>;
+  const regimeLabel = localizedFeedValue(feed?.regime, regimes);
+  const tierLabel = localizedFeedValue(feed?.tier, tiers);
 
   return (
     <motion.div
@@ -48,9 +64,9 @@ export function LiveSignal({ feed }: { feed: SignalFeed | null }) {
         <>
           <div className="mt-4 flex flex-wrap items-baseline gap-x-3 gap-y-1">
             <span className="font-display text-3xl font-light sm:text-4xl">{directionLabel}</span>
-            {feed!.tier && (
+            {tierLabel && (
               <span className="rounded-full border border-white/15 px-3 py-1 font-body text-xs text-mist/70">
-                {feed!.tier}
+                {tierLabel}
               </span>
             )}
           </div>
@@ -63,7 +79,7 @@ export function LiveSignal({ feed }: { feed: SignalFeed | null }) {
             </div>
             <div>
               <div className="font-display text-xl font-light">
-                {feed!.regime ?? '—'}
+                {regimeLabel ?? '—'}
               </div>
               <div className="mt-1 font-body text-xs text-mist/50">{t('regime')}</div>
             </div>

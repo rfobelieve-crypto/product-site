@@ -5,14 +5,9 @@ import { useFrame } from '@react-three/fiber';
 import { Sparkles } from '@react-three/drei';
 import * as THREE from 'three';
 
-// Ambient depth behind the candles — the flat black backdrop read as too
-// dead/static on its own. Two fine Sparkles layers at different
-// depths/speeds (near cyan, far violet) give the scene parallax and a
-// slow "drifting dust" motion instead of a hard-edged empty void. A
-// third, sparser "bokeh" layer of large soft orbs (randomized size via
-// Float32Array — Sparkles' one hook for per-particle variance) matches
-// the reference look's big out-of-focus light circles, distinct from the
-// fine dust.
+// Ambient depth behind the candles. Redesign note: all three layers now
+// stay in the brand cyan/violet — green/red belongs to the candles alone
+// (the old #00ffa3 bokeh made the whole frame read "Christmas").
 export function ParticleField({
   scrollProgress = 0,
   density = 1,
@@ -78,7 +73,7 @@ export function ParticleField({
         size={bokehSizes}
         opacity={bokehOpacities}
         speed={0.06}
-        color="#00ffa3"
+        color="#b98bff"
         position={[0, 0.5, -2.5]}
       />
     </>

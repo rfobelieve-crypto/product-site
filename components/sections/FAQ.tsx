@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 
@@ -14,6 +14,7 @@ const ITEM_KEYS = [
 
 function Item({ q, a, index }: { q: string; a: string; index: number }) {
   const [open, setOpen] = useState(false);
+  const panelId = useId();
   return (
     <motion.div
       initial={{ opacity: 0, y: 12 }}
@@ -24,10 +25,13 @@ function Item({ q, a, index }: { q: string; a: string; index: number }) {
     >
       <button
         onClick={() => setOpen((v) => !v)}
+        aria-expanded={open}
+        aria-controls={panelId}
         className="flex w-full items-center justify-between gap-4 px-6 py-5 text-left sm:px-8"
       >
         <span className="font-display text-base font-light sm:text-lg">{q}</span>
         <span
+          aria-hidden
           className={`shrink-0 font-body text-lg text-iris-cyan/70 transition-transform ${open ? 'rotate-45' : ''}`}
         >
           +
@@ -35,6 +39,7 @@ function Item({ q, a, index }: { q: string; a: string; index: number }) {
       </button>
       {open && (
         <motion.p
+          id={panelId}
           initial={{ opacity: 0, height: 0 }}
           animate={{ opacity: 1, height: 'auto' }}
           transition={{ duration: 0.25 }}

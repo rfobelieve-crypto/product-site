@@ -56,9 +56,16 @@ export function LoginForm() {
         </button>
       </form>
       {status === 'error' && (
-        <p className="mt-3 font-body text-xs text-iris-rose">{tLogin('error')}</p>
+        <p role="alert" className="mt-3 font-body text-xs text-iris-rose">
+          {tLogin('error')}
+        </p>
       )}
-      <p className="mt-6 text-center font-body text-xs text-mist/50">
+      <p className="mt-4 text-center font-body text-xs">
+        <Link href="/forgot-password" className="text-mist/50 transition-colors hover:text-iris-cyan">
+          {tLogin('forgot')}
+        </Link>
+      </p>
+      <p className="mt-4 text-center font-body text-xs text-mist/50">
         {tLogin('noAccount')}{' '}
         <Link href="/register" className="text-iris-cyan/80 hover:text-iris-cyan">
           {tLogin('registerLink')}

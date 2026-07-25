@@ -6,10 +6,6 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { SmokyText } from '@/components/effects/SmokyText';
 
-// Plain Canvas 2D, not react-three-fiber — a second WebGL context would
-// stack on top of the hero's Scene instead of standing in front of it, so
-// this stays independent and unmounts entirely once dismissed. ssr:false
-// for the same reason CandleField/Scene are: touches window at import time.
 const SpiralField = dynamic(() => import('./SpiralField').then((m) => m.SpiralField), {
   ssr: false,
 });
@@ -17,18 +13,23 @@ const SpiralField = dynamic(() => import('./SpiralField').then((m) => m.SpiralFi
 const SESSION_KEY = 'flowbot-intro-seen';
 
 /**
- * One-time ceremony before the homepage, gated per browser session
- * (sessionStorage — reappears on a fresh tab/browser restart, not on
- * every in-session reload or route change; other routes never mount
- * this at all). `showGate` starts `null` so server and first client
- * render agree on nothing shown yet, avoiding a hydration flash.
+ * One-time ceremony before the homepage, gated per browser session.
+ *
+ * Fixed vs the original: children are ALWAYS mounted — the gate is a
+ * pure overlay. The server-rendered HTML therefore contains the full
+ * homepage (crawlers and reader modes see real content), instead of a
+ * black <div> and nothing else. prefers-reduced-motion skips the
+ * ceremony entirely. The headline is localized (was hardcoded English).
  */
 export function IntroGate({ children }: { children: React.ReactNode }) {
   const t = useTranslations('intro');
   const [showGate, setShowGate] = useState<boolean | null>(null);
+  const [reducedMotion, setReducedMotion] = useState(false);
 
   useEffect(() => {
-    setShowGate(sessionStorage.getItem(SESSION_KEY) !== '1');
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    setReducedMotion(reduced);
+    setShowGate(!reduced && sessionStorage.getItem(SESSION_KEY) !== '1');
   }, []);
 
   const dismiss = () => {
@@ -36,12 +37,12 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
     setShowGate(false);
   };
 
-  if (showGate === null) {
-    return <div className="fixed inset-0 z-[60] bg-void" />;
-  }
-
   return (
     <>
+      {children}
+      {/* Opaque cover during the first client tick so there's no flash of
+          homepage before the gate decision — content is still in the DOM. */}
+      {showGate === null && <div className="fixed inset-0 z-[60] bg-void" aria-hidden />}
       <AnimatePresence>
         {showGate && (
           <motion.div
@@ -50,26 +51,10 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[60] flex items-center justify-center bg-void"
           >
-            <SpiralField className="absolute inset-0" />
-            {/* Centered headline. Design rationale (2026-07-25 redesign):
-                - SMOKE COLOR is soft mist-white (#e8e8ef), not neon cyan —
-                  vapor reads as white/grey, so cyan smoke fought the effect.
-                  Cyan (#7ef9ff) is demoted to `glowColor`: an atmospheric
-                  halo only, tying into the site accent + the cyan spiral
-                  behind without becoming the smoke body.
-                - animationMode="inPlace": chars condense from a diffuse
-                  cloud in place (calm, "smoke coalescing into text"),
-                  instead of the chaotic skewed fly-in that read badly on a
-                  big centred title.
-                - idleGlow: after revealing ONCE (per "動畫只動一次"), the held
-                  text breathes a slow cyan halo forever — so it stays
-                  "alive" alongside the perpetually-animating spiral behind
-                  it instead of freezing, WITHOUT replaying the smoke.
-                - delay 0.3s starts the reveal almost with the spiral opening.
-                pointer-events-none so it never blocks the enter button. */}
+            {!reducedMotion && <SpiralField className="absolute inset-0" />}
             <div className="pointer-events-none absolute inset-x-0 top-1/2 h-40 -translate-y-1/2 px-6">
               <SmokyText
-                text="Trading is fantastic"
+                text={t('title')}
                 color="#e8e8ef"
                 glowColor="#7ef9ff"
                 idleGlow
@@ -81,13 +66,6 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
                 intensity={8}
               />
             </div>
-            {/* Bottom-anchored, not centered — the spiral's own vanishing
-                point sits dead-center, so plain text there collided with
-                the busiest part of the animation. Pill shape + border +
-                backdrop-blur gives it the weight of an actual control
-                instead of stray text; the idle pulse borrows the same
-                "gentle loop invites interaction" language as Hero's
-                scroll-hint line. */}
             <motion.button
               type="button"
               onClick={dismiss}
@@ -105,7 +83,6 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
           </motion.div>
         )}
       </AnimatePresence>
-      {showGate === false && children}
     </>
   );
 }

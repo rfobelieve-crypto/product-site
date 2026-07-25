@@ -14,9 +14,6 @@ export function Nav() {
   const locale = useLocale();
   const pathname = usePathname();
 
-  // Root-relative so these work identically from the home page (scrolls)
-  // and from other routes (navigates home, then scrolls) — plain "#anchor"
-  // only resolves on the page it's declared on.
   const LINKS = [
     { label: t('home'), href: '/#top' },
     { label: t('system'), href: '/system' },
@@ -29,19 +26,10 @@ export function Nav() {
 
   return (
     <>
-      {/* click-away backdrop, only present while the menu is open */}
       {open && (
         <div className="fixed inset-0 z-40" onClick={() => setOpen(false)} />
       )}
 
-      {/* A single full-width 3-column grid, not three independently
-          `left-1/2`-centered elements — percentage-based centering on a
-          `position: fixed` element reads off the LAYOUT viewport on
-          mobile Safari, which can be wider than what's actually visible
-          whenever anything on the page overflows horizontally, so the
-          logo drifted right instead of sitting in the true center. Equal
-          side columns in a grid center the middle column reliably
-          regardless of that quirk. */}
       <div className="fixed inset-x-0 top-5 z-50 grid grid-cols-3 items-start px-4">
         <motion.div
           initial={{ opacity: 0, y: -16 }}
@@ -52,6 +40,8 @@ export function Nav() {
           <button
             onClick={() => setOpen((v) => !v)}
             aria-label={t('menuLabel')}
+            aria-expanded={open}
+            aria-controls="site-menu"
             className="flex h-11 w-11 flex-col items-center justify-center gap-1.5 rounded-full border border-white/10 bg-ink/60 backdrop-blur-xl"
           >
             <span className={`h-px w-4 bg-mist/70 transition-transform ${open ? 'translate-y-[3px] rotate-45' : ''}`} />
@@ -62,6 +52,7 @@ export function Nav() {
           <AnimatePresence>
             {open && (
               <motion.nav
+                id="site-menu"
                 initial={{ opacity: 0, y: -8 }}
                 animate={{ opacity: 1, y: 0 }}
                 exit={{ opacity: 0, y: -8 }}
@@ -83,8 +74,6 @@ export function Nav() {
           </AnimatePresence>
         </motion.div>
 
-        {/* centered logo — placeholder mark, swap Logo.tsx once the real
-            one is ready */}
         <motion.div
           initial={{ opacity: 0, y: -16 }}
           animate={{ opacity: 1, y: 0 }}
@@ -105,15 +94,6 @@ export function Nav() {
           transition={{ duration: 0.7, ease: [0.16, 1, 0.3, 1] }}
           className="flex items-center justify-end gap-2"
         >
-          {/* Language switcher — re-links to the exact same page (pathname
-              from next-intl's usePathname is already locale-stripped) in
-              the other locale, rather than bouncing to the home page.
-              Two-option pill needs ~90px; next to the Sign in button that
-              doesn't fit this grid column's 1/3 share below `sm` (Tailwind's
-              grid-cols-3 is minmax(0,1fr) — the column WILL shrink below its
-              content's natural width) — a real phone screenshot showed the
-              Sign in button's text wrapping into a circle instead. Below
-              `sm`, collapse to a single toggle showing the other locale. */}
           <div className="hidden overflow-hidden rounded-full border border-white/10 bg-ink/60 font-body text-[12px] backdrop-blur-xl sm:flex">
             <Link
               href={pathname}

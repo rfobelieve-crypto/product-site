@@ -1,47 +1,45 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { rateLimit, clientIp, EMAIL_RE } from '@/lib/rateLimit';
 
-const REGISTER_URL =
-  process.env.REGISTER_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/register';
+// Backend endpoint is NOT live yet (see fixes/README.md). Until
+// FORGOT_PASSWORD_URL is set, this returns 503 and the form points users
+// at the contact address instead of lying about an email being sent.
+const FORGOT_URL = process.env.FORGOT_PASSWORD_URL;
 
 export async function POST(req: NextRequest) {
-  if (!rateLimit(`register:${clientIp(req)}`, 5, 10 * 60_000)) {
+  if (!rateLimit(`forgot:${clientIp(req)}`, 5, 10 * 60_000)) {
     return NextResponse.json({ ok: false, error: 'rate limited' }, { status: 429 });
   }
 
-  let body: { email?: unknown; password?: unknown };
+  let body: { email?: unknown };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ ok: false, error: 'invalid body' }, { status: 400 });
   }
   const email = typeof body?.email === 'string' ? body.email.trim() : '';
-  const password = typeof body?.password === 'string' ? body.password : '';
   if (!EMAIL_RE.test(email)) {
     return NextResponse.json({ ok: false, error: 'invalid email' }, { status: 400 });
   }
-  if (password.length < 8) {
-    return NextResponse.json({ ok: false, error: 'password too short' }, { status: 400 });
+
+  if (!FORGOT_URL) {
+    return NextResponse.json({ ok: false, error: 'not configured' }, { status: 503 });
   }
 
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   try {
-    const res = await fetch(REGISTER_URL, {
+    await fetch(FORGOT_URL, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ email }),
       signal: controller.signal,
     });
-    const data = await res.json().catch(() => ({ ok: false, error: 'bad response' }));
-    return NextResponse.json(data, { status: res.status });
   } catch {
-    return NextResponse.json(
-      { ok: false, error: 'registration service unreachable, try again shortly' },
-      { status: 502 },
-    );
+    // fall through — response below is identical either way
   } finally {
     clearTimeout(timeout);
   }
+  // Always "ok" once configured — never confirms whether an email exists.
+  return NextResponse.json({ ok: true });
 }

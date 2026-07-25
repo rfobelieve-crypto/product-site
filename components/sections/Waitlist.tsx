@@ -3,28 +3,32 @@
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
-
-// TODO: replace before shipping — this is a placeholder so the button
-// doesn't silently point nowhere. Not a real inbox yet.
-const CONTACT_EMAIL = 'hello@flowbot.example';
+import { CONTACT_EMAIL } from '@/lib/seo';
+import { EMAIL_RE } from '@/lib/rateLimit';
 
 type Status = 'idle' | 'submitting' | 'ok' | 'error';
 
 export function Waitlist() {
   const t = useTranslations('waitlist');
   const [email, setEmail] = useState('');
+  const [website, setWebsite] = useState(''); // honeypot — humans never see it
   const [status, setStatus] = useState<Status>('idle');
   const [errorKey, setErrorKey] = useState<'invalidEmail' | 'generic' | 'network' | null>(null);
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!EMAIL_RE.test(email.trim())) {
+      setStatus('error');
+      setErrorKey('invalidEmail');
+      return;
+    }
     setStatus('submitting');
     setErrorKey(null);
     try {
       const res = await fetch('/api/waitlist', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify({ email: email.trim(), website }),
       });
       const data = await res.json();
       if (!res.ok || !data.ok) {
@@ -63,6 +67,17 @@ export function Waitlist() {
             onSubmit={onSubmit}
             className="mt-8 flex flex-col gap-3 sm:flex-row sm:justify-center"
           >
+            {/* honeypot — visually hidden, ignored by humans, filled by bots */}
+            <input
+              type="text"
+              name="website"
+              value={website}
+              onChange={(e) => setWebsite(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              aria-hidden="true"
+              className="absolute -left-[9999px] h-0 w-0 opacity-0"
+            />
             <input
               type="email"
               required
@@ -81,7 +96,9 @@ export function Waitlist() {
           </form>
         )}
         {status === 'error' && errorKey && (
-          <p className="mt-3 font-body text-xs text-iris-rose">{t(`errors.${errorKey}`)}</p>
+          <p role="alert" className="mt-3 font-body text-xs text-iris-rose">
+            {t(`errors.${errorKey}`)}
+          </p>
         )}
 
         <p className="mt-10 font-body text-xs text-mist/50">

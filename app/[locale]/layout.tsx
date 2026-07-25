@@ -1,10 +1,12 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Space_Grotesk } from 'next/font/google';
+import { Inter, Space_Grotesk, Noto_Sans_TC } from 'next/font/google';
 import { NextIntlClientProvider, hasLocale } from 'next-intl';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { notFound } from 'next/navigation';
 import { SessionProvider } from 'next-auth/react';
 import { routing } from '@/i18n/routing';
+import { SITE_URL } from '@/lib/seo';
+import { MotionProvider } from '@/components/MotionProvider';
 import '../globals.css';
 
 const display = Space_Grotesk({
@@ -21,6 +23,17 @@ const body = Inter({
   display: 'swap',
 });
 
+// Real CJK coverage for zh — previously zh fell through to unpredictable
+// system fonts (and Hero's canvas referenced 'Noto Sans TC' without it ever
+// being loaded). unicode-range slices mean latin pages download ~nothing.
+const cjk = Noto_Sans_TC({
+  subsets: ['latin'],
+  weight: ['300', '400', '500', '700'],
+  variable: '--font-cjk',
+  display: 'swap',
+  preload: false,
+});
+
 export function generateStaticParams() {
   return routing.locales.map((locale) => ({ locale }));
 }
@@ -33,26 +46,34 @@ export async function generateMetadata({
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'meta' });
   return {
+    metadataBase: new URL(SITE_URL),
     title: t('siteTitle'),
     description: t('siteDescription'),
-    // iOS Safari doesn't read the web manifest for "Add to Home Screen" —
-    // it needs its own meta tags for standalone (no browser chrome) mode.
-    // app/apple-icon.png (auto-detected by Next.js) supplies the icon;
-    // this covers the launch-behavior half. Android/desktop Chrome read
-    // app/manifest.ts instead, which Next.js links automatically.
     appleWebApp: {
       capable: true,
       statusBarStyle: 'black-translucent',
       title: 'flowbot',
     },
+    // Site-wide OG/Twitter defaults. No og:title/og:url here on purpose —
+    // subpages would inherit stale values; scrapers fall back to each
+    // page's own <title>. app/[locale]/opengraph-image.tsx supplies the
+    // card image for every page. Per-page hreflang/canonical comes from
+    // pageAlternates() in each page's generateMetadata (see lib/seo.ts).
+    openGraph: {
+      type: 'website',
+      siteName: 'flowbot',
+      locale: locale === 'zh' ? 'zh_TW' : 'en_US',
+      alternateLocale: locale === 'zh' ? ['en_US'] : ['zh_TW'],
+    },
+    twitter: { card: 'summary_large_image' },
   };
 }
 
+// maximumScale removed — pinch-zoom is an accessibility requirement.
 export const viewport: Viewport = {
   themeColor: '#050507',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
 };
 
 export default async function LocaleLayout({
@@ -66,23 +87,20 @@ export default async function LocaleLayout({
   if (!hasLocale(routing.locales, locale)) {
     notFound();
   }
-  // Static rendering for this locale — without this, next-intl falls
-  // back to reading the locale from headers at request time, which
-  // opts every page out of static generation.
   setRequestLocale(locale);
 
   return (
-    <html lang={locale} className={`${display.variable} ${body.variable}`}>
-      {/* suppressHydrationWarning: browser extensions (Grammarly injects
-          data-gr-ext-installed / data-new-gr-c-s-check-loaded, LastPass,
-          dark-mode tools, …) mutate <body> after SSR but before React
-          hydrates, producing a spurious attribute-mismatch warning that
-          has nothing to do with our markup. This flag is one-level-deep —
-          it only silences the mismatch on <body>'s OWN attributes, NOT its
-          children — so genuine hydration bugs inside the app still surface. */}
+    // Content is Traditional Chinese — zh-Hant, not bare zh.
+    <html
+      lang={locale === 'zh' ? 'zh-Hant' : locale}
+      className={`${display.variable} ${body.variable} ${cjk.variable}`}
+    >
       <body suppressHydrationWarning>
         <NextIntlClientProvider>
-          <SessionProvider>{children}</SessionProvider>
+          <SessionProvider>
+            {/* framer-motion respects the OS reduced-motion setting */}
+            <MotionProvider>{children}</MotionProvider>
+          </SessionProvider>
         </NextIntlClientProvider>
       </body>
     </html>

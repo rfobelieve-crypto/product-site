@@ -18,8 +18,10 @@ const config: Config = {
         },
       },
       fontFamily: {
-        display: ['var(--font-display)', 'sans-serif'],
-        body: ['var(--font-body)', 'sans-serif'],
+        // --font-cjk (Noto Sans TC) slots in before the generic fallback so
+        // zh text renders in a loaded font, not a system guess.
+        display: ['var(--font-display)', 'var(--font-cjk)', 'sans-serif'],
+        body: ['var(--font-body)', 'var(--font-cjk)', 'sans-serif'],
       },
       letterSpacing: {
         tightest: '-0.04em',

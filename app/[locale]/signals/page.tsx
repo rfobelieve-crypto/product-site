@@ -5,6 +5,7 @@ import { auth, signOut } from '@/auth';
 import { Nav } from '@/components/sections/Nav';
 import { Footer } from '@/components/sections/Footer';
 import { getSignalHistory } from '@/lib/signalHistory';
+import { pageAlternates } from '@/lib/seo';
 
 export async function generateMetadata({
   params,
@@ -13,13 +14,22 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: 'signals.meta' });
-  return { title: t('title'), description: t('description') };
+  return {
+    title: t('title'),
+    description: t('description'),
+    alternates: pageAlternates(locale, '/signals'),
+  };
 }
 
 const DIRECTION_COLOR: Record<string, string> = {
   UP: 'text-[#00ffa3]',
   DOWN: 'text-[#ff3860]',
 };
+
+function localized(raw: string | null | undefined, map: Record<string, string>): string | null {
+  if (!raw) return null;
+  return map[raw.toUpperCase().replace(/[\s-]+/g, '_')] ?? raw;
+}
 
 export default async function SignalsPage({
   params,
@@ -29,9 +39,6 @@ export default async function SignalsPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('signals');
-  // Falls back to "signed out" instead of a 500 if AUTH_SECRET / Google
-  // credentials aren't configured yet in this environment — an anonymous
-  // visitor should always see the sign-in prompt, never a crashed page.
   const session = await auth().catch(() => null);
 
   return (
@@ -85,6 +92,12 @@ export default async function SignalsPage({
 
 async function SignalTable() {
   const t = await getTranslations('signals');
+  // Direction / tier / regime render localized (raw feed values are
+  // English enums) — unknown values fall back to the raw string.
+  const tLive = await getTranslations('liveSignal');
+  const regimes = tLive.raw('regimes') as Record<string, string>;
+  const tiers = tLive.raw('tiers') as Record<string, string>;
+  const directions = tLive.raw('direction') as Record<string, string>;
   const history = await getSignalHistory();
   if (!history || history.signals.length === 0) {
     return <p className="mt-10 font-body text-sm text-mist/50">{t('unavailable')}</p>;
@@ -107,13 +120,13 @@ async function SignalTable() {
             <tr key={i} className="border-b border-white/5 last:border-0">
               <td className="px-5 py-3 text-mist/60">{s.signal_time?.replace('T', ' ') ?? '—'}</td>
               <td className={`px-5 py-3 font-medium ${s.direction ? DIRECTION_COLOR[s.direction] ?? '' : ''}`}>
-                {s.direction ?? '—'}
+                {localized(s.direction, directions) ?? '—'}
               </td>
-              <td className="px-5 py-3 text-mist/60">{s.tier ?? '—'}</td>
+              <td className="px-5 py-3 text-mist/60">{localized(s.tier, tiers) ?? '—'}</td>
               <td className="px-5 py-3 text-mist/60">
                 {s.confidence != null ? s.confidence.toFixed(0) : '—'}
               </td>
-              <td className="px-5 py-3 text-mist/60">{s.regime ?? '—'}</td>
+              <td className="px-5 py-3 text-mist/60">{localized(s.regime, regimes) ?? '—'}</td>
               <td className="px-5 py-3 text-mist/60">
                 {s.correct == null ? t('table.pending') : s.correct ? t('table.hit') : t('table.miss')}
               </td>

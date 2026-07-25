@@ -4,6 +4,7 @@
     "siteDescription": "Dual-model signal engine, staged risk framework, and a live OKX execution layer — built and validated in the open."
   },
   "intro": {
+    "title": "Trading is fantastic",
     "enter": "Enter"
   },
   "nav": {
@@ -33,7 +34,7 @@
       "system": {
         "kicker": "System",
         "title": "How it actually works",
-        "body": "Data pipeline, dual-model engine, validation, and the risk framework — one page, no repeats."
+        "body": "Data pipeline, dual-model engine, validation, and the risk framework — all on one page."
       },
       "trackRecord": {
         "kicker": "Track record",
@@ -63,6 +64,22 @@
       "UP": "Long lean",
       "DOWN": "Short lean",
       "NEUTRAL": "Flat"
+    },
+    "regimes": {
+      "BULL_TREND": "Bull trend",
+      "TRENDING_BULL": "Bull trend",
+      "BEAR_TREND": "Bear trend",
+      "TRENDING_BEAR": "Bear trend",
+      "RANGE": "Range",
+      "CHOP": "Choppy",
+      "CHOPPY": "Choppy",
+      "WARMUP": "Warmup",
+      "NEUTRAL": "Neutral"
+    },
+    "tiers": {
+      "STRONG": "Strong",
+      "MODERATE": "Moderate",
+      "WEAK": "Weak"
     },
     "time": {
       "justNow": "just now",
@@ -116,7 +133,22 @@
     "writeUps": "Write-ups",
     "github": "GitHub",
     "contact": "Contact",
+    "privacy": "Privacy",
+    "terms": "Terms",
     "disclaimer": "Not investment advice. Nothing here is a solicitation to trade."
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "This page doesn’t exist.",
+    "body": "The link may be stale, or the URL has a typo.",
+    "home": "Back home"
+  },
+  "errorPage": {
+    "eyebrow": "Error",
+    "title": "Something broke.",
+    "body": "This part just failed. Try again — if it keeps happening, it’s already being looked at.",
+    "retry": "Try again",
+    "home": "Back home"
   },
   "architecture": {
     "eyebrow": "At a glance",
@@ -265,8 +297,20 @@
       "submit": "Sign in",
       "submitting": "Signing in…",
       "error": "Email or password didn’t match.",
+      "forgot": "Forgot your password?",
       "noAccount": "No account yet?",
       "registerLink": "Register"
+    },
+    "forgot": {
+      "eyebrow": "Reset password",
+      "title": "Reset your password.",
+      "body": "Enter the email you registered with and we’ll send a reset link.",
+      "emailPlaceholder": "you@domain.com",
+      "submit": "Send reset link",
+      "submitting": "Sending…",
+      "sent": "If that email is registered, a reset link is on its way.",
+      "notConfigured": "Password reset isn’t live yet — email us instead:",
+      "back": "Back to sign in"
     },
     "register": {
       "submit": "Register",

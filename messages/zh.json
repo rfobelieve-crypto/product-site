@@ -4,6 +4,7 @@
     "siteDescription": "雙模型訊號引擎、分階段風控框架，加上正在 OKX 實盤運行的執行層——全程公開建置與驗證。"
   },
   "intro": {
+    "title": "Trading is fantastic",
     "enter": "進入"
   },
   "nav": {
@@ -20,8 +21,8 @@
   },
   "hero": {
     "eyebrow": "OKX 實盤運行中 · 雙模型訊號引擎",
-    "titleLine1": "會犯錯的AI交易",
-    "titleLine2": "系統",
+    "titleLine1": "會犯錯的",
+    "titleLine2": "AI 交易系統",
     "subtitle": "每一個 kill switch、每一道回撤閘門、每一次誠實記錄的失敗——全程公開建置，用最硬的方式驗證。",
     "scroll": "捲動"
   },
@@ -33,7 +34,7 @@
       "system": {
         "kicker": "系統",
         "title": "實際運作原理",
-        "body": "資料管線、雙模型引擎、驗證流程、風控框架——集中在一個頁面,不重複。"
+        "body": "資料管線、雙模型引擎、驗證流程、風控框架——全部集中在同一頁。"
       },
       "trackRecord": {
         "kicker": "績效紀錄",
@@ -63,6 +64,22 @@
       "UP": "偏多",
       "DOWN": "偏空",
       "NEUTRAL": "中性"
+    },
+    "regimes": {
+      "BULL_TREND": "多頭趨勢",
+      "TRENDING_BULL": "多頭趨勢",
+      "BEAR_TREND": "空頭趨勢",
+      "TRENDING_BEAR": "空頭趨勢",
+      "RANGE": "盤整",
+      "CHOP": "盤整",
+      "CHOPPY": "盤整",
+      "WARMUP": "暖機",
+      "NEUTRAL": "中性"
+    },
+    "tiers": {
+      "STRONG": "Strong 級",
+      "MODERATE": "Moderate 級",
+      "WEAK": "Weak 級"
     },
     "time": {
       "justNow": "剛剛",
@@ -116,7 +133,22 @@
     "writeUps": "文章",
     "github": "GitHub",
     "contact": "聯絡",
+    "privacy": "隱私權政策",
+    "terms": "使用條款",
     "disclaimer": "非投資建議，本站任何內容都不構成交易招攬。"
+  },
+  "notFound": {
+    "eyebrow": "404",
+    "title": "這一頁不存在。",
+    "body": "連結可能已失效，或網址拼錯了。",
+    "home": "回首頁"
+  },
+  "errorPage": {
+    "eyebrow": "錯誤",
+    "title": "出了點問題。",
+    "body": "這個區塊剛剛壞掉了。先重試一次；如果持續發生，代表我們已經在修了。",
+    "retry": "再試一次",
+    "home": "回首頁"
   },
   "architecture": {
     "eyebrow": "一覽",
@@ -265,8 +297,20 @@
       "submit": "登入",
       "submitting": "登入中…",
       "error": "帳號或密碼不正確。",
+      "forgot": "忘記密碼？",
       "noAccount": "還沒有帳號？",
       "registerLink": "註冊"
+    },
+    "forgot": {
+      "eyebrow": "重設密碼",
+      "title": "重設你的密碼。",
+      "body": "輸入註冊時用的 email，我們會寄送重設連結。",
+      "emailPlaceholder": "you@domain.com",
+      "submit": "寄送重設連結",
+      "submitting": "寄送中…",
+      "sent": "如果這個 email 有註冊過，重設連結已寄出。",
+      "notConfigured": "重設服務還沒開通——請直接來信：",
+      "back": "回登入"
     },
     "register": {
       "submit": "註冊",
@@ -352,7 +396,7 @@
       "expertNote": "專家模式——價格、撤單不對稱、撤單強度合成一張互動圖，縮放/拖拉/十字準線三個面板同步連動。",
       "kpi": {
         "title": "多幣種撤單流監控",
-        "body": "每個幣種最近 2 小時的原始訂單簿加/撤單活動——不是交易訊號，撤單流的 edge 仍待 8/10 預先登記的判決。",
+        "body": "每個幣種最近 2 小時的原始訂單簿加/撤單活動——不是交易訊號，撤單流的 edge 仍待 2026-08-10 預先登記的檢驗判決。",
         "accumulating": "累積中（{n} 分鐘）",
         "unavailable": "統計資料暫時無法讀取。",
         "askDominant": "賣方撤單較多（{pct}%）",

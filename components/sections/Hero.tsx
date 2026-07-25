@@ -4,14 +4,11 @@ import { motion } from 'framer-motion';
 import { useTranslations } from 'next-intl';
 import { MeshTextHover } from '@/components/effects/MeshTextHover';
 
-// var(--font-display) resolves through the wrapper's real inline style
-// (see MeshTextHover's getComputedStyle fix) rather than being handed to
-// Canvas directly, which doesn't understand CSS custom properties. Space
-// Grotesk has no CJK coverage, so explicit bold-capable CJK fallbacks are
-// listed too — otherwise zh renders through some unpredictable, possibly
-// non-bold system substitute.
+// var(--font-cjk) is Noto Sans TC, actually loaded via next/font in the
+// locale layout — the canvas headline no longer depends on whatever CJK
+// font the OS happens to have.
 const MESH_FONT_FAMILY =
-  "var(--font-display), 'Noto Sans TC', 'Microsoft JhengHei', 'PingFang TC', sans-serif";
+  "var(--font-display), var(--font-cjk), 'Noto Sans TC', 'PingFang TC', 'Microsoft JhengHei', sans-serif";
 
 const fadeUp = {
   hidden: { opacity: 0, y: 24 },
@@ -22,12 +19,6 @@ const fadeUp = {
   }),
 };
 
-// One line of the headline. Unlike the particle effect this replaced, the
-// text here is real anti-aliased Canvas2D glyphs warped onto a WebGL mesh —
-// no density/legibility tradeoff at small sizes, so mobile and desktop can
-// share the same 2-line copy; only `fontSize` needs to vary per breakpoint
-// (a plain number prop, not something Tailwind can express, hence the
-// separate size tiers below rather than one responsive className).
 function TitleMeshLine({ text, fontSize, className }: { text: string; fontSize: number; className: string }) {
   return (
     <MeshTextHover
@@ -66,11 +57,6 @@ export function Hero() {
         className="mx-auto w-full max-w-4xl"
         aria-hidden
       >
-        {/* Canvas text isn't selectable/crawlable — a separate sr-only <h1>
-            below stands in for screen readers/SEO. Three size tiers render
-            in parallel, CSS-hidden outside their own breakpoint range —
-            fontSize is a plain number prop MeshTextHover bakes into the
-            texture, not something a single responsive className can vary. */}
         <div className="sm:hidden">
           <TitleMeshLine text={t('titleLine1')} fontSize={42} className="h-14" />
           <TitleMeshLine text={t('titleLine2')} fontSize={42} className="h-14" />
