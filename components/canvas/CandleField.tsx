@@ -13,11 +13,13 @@ declare module '@react-three/fiber' {
   }
 }
 
-// Redesign (方案 B「調和綠紅」, picked in candle-field-redesign.html):
-// - Green/red kept, but desaturated one notch and lightness-matched to the
-//   iris cyan/violet accents, so the field stops fighting the site palette.
-// - No transmission pass anymore — the frosted look comes from clearcoat +
-//   opacity + bloom. Cheaper on desktop AND mobile (one material config).
+// Redesign (方案 C「霓虹線譜」, picked in candle-field-redesign.html):
+// - Terminal green/red kept at full saturation, but the bars become
+//   ultra-thin additive glow lines — hologram/terminal feel instead of
+//   jelly glass blocks.
+// - MeshBasicMaterial + AdditiveBlending: no lighting, no transmission,
+//   no clearcoat — the cheapest material in the scene; bloom does the
+//   aesthetic work.
 // - Three depth rows (main + two dim echoes) give the field parallax
 //   instead of one flat marching line. Mobile renders the main row only.
 // - Candles scale in/out over EDGE_FADE world units at both bounds — no
@@ -25,16 +27,12 @@ declare module '@react-three/fiber' {
 const COUNT = 48;
 const SPACING = 0.34;
 const DRIFT_SPEED = 0.09;
-const BODY_WIDTH = 0.17;
+const BODY_WIDTH = 0.05;
 const BODY_CORNER_RADIUS = 0.06;
-const WICK_WIDTH = 0.035;
+const WICK_WIDTH = 0.018;
 const WICK_CORNER_RADIUS = 0.16;
 const EDGE_FADE = 1.1;
 
-// 2026-07-25: colours overridden to match the OG card's brand candlesticks
-// (opengraph-image.tsx) per user request — brighter/more saturated than the
-// original 方案B 調和綠紅. Vivid with the emissive + bloom pass; dial
-// emissiveIntensity / opacity in makeMaterial down a notch if too loud.
 const UP_COLOR = '#00ffa3';
 const DOWN_COLOR = '#ff3860';
 
@@ -64,17 +62,14 @@ function smoothstep(a: number, b: number, x: number): number {
 }
 
 function makeMaterial(color: string, fade: number, isWick: boolean) {
-  return new THREE.MeshPhysicalMaterial({
+  // Additive neon line — unlit, so overlapping bodies/wicks brighten
+  // where they cross, which is exactly the hologram look.
+  return new THREE.MeshBasicMaterial({
     color,
-    emissive: new THREE.Color(color),
-    emissiveIntensity: 0.3,
-    roughness: isWick ? 0.1 : 0.14,
-    metalness: 0.05,
-    clearcoat: 1,
-    clearcoatRoughness: isWick ? 0.08 : 0.12,
-    envMapIntensity: 1.1,
     transparent: true,
-    opacity: 0.8 * fade * (isWick ? 0.92 : 1),
+    opacity: 0.9 * fade * (isWick ? 0.92 : 1),
+    blending: THREE.AdditiveBlending,
+    depthWrite: false,
     toneMapped: false,
   });
 }

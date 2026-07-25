@@ -38,7 +38,7 @@ export function Scene({
     >
       {/* Exponential fog sells the echo rows' depth; its color equals the
           page background, so the alpha-clear canvas stays seamless. */}
-      <fogExp2 attach="fog" args={['#050507', 0.045]} />
+      <fogExp2 attach="fog" args={['#050507', 0.06]} />
       <ambientLight intensity={0.3} />
       <pointLight position={[3, 2, 4]} intensity={1.0} color="#7ef9ff" />
       <pointLight position={[-3, -2, -2]} intensity={0.7} color="#b98bff" />
@@ -66,11 +66,11 @@ export function Scene({
             resolutionScale={0.6}
             height={480}
           />
-          {/* Tuned for the desaturated green/red — lower threshold, slightly
-              lower intensity than the old neon tuning. */}
+          {/* Neon-line tuning (方案 C): low threshold + strong bloom is
+              what turns the thin additive lines into glowing filaments. */}
           <Bloom
-            intensity={0.55}
-            luminanceThreshold={0.4}
+            intensity={1.0}
+            luminanceThreshold={0.12}
             luminanceSmoothing={0.22}
             mipmapBlur
           />
