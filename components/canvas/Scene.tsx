@@ -66,11 +66,14 @@ export function Scene({
             resolutionScale={0.6}
             height={480}
           />
-          {/* Neon-line tuning (方案 C): low threshold + strong bloom is
-              what turns the thin additive lines into glowing filaments. */}
+          {/* Neon-line tuning (方案 C): bloom is what turns the thin additive
+              lines into glowing filaments. Dialled back 2026-07-27 (glow was
+              too strong): intensity 1.0→0.55 and threshold 0.12→0.30, so only
+              the brighter cores bloom instead of the whole field hazing over —
+              lines stay lit, the halo stops washing out the headline. */}
           <Bloom
-            intensity={1.0}
-            luminanceThreshold={0.12}
+            intensity={0.55}
+            luminanceThreshold={0.30}
             luminanceSmoothing={0.22}
             mipmapBlur
           />
