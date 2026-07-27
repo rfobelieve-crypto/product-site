@@ -1,0 +1,740 @@
+[
+  {
+    "slug": "silent-failures",
+    "date": "2026-06-19",
+    "tags": [
+      "可靠性",
+      "監控"
+    ],
+    "cover": "01_silent_failures.png",
+    "zh": {
+      "title": "不再相信「看起來正常」",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "那天我打開電腦,本來只是想把程式碼同步一下。"
+        },
+        {
+          "type": "p",
+          "text": "結果一條我差點直接滑掉的通知,讓我對自己親手寫的系統,徹底失去了信任。"
+        },
+        {
+          "type": "p",
+          "text": "過去幾個月,我一個人從零打造了一套 BTC 量化交易系統。從抓資料、做特徵工程、訓練雙模型預測方向,到真正在交易所自動下單跟風控,每一塊都是自己刻出來的。它已經跑了好一陣子,我一直以為自己很懂它。"
+        },
+        {
+          "type": "p",
+          "text": "那條通知說,有一筆交易因為一個風控設定失敗,所以沒有送出去。我第一個念頭是:失敗被擋下來,不是剛好正常嗎?"
+        },
+        {
+          "type": "p",
+          "text": "但我還是順手往下追。結果越追,背越涼。"
+        },
+        {
+          "type": "p",
+          "text": "我發現那道風控,從上線那天起,就因為一個被我漏掉的小地方,從來沒有真正生效過。它不是那天才壞的,而是一直都沒在運作,只是我從來不知道。"
+        },
+        {
+          "type": "p",
+          "text": "我沒有停在那裡。同一天,我又挖出兩個性質一模一樣的問題。"
+        },
+        {
+          "type": "p",
+          "text": "一個是移動停損。資料庫裡的數字每天都在更新,看起來保護得好好的,但那個數字從來沒有真正同步到交易所。我以為帳上有防護,實際上那段時間它一直在裸奔。"
+        },
+        {
+          "type": "p",
+          "text": "另一個是出場通知。因為訊息裡一個特殊字元破壞了格式,被伺服器默默拒收,從系統上線到那天,一封都沒成功送出去過。"
+        },
+        {
+          "type": "p",
+          "text": "三個問題,單元測試全部綠燈,儀表板全部健康。沒有任何一次崩潰,沒有任何一個錯誤訊息。"
+        },
+        {
+          "type": "p",
+          "text": "那天我最大的收穫,跟交易、跟賺錢、跟模型,一點關係都沒有。"
+        },
+        {
+          "type": "p",
+          "text": "我真正學到的是:在一個動到真錢的系統裡,最危險的 bug 從來不是讓程式崩潰的那種。崩潰會大聲告訴你它壞了,你馬上就會去修。真正會傷到你的,是那種看起來一切正常、其實早就靜默死掉的東西。儀表板是綠的,程序是活的,而你在不知不覺中,早就失去了保護。"
+        },
+        {
+          "type": "p",
+          "text": "從那天起,我改了自己做事的方式。"
+        },
+        {
+          "type": "p",
+          "text": "我修好任何東西之後,會反過來故意把它弄回壞掉的樣子,確認我的測試真的會變紅。如果弄壞了測試還是綠的,那這個測試根本沒在保護我。"
+        },
+        {
+          "type": "p",
+          "text": "我部署完也不再相信「我推上去了,所以它就上線了」,而是親自到線上逐字確認,跑的真的是我這次改的版本。"
+        },
+        {
+          "type": "p",
+          "text": "這聽起來有點偏執。但當系統背後是真實的錢,我寧可偏執,也不想再被同一盞綠燈騙第二次。"
+        },
+        {
+          "type": "p",
+          "text": "不再相信「看起來正常」,是這套系統教我最有價值的一課。"
+        }
+      ]
+    }
+  },
+  {
+    "slug": "gate-a-validation",
+    "date": "2026-06-19",
+    "tags": [
+      "統計驗證",
+      "信賴區間"
+    ],
+    "cover": "02_gate_a_ci.png",
+    "zh": {
+      "title": "同一個訊號，兩種驗證，差了 20.1 個百分點",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "我把同一個交易訊號，用兩種方法驗證它的方向勝率。"
+        },
+        {
+          "type": "p",
+          "text": "結果差了 20.1 個百分點。"
+        },
+        {
+          "type": "p",
+          "text": "而看起來比較漂亮的那一個——是洩漏的。"
+        },
+        {
+          "type": "p",
+          "text": "77.8% 那個版本，模型在「測試集本身」上做了早停（early stop on test）。"
+        },
+        {
+          "type": "p",
+          "text": "等於偷看了答案再決定什麼時候停。數字很美，但它在實盤上不存在。"
+        },
+        {
+          "type": "p",
+          "text": "拿掉這個洩漏、改用嚴格的 walk-forward 重跑，真實數字是 57.6%，"
+        },
+        {
+          "type": "p",
+          "text": "95% 信賴區間 [51.5%, 63.4%]。"
+        },
+        {
+          "type": "p",
+          "text": "下緣 51.5%，低於我設的 52% 門檻。"
+        },
+        {
+          "type": "p",
+          "text": "誠實地說：以今天的資料，它還沒站上這條線。"
+        },
+        {
+          "type": "p",
+          "text": "所以我不加碼。不是因為我覺得 edge 是假的，"
+        },
+        {
+          "type": "p",
+          "text": "是因為我的規則說『沒清楚越過門檻就不放大』，而它現在沒有。"
+        },
+        {
+          "type": "p",
+          "text": "（更誠實的一層：我前幾天才量到它『邊際通過』。"
+        },
+        {
+          "type": "p",
+          "text": "腳本是確定性的，但資料每天在長——同一支腳本，幾天後就翻成沒過。"
+        },
+        {
+          "type": "p",
+          "text": "一次 PASS 是快照，不是狀態。）"
+        },
+        {
+          "type": "p",
+          "text": "因為一個薄 edge 最危險的地方，不是它薄，"
+        },
+        {
+          "type": "p",
+          "text": "是你用一個會灌水的驗證方法，把它誤判成厚的——然後上槓桿。"
+        }
+      ]
+    }
+  },
+  {
+    "slug": "monthly-revalidation",
+    "date": "2026-07-06",
+    "tags": [
+      "流程",
+      "資料品質"
+    ],
+    "cover": "03_stale_vs_full.png",
+    "zh": {
+      "title": "健康檢查說一切正常，但有一根柱子差點騙到我",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "我的模型健康檢查報告說一切正常。"
+        },
+        {
+          "type": "p",
+          "text": "但裡面有一根柱子,差點騙到我。"
+        },
+        {
+          "type": "p",
+          "text": "上一篇我寫過,驗證的一次 PASS 只是快照,不是狀態。"
+        },
+        {
+          "type": "p",
+          "text": "所以我把整套復驗寫成了每月排程:"
+        },
+        {
+          "type": "p",
+          "text": "AUC 有沒有掉出容許帶,近月 IC 有沒有衰退,"
+        },
+        {
+          "type": "p",
+          "text": "強弱訊號的分層還在不在,跑完把結論推到我手機。"
+        },
+        {
+          "type": "p",
+          "text": "這一期的報告裡,六月的月度 IC 貼近零。"
+        },
+        {
+          "type": "p",
+          "text": "前面幾個月都在正常水位,就它貼著地板。"
+        },
+        {
+          "type": "p",
+          "text": "第一個念頭:這是不是概念漂移的第一聲?"
+        },
+        {
+          "type": "p",
+          "text": "我的反應協議第一條寫的是:先排除資料問題,再談漂移。"
+        },
+        {
+          "type": "p",
+          "text": "查下去發現,排程執行的那一刻,機器剛好斷網。"
+        },
+        {
+          "type": "p",
+          "text": "資料回填失敗,腳本靜靜退回半個月前的快取,"
+        },
+        {
+          "type": "p",
+          "text": "照樣算完,照樣給了一個 PASS。"
+        },
+        {
+          "type": "p",
+          "text": "網路恢復後補滿資料重跑:六月 IC +0.178,完全正常。"
+        },
+        {
+          "type": "p",
+          "text": "那根貼零的柱子,不是市場變了,是資料斷了。"
+        },
+        {
+          "type": "p",
+          "text": "同一個月,兩個數字。差別只在資料有沒有補滿。"
+        },
+        {
+          "type": "p",
+          "text": "所以這週我給這個儀式加了兩道防護:"
+        },
+        {
+          "type": "p",
+          "text": "資料太舊,verdict 一律標成「無法判定」,不准輸出漂亮的 PASS;"
+        },
+        {
+          "type": "p",
+          "text": "推送失敗自動重試,最後仍失敗就在報告上留痕。"
+        },
+        {
+          "type": "p",
+          "text": "自動化驗證最危險的地方,不是它會出錯,"
+        },
+        {
+          "type": "p",
+          "text": "是它出錯的樣子,跟正常的樣子一模一樣。"
+        }
+      ]
+    }
+  },
+  {
+    "slug": "backtest-lying",
+    "date": "2026-07-20",
+    "tags": [
+      "回測",
+      "Walk-Forward"
+    ],
+    "zh": {
+      "title": "你的回測正在騙你",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "一個 0.50 的差距"
+        },
+        {
+          "type": "p",
+          "text": "今年 4 月，我要診斷模型的 magnitude 訊號是不是衰退了。我寫了個腳本，用當時的生產模型去預測過去每個月，算出每月 IC（information coefficient，預測值與實際報酬的排序相關性）：11 月 0.60、12 月 0.51、3 月 0.60。訊號看起來穩得很，我差點下結論「模型沒問題，問題在別處」。"
+        },
+        {
+          "type": "p",
+          "text": "後來我用嚴格的 walk-forward 重跑同一個診斷。每個測試點的模型只能看到該點之前的資料，真實的 3 月 IC 是 0.10。"
+        },
+        {
+          "type": "p",
+          "text": "0.60 對 0.10。中間差的 0.50，就是我騙自己的量。模型其實從 2 月底就開始漂移，IC 已經腰斬，而我的第一版診斷在結構上不可能看見這件事。"
+        },
+        {
+          "type": "h",
+          "text": "陷阱一：用生產模型評估過去"
+        },
+        {
+          "type": "p",
+          "text": "這個錯有名字，叫 in-sample evaluation。生產模型訓練時吃過全部歷史資料，拿它去預測過去，等於讓學生拿著答案卷考試。分數當然漂亮，但資訊量是零。"
+        },
+        {
+          "type": "p",
+          "text": "這跟 Kaggle 新手跑完 cross_val_score，又用全資料重訓再欣賞 train loss，是同一個錯，只是換了包裝而已。按月份切結果讓我以為自己在做時間切片驗證，實際上從頭到尾沒有任何 time based split。"
+        },
+        {
+          "type": "p",
+          "text": "事後我把這件事寫進規則。任何訊號是否衰退、特徵是否還有效、regime 是否改變的問題，都只能用 walk-forward 預測回答。In-sample 的數字不管多漂亮，一律不採納為證據。"
+        },
+        {
+          "type": "h",
+          "text": "Walk-Forward 到底是什麼"
+        },
+        {
+          "type": "p",
+          "text": "想像你站在 1 月 1 日。你只能用 1 月 1 日之前的資料訓練模型，然後預測接下來一週。時間推進一週，重新訓練，再預測下一週。如此滾動到今天。"
+        },
+        {
+          "type": "p",
+          "text": "這個序列裡的每一個預測，都是模型當時真的不知道答案時做出的。這是它上線後真實表現唯一誠實的預覽。"
+        },
+        {
+          "type": "p",
+          "text": "我的系統用 77 個 fold 的 walk-forward，加兩個容易被跳過的細節。"
+        },
+        {
+          "type": "p",
+          "text": "Purge：我的目標是未來 4 小時報酬，所以訓練窗和測試窗之間會切掉 4 根 bar，不然相鄰樣本的標籤會跨界洩漏。"
+        },
+        {
+          "type": "p",
+          "text": "Embargo：測試窗之後再空 4 根 bar，資料才允許進入下一輪訓練窗。"
+        },
+        {
+          "type": "p",
+          "text": "陷阱二：fold 模型的輸出，永遠不能拿來校準生產模型"
+        },
+        {
+          "type": "p",
+          "text": "Walk-forward 裡每個 fold 模型只用部分歷史訓練，它的預測值分佈跟全資料訓練的生產模型不在同一個尺度上。"
+        },
+        {
+          "type": "p",
+          "text": "我是用很大聲的方式學會這件事的。我拿 fold 模型的預測去初始化生產模型的 rolling percentile buffer，也就是把原始預測轉成 UP、NEUTRAL、DOWN 訊號的校準器。fold 預測的標準差是 0.0008，生產模型的是 0.003，差了 3.5 倍。每一個正常的預測都落在校準器的極端尾部。結果整張圖表變成一整面紅色的 DOWN 三角形，手機每根 bar 都在推播看空警報。"
+        },
+        {
+          "type": "p",
+          "text": "規則很簡單，walk-forward 的輸出只能用來衡量泛化能力，像是 IC、AUC、勝率，永遠不能拿來校準生產閾值。兩個分佈根本不在同一個尺度上。"
+        },
+        {
+          "type": "p",
+          "text": "陷阱三：aggregate 指標會被 outlier fold 撐起來"
+        },
+        {
+          "type": "p",
+          "text": "6 月我測試 6 個新的 alpha 特徵。Aggregate AUC 提升 0.0072，穩穩超過我設的 0.005 部署門檻。Verdict 都寫好了，是 DEPLOY。"
+        },
+        {
+          "type": "p",
+          "text": "部署前 5 分鐘，我最後看了一眼每個 fold 各自的分布。"
+        },
+        {
+          "type": "p",
+          "text": "77 個 fold 的平均 lift 是負 0.0044，是負的。"
+        },
+        {
+          "type": "p",
+          "text": "lift 為正的 fold 只有 37 個，佔 48%，連擲硬幣都不如。"
+        },
+        {
+          "type": "p",
+          "text": "Bootstrap 檢驗顯示，真實 lift 小於等於 0 的機率是 66%。"
+        },
+        {
+          "type": "p",
+          "text": "Aggregate 那個 0.0072，是被一兩個極端 fold 撐出來的假象。合併起來看的指標對 outlier 很敏感，每個 fold 各自的統計才是真正的泛化訊號。那 5 分鐘的檢查，省下了我 2 週的驗證等待，也擋下一次錯誤部署。"
+        },
+        {
+          "type": "h",
+          "text": "我的解法：4 條部署門檻"
+        },
+        {
+          "type": "p",
+          "text": "現在任何新特徵要進系統，A/B retrain 必須同時通過 4 條。"
+        },
+        {
+          "type": "p",
+          "text": "第一，整體 lift 要大於 0.005。"
+        },
+        {
+          "type": "p",
+          "text": "第二，每個 fold 的平均 lift 要大於 0.001。"
+        },
+        {
+          "type": "p",
+          "text": "第三，正 lift 的 fold 比例要大於 55%。"
+        },
+        {
+          "type": "p",
+          "text": "第四，bootstrap 95% 信賴區間不能含 0。"
+        },
+        {
+          "type": "p",
+          "text": "缺任何一條，就推定是 outlier 撐起來的假 lift，不部署。"
+        },
+        {
+          "type": "p",
+          "text": "聽起來嚴苛嗎？這 4 條門檻至今擋下來的候選名單，包括一個 ML 出場模型、6 個 WorldQuant 型 alpha、21 個流動性代理特徵。每一個看起來都很有希望，每一個都在樣本外驗證失敗。沒有這道閘門，它們現在全部都在拿我的真錢交易。"
+        },
+        {
+          "type": "h",
+          "text": "為什麼這是量化裡最被低估的技能"
+        },
+        {
+          "type": "p",
+          "text": "漂亮的回測滿街都是。大部分死在同一個地方，驗證方法騙了它的作者，而且騙得非常有說服力，bootstrap 區間顯著、月月為正、權益曲線也漂亮。當你量測的東西本身就是錯的，統計顯著性救不了你。"
+        },
+        {
+          "type": "p",
+          "text": "驗證紀律的投資報酬率很簡單，上游花 5 分鐘，可以擋下下游 2 週的浪費。這句話寫在我的錯誤紀錄裡，每次想跳過檢查，我就回去讀一次。"
+        }
+      ]
+    },
+    "en": {
+      "title": "Your backtest is lying to you",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "A score that looked rock solid"
+        },
+        {
+          "type": "p",
+          "text": "Back in April, I wanted to check whether one of my models had gotten worse over time."
+        },
+        {
+          "type": "p",
+          "text": "I wrote a simple check. I took the model and had it predict every past month, then measured an accuracy score, on a scale where 1 is perfect. Every month came back somewhere around 0.5 to 0.6. Rock solid. I almost wrote down \"model's fine, look elsewhere.\""
+        },
+        {
+          "type": "p",
+          "text": "Then I realized what I'd actually done. I had a model that had already read every month of historical data, and I was asking it to predict months it had already read. That's like handing a student the exam and the answer key at the same time. Of course they score well. It proves nothing about whether they actually learned anything."
+        },
+        {
+          "type": "p",
+          "text": "So I ran it again, properly this time, only letting the model see data it would have actually had access to at that point in time, no peeking at the future. The real number for one of those months wasn't 0.6. It was 0.1. The model had already started drifting, and my first test was structurally incapable of catching it."
+        },
+        {
+          "type": "p",
+          "text": "After that I made myself a rule. Any question about whether a model or feature is still working has to be answered with an honest test like that. Anything that lets the model peek at the answer doesn't count as evidence, no matter how good the number looks."
+        },
+        {
+          "type": "h",
+          "text": "What an honest test actually looks like"
+        },
+        {
+          "type": "p",
+          "text": "This kind of testing has a name, walk-forward validation, but the idea is simple. Picture yourself standing on January 1st. You can only train your model on data from before that date, then you predict the following week. A week passes, you retrain, predict the next week. You keep rolling forward like that all the way to today. Every single prediction in that sequence is one the model genuinely didn't know the answer to yet. That's the only honest preview of how it'll actually perform once it's live."
+        },
+        {
+          "type": "h",
+          "text": "Trap two, using the wrong ruler"
+        },
+        {
+          "type": "p",
+          "text": "Once I had that rule in place, I walked straight into a second trap."
+        },
+        {
+          "type": "p",
+          "text": "I took the output from my test-phase model and used it to calibrate the thresholds for my live production model. Sounds reasonable enough. Except those two models had seen very different amounts of data, and their prediction ranges weren't on the same scale at all. I ended up setting the live thresholds way too sensitive, and the system started firing bearish alerts on almost every single price move. My phone wouldn't stop buzzing. The lesson was that test-phase results can only tell you whether an approach works, they can't be reused as the actual calibration for what goes live."
+        },
+        {
+          "type": "h",
+          "text": "Trap three, fooled by the average"
+        },
+        {
+          "type": "p",
+          "text": "There's a third trap, and it might be the easiest one to miss entirely."
+        },
+        {
+          "type": "p",
+          "text": "In June I wanted to add a few new signals to the model. The overall average score came back better, comfortably clearing the bar I'd set for shipping it. Before I pushed it live, I spent five more minutes breaking that average down result by result. Most of the individual tests had actually gotten worse. One or two unusually good results were the only thing dragging the average up. It's the same trick as a class average. If one or two students score perfectly, the average looks great, even though most of the class actually failed. Looking only at the average would have convinced me the whole class understood the material."
+        },
+        {
+          "type": "p",
+          "text": "Since then I've held myself to a different standard. Before anything new ships, I don't just look at one overall average anymore. I break it down result by result and confirm that most of them actually improved, not just one or two lucky ones carrying the rest. Running that check again on old candidates, I ended up rejecting several ideas that had looked promising at first glance. Every one of them turned out to be the same illusion."
+        },
+        {
+          "type": "h",
+          "text": "Nice-looking backtests are everywhere"
+        },
+        {
+          "type": "p",
+          "text": "If there's one thing I took away from all this, it's that nice-looking backtests are everywhere, and most of them fail for the same reason. It's not that the underlying idea was bad. It's that the way it was tested was lying the whole time. When the ruler you're using to judge right from wrong is broken, a good-looking number doesn't mean anything."
+        },
+        {
+          "type": "p",
+          "text": "The math on validation discipline is simple. Five extra minutes upfront can save weeks of wasted work later, sometimes an actual loss."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "zero-fires",
+    "date": "2026-07-27",
+    "tags": [
+      "特徵工程",
+      "除錯"
+    ],
+    "cover": "04_zero_fires_cover.png",
+    "zh": {
+      "title": "零觸發，不等於市場平靜",
+      "subtitle": "我寫了一個邏輯上不可能成立的偵測條件，它安靜跑了 36 小時，來自一套 BTC 實盤量化系統",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "36 小時，零筆"
+        },
+        {
+          "type": "p",
+          "text": "上週我在自己的 BTC 量化系統裡上線一個新的偵測器。它要抓一種特定的訂單簿現象：單側掛單被大量撤走，但成交量還沒跟上，價格也還沒動。如果這個現象真的領先價格，那會是一個有價值的訊號。"
+        },
+        {
+          "type": "p",
+          "text": "上線之後我去忙別的事。36 小時後回來查資料表，零筆。"
+        },
+        {
+          "type": "p",
+          "text": "這是最容易被放過的一種故障。如果它記錄了一堆錯的事件，我會立刻發現。但它什麼都沒記錄，而這跟「市場這兩天剛好沒出現這種現象」看起來一模一樣。服務是綠的，程式沒有拋任何錯，日誌乾淨。"
+        },
+        {
+          "type": "h",
+          "text": "逐步交集"
+        },
+        {
+          "type": "p",
+          "text": "我沒有直接去調參數，而是把過去 72 小時的資料重放一次，把每個條件單獨算它通過幾分鐘。"
+        },
+        {
+          "type": "p",
+          "text": "四千多分鐘裡，撤單不對稱達標的有 168 分鐘，單側撤單量暴增達標的有 217 分鐘。兩個都不算罕見。"
+        },
+        {
+          "type": "p",
+          "text": "然後我把它們一步一步交集起來。看漲方向：不對稱達標 111 分鐘，再加上賣側撤單暴增這個條件，剩下 0 分鐘。"
+        },
+        {
+          "type": "p",
+          "text": "歸零就發生在這一步。"
+        },
+        {
+          "type": "h",
+          "text": "一個決定性的數字"
+        },
+        {
+          "type": "p",
+          "text": "在那 111 分鐘裡，賣側撤單暴增倍數的中位數是 0.89，達到我設的門檻 2.5 的比例是 0.0%。"
+        },
+        {
+          "type": "p",
+          "text": "不是很少，是從來沒有。"
+        },
+        {
+          "type": "p",
+          "text": "原因是我把兩個互相排斥的東西 AND 在一起了。"
+        },
+        {
+          "type": "p",
+          "text": "第一個條件是比例，衡量某一側的撤單佔總撤單的比重。第二個條件是絕對倍數，衡量某一側的撤單相對它自己過去一小時的中位數放大了幾倍。"
+        },
+        {
+          "type": "p",
+          "text": "當賣側的撤單佔比特別高，通常是因為買側撤得少，也就是分母變小，而不是賣側真的暴增。我要求比例很高，又同時要求構成這個比例的絕對量也暴增，這兩件事在真實資料裡幾乎不會同時發生。"
+        },
+        {
+          "type": "p",
+          "text": "這個條件不是很難成立，是邏輯上就不會成立。而它在程式碼裡看起來完全合理，兩行都是我認真想過才寫下去的。"
+        },
+        {
+          "type": "h",
+          "text": "更該檢討的是校準流程"
+        },
+        {
+          "type": "p",
+          "text": "上線之前我有校準過。我跑了 30 天的歷史資料，數出 27 筆，換算大約每天 1.7 筆，看起來很合理，就放行了。"
+        },
+        {
+          "type": "p",
+          "text": "問題是我只看了總數，沒看那 27 筆發生在什麼時候。"
+        },
+        {
+          "type": "p",
+          "text": "事後回頭看，它們很可能集中在資料收集初期的某一小段特殊時期。用同一份程式碼重放最近 72 小時，只有 1 筆。"
+        },
+        {
+          "type": "p",
+          "text": "一個總數合理但時間高度集中的設定，跟一個真正穩定觸發的設定，在「30 天總共幾筆」這個數字上完全看不出差別。這是我這次真正該學的東西，比那個 bug 本身重要。"
+        },
+        {
+          "type": "h",
+          "text": "修法"
+        },
+        {
+          "type": "p",
+          "text": "新版本讓兩個條件量綱一致，都改成倍數。"
+        },
+        {
+          "type": "p",
+          "text": "第一，被抽走的那一側，撤單量要相對它自己過去一小時的中位數放大 3 倍以上。第二，這一側的放大倍數，要是另一側的 2 倍以上。"
+        },
+        {
+          "type": "p",
+          "text": "兩個都是絕對倍數，不會互相拉扯。原本「成交還沒跟上、價格還沒動」的前提維持不變，因為那是這個假說的核心，去掉就測不到「領先」這件事。"
+        },
+        {
+          "type": "p",
+          "text": "我也改了校準流程本身。現在一個設定要通過，除了觸發率合理，還必須滿足兩個新條件：要在超過一半的天數觸發，而且單一天不能佔掉太高的比例。"
+        },
+        {
+          "type": "p",
+          "text": "最後選定的設定是每天 1.91 筆，18 天裡有 10 天有觸發，最大單日只佔全部的 21%，而且最近幾天持續有觸發。最後這一項，正是舊版本缺的那一項。"
+        },
+        {
+          "type": "h",
+          "text": "兩個可以帶走的檢查"
+        },
+        {
+          "type": "p",
+          "text": "第一，任何 AND 起來的條件組合，上線前先把每個條件單獨的通過數印出來，再一步一步交集，看它在哪一步歸零。這件事花五分鐘，能抓到一整類「寫得出來但不會成立」的錯誤。"
+        },
+        {
+          "type": "p",
+          "text": "第二，當一個偵測器的輸出是零，先確認它是「真的沒發生」還是「不可能發生」。前者是市場，後者是 bug，而它們在儀表板上長得一模一樣。"
+        },
+        {
+          "type": "p",
+          "text": "我這套系統的所有偵測邏輯都是純研究用途，不接自動下單。這次的代價只是 36 小時的空白資料。如果它接在真錢上，代價會是我以為某個訊號不存在，而其實是我從來沒有真的測過它。"
+        }
+      ]
+    },
+    "en": {
+      "title": "Zero results can be a bug, not a finding",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "Thirty-six hours, zero rows"
+        },
+        {
+          "type": "p",
+          "text": "Last week I shipped a new detector into my BTC trading system. Its job was to catch a specific order book pattern: one side of the book getting pulled away in size, while volume has not picked up yet and price has not moved. If that pattern really leads price, it would be worth knowing about."
+        },
+        {
+          "type": "p",
+          "text": "I went off and worked on other things. Thirty-six hours later I checked the table. Zero rows."
+        },
+        {
+          "type": "p",
+          "text": "This is the easiest kind of failure to miss. If it had logged a pile of wrong events I would have caught it immediately. But it logged nothing, and nothing looks exactly like a quiet day and a half in the market. The service was green, no exception was thrown, the logs were clean."
+        },
+        {
+          "type": "h",
+          "text": "Finding where it went to zero"
+        },
+        {
+          "type": "p",
+          "text": "Rather than start nudging thresholds, I replayed the last 72 hours and counted how many minutes passed each condition on its own."
+        },
+        {
+          "type": "p",
+          "text": "Out of roughly four thousand minutes, 168 passed the asymmetry condition and 217 passed the volume spike condition. Neither is rare."
+        },
+        {
+          "type": "p",
+          "text": "Then I intersected them one step at a time. On the bullish side, 111 minutes passed the asymmetry check. Adding the requirement that the ask side's own cancel volume had spiked took it to zero."
+        },
+        {
+          "type": "h",
+          "text": "Two conditions that fight each other"
+        },
+        {
+          "type": "p",
+          "text": "Inside those 111 minutes, the median cancel spike on the ask side was 0.89, and the share that reached my threshold of 2.5 was zero percent. Not rare. Never."
+        },
+        {
+          "type": "p",
+          "text": "I had ANDed together two things that pull in opposite directions. The first condition was a ratio: how much of the total cancelling was happening on one side. The second was an absolute multiple: how much that side's cancelling had grown against its own recent baseline."
+        },
+        {
+          "type": "p",
+          "text": "A high one-sided share usually means the other side cancelled very little, which shrinks the denominator. It does not mean that side spiked. I was asking for a high ratio and simultaneously demanding that the number driving that ratio explode. In real data those two almost never coincide."
+        },
+        {
+          "type": "p",
+          "text": "The condition was not hard to satisfy. It was impossible. And it read as completely reasonable in the code, because both halves were things I had thought about carefully before writing them."
+        },
+        {
+          "type": "h",
+          "text": "The calibration was the real bug"
+        },
+        {
+          "type": "p",
+          "text": "I did calibrate before shipping. I ran 30 days of history, counted 27 hits, worked out roughly 1.7 per day, decided that was sensible, and shipped."
+        },
+        {
+          "type": "p",
+          "text": "I only looked at the total. I never looked at when those 27 happened. In hindsight they were almost certainly clustered in one unusual stretch early in the data collection. Replaying the most recent 72 hours with the same code produces exactly one."
+        },
+        {
+          "type": "p",
+          "text": "A configuration with a reasonable total but heavily clustered timing, and one that fires steadily, are indistinguishable if the only number you check is the 30 day count. That is the part I actually needed to learn, more than the bug itself."
+        },
+        {
+          "type": "h",
+          "text": "What I changed"
+        },
+        {
+          "type": "p",
+          "text": "The new version keeps both conditions in the same unit. One side's cancel volume has to be at least three times its own recent median, and at least twice the other side's multiple. Both are multiples now, so they no longer work against each other. The requirement that volume has not arrived and price has not moved stays, because that is the whole hypothesis: without it you cannot test whether the withdrawal leads anything."
+        },
+        {
+          "type": "p",
+          "text": "I changed the calibration process too. A configuration now has to fire on more than half the days, and no single day may account for too much of the total. The one I picked fires 1.91 times a day, on 10 of 18 days, with the largest single day at 21 percent of all hits, and it is still firing in recent days. That last check is precisely the one the broken version would have failed."
+        },
+        {
+          "type": "h",
+          "text": "Two things worth stealing"
+        },
+        {
+          "type": "p",
+          "text": "Before shipping any ANDed set of conditions, print how many rows pass each condition alone, then intersect them one step at a time and watch for where it collapses. It takes five minutes and it catches an entire class of filters that compile fine and can never be true."
+        },
+        {
+          "type": "p",
+          "text": "And when a detector returns nothing, work out whether nothing happened or nothing could happen. One of those is the market. The other is a bug. On a dashboard they look identical."
+        },
+        {
+          "type": "p",
+          "text": "In my case the detector is research only and never places orders, so the cost was 36 hours of missing data. Wired to real money, the cost would have been concluding that a signal does not exist when the truth is that I never actually tested it."
+        }
+      ]
+    }
+  }
+]

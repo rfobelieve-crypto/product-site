@@ -21,6 +21,7 @@ export function Nav() {
     { label: t('signals'), href: '/signals' },
     { label: t('incidents'), href: '/incidents' },
     { label: t('charts'), href: '/charts' },
+    { label: t('writeups'), href: '/writeups' },
     { label: t('liveSignal'), href: '/#live-signal' },
   ];
 
