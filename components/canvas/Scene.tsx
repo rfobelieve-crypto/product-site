@@ -2,7 +2,7 @@
 
 import { Canvas } from '@react-three/fiber';
 import { Environment, Lightformer } from '@react-three/drei';
-import { Bloom, DepthOfField, EffectComposer } from '@react-three/postprocessing';
+import { Bloom, EffectComposer } from '@react-three/postprocessing';
 import { useEffect, useState } from 'react';
 import { CandleField } from './CandleField';
 import { LightShaft } from './LightShaft';
@@ -29,10 +29,12 @@ export function Scene({
 }) {
   const isMobile = useIsMobile();
 
+  // desktop dpr cap 2 → 2.5: thin filaments are the one thing that really
+  // rewards extra pixels; mobile stays at 1.5 for battery/thermals.
   return (
     <Canvas
       camera={{ position: [0, 0.4, 6.5], fov: 38 }}
-      dpr={isMobile ? [1, 1.5] : [1, 2]}
+      dpr={isMobile ? [1, 1.5] : [1, 2.5]}
       gl={{ antialias: true, alpha: true, powerPreference: 'high-performance' }}
       onCreated={({ gl }) => gl.setClearColor(0x000000, 0)}
     >
@@ -56,16 +58,19 @@ export function Scene({
           scale={[6, 6, 1]}
         />
       </Environment>
+      {/* multisampling: 0 → 4 (2026-07-27). The Canvas' own `antialias` is
+          bypassed once an EffectComposer renders to its own buffer, so
+          multisampling={0} meant NO anti-aliasing at all — every thin candle
+          edge was stair-stepped. MSAA has to be requested here.
+          DepthOfField was removed at the same time: it ran at height={480} /
+          resolutionScale={0.6}, i.e. the whole frame was resampled from a
+          fraction of the display resolution and then blurred — parameters
+          tuned back when the candles were chunky glass blocks. Against
+          方案 C's ultra-thin filaments that reads as plain low-res mush, and
+          depth is already carried by fogExp2 plus the three rows'
+          scale/opacity falloff, so nothing is lost by dropping it. */}
       {!isMobile && (
-        <EffectComposer multisampling={0}>
-          <DepthOfField
-            worldFocusDistance={6.5}
-            worldFocusRange={3}
-            focalLength={0.05}
-            bokehScale={3}
-            resolutionScale={0.6}
-            height={480}
-          />
+        <EffectComposer multisampling={4}>
           {/* Neon-line tuning (方案 C): bloom is what turns the thin additive
               lines into glowing filaments. Dialled back 2026-07-27 (glow was
               too strong): intensity 1.0→0.55 and threshold 0.12→0.30, so only
