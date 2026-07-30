@@ -46,6 +46,12 @@ export function LiveCharts() {
         body={t('v7.body')}
       />
       <EntryCard
+        href="/charts/liquidity"
+        label={t('liquidity.label')}
+        title={t('liquidity.title')}
+        body={t('liquidity.body')}
+      />
+      <EntryCard
         href="/charts/cancel-flow"
         label={t('cancelFlow.label')}
         title={t('cancelFlow.title')}

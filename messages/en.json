@@ -340,6 +340,21 @@
     "signedInAs": "Signed in as {email}",
     "signOut": "Sign out",
     "unavailable": "Signal history unavailable right now.",
+    "board": {
+      "title": "Three strategies",
+      "live": "LIVE",
+      "shadow": "SHADOW",
+      "research": "RESEARCH",
+      "v7Name": "V7 signal engine",
+      "v7Desc": "4h dual-model direction forecast — BTC, executing live",
+      "sweepName": "Liquidity raids",
+      "sweepDesc": "Sweep-failure reversal — 29-symbol forward shadow",
+      "sweepGate": "Gate F {n}/{floor} · mean {mean}R · WR {wr}%",
+      "cancelName": "Cancel flow",
+      "cancelDesc": "Order-book cancellation microstructure — monitoring, pre-registered verdict 2026-08-10",
+      "viewChart": "View chart",
+      "unavailable": "status feed interrupted"
+    },
     "table": {
       "time": "Time (UTC)",
       "direction": "Direction",
@@ -402,6 +417,23 @@
         "unavailable": "Stats temporarily unavailable.",
         "askDominant": "more sell-side cancels ({pct}%)",
         "bidDominant": "more buy-side cancels ({pct}%)"
+      }
+    },
+    "liquidity": {
+      "label": "Liquidity raids",
+      "title": "Sweep-failure reversal — shadow liquidity map",
+      "body": "Strategy #2 (forward validation in progress) — four liquidity pool types (swing / session / prior-day / prior-week extremes) get swept, then the engine waits for the retest: resting pools, waiting sweeps, entry/exit markers and the cumulative netR curve, all on one interactive chart. Shadow mode — no live money.",
+      "shadowNote": "Forward shadow validation — rules frozen 2026-07-28, 29 symbols recorded hourly. No real capital until Gate F passes (n≥1400 and day-clustered CI low > 0).",
+      "kpi": {
+        "gate": "Gate F progress",
+        "meanR": "Mean netR / trade",
+        "ciLow": "Clustered CI low",
+        "wr": "Win rate",
+        "open": "Open signals",
+        "status": "Status",
+        "accumulating": "accumulating",
+        "pass": "PASS",
+        "unavailable": "Status temporarily unavailable"
       }
     }
   }

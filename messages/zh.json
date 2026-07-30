@@ -340,6 +340,21 @@
     "signedInAs": "目前登入身分：{email}",
     "signOut": "登出",
     "unavailable": "訊號紀錄目前暫時無法取得。",
+    "board": {
+      "title": "三策略狀態",
+      "live": "實盤",
+      "shadow": "Shadow 驗證",
+      "research": "研究監測",
+      "v7Name": "V7 訊號引擎",
+      "v7Desc": "4 小時雙模型方向預測——BTC，實盤執行中",
+      "sweepName": "流動性獵取",
+      "sweepDesc": "掃單失敗反轉——29 幣 shadow 前瞻累積中",
+      "sweepGate": "Gate F {n}/{floor} · 平均 {mean}R · 勝率 {wr}%",
+      "cancelName": "撤單流",
+      "cancelDesc": "訂單簿撤單微結構——監測中，2026-08-10 預登記判決",
+      "viewChart": "看圖表",
+      "unavailable": "狀態讀取中斷"
+    },
     "table": {
       "time": "時間（UTC）",
       "direction": "方向",
@@ -402,6 +417,23 @@
         "unavailable": "統計資料暫時無法讀取。",
         "askDominant": "賣方撤單較多（{pct}%）",
         "bidDominant": "買方撤單較多（{pct}%）"
+      }
+    },
+    "liquidity": {
+      "label": "流動性獵取",
+      "title": "掃單失敗反轉 — Shadow 流動性地圖",
+      "body": "第二條策略（前瞻驗證中）——四種流動性池（波段／時段／昨日／上週高低點）被掃穿後等回踩進場的完整覆盤圖：休眠池、等待回踩、進出場標記與累積 netR 曲線都在同一張互動圖上。目前為 shadow 模式，非實盤。",
+      "shadowNote": "Shadow 前瞻驗證中——規則已凍結（2026-07-28），每小時自動記錄 29 個幣種。通過 Gate F（n≥1400 且日聚類 CI 下緣 > 0）之前不會動用真實資金。",
+      "kpi": {
+        "gate": "Gate F 進度",
+        "meanR": "每筆平均 netR",
+        "ciLow": "日聚類 CI 下緣",
+        "wr": "勝率",
+        "open": "持倉中訊號",
+        "status": "狀態",
+        "accumulating": "累積中",
+        "pass": "通過",
+        "unavailable": "狀態暫時無法讀取"
       }
     }
   }

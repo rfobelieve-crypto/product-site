@@ -4,6 +4,7 @@ import { Link } from '@/i18n/navigation';
 import { auth, signOut } from '@/auth';
 import { Nav } from '@/components/sections/Nav';
 import { Footer } from '@/components/sections/Footer';
+import { StrategyBoard } from '@/components/sections/StrategyBoard';
 import { getSignalHistory } from '@/lib/signalHistory';
 import { pageAlternates } from '@/lib/seo';
 
@@ -52,6 +53,11 @@ export default async function SignalsPage({
           <h1 className="mt-4 font-display text-3xl font-light leading-tight sm:text-4xl">
             {t('title')}
           </h1>
+
+          {/* Public multi-strategy status board (2026-07-30): three cards,
+              live/shadow/research — numbers come from the same /public/*
+              agent routes the charts use, so nothing gated leaks here. */}
+          <StrategyBoard locale={locale} />
 
           {!session ? (
             <div className="glass-panel mt-10 max-w-md rounded-2xl border border-white/10 bg-ink/60 p-8 backdrop-blur-xl">

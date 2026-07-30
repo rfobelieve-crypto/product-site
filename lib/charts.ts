@@ -16,3 +16,10 @@ export const V7_CHART_URL =
 export const CANCEL_FLOW_CHART_I_URL =
   process.env.CANCEL_FLOW_CHART_I_URL ??
   'https://agent-mcp-production-46d7.up.railway.app/public/cancel-flow-chart-i';
+
+// Strategy #2 (sweep-failure) shadow liquidity map — BTC, last 72h window.
+// The agent route pins the symbol server-side on purpose (a public symbol
+// passthrough would fan out subprocess renders on the indicator service).
+export const LIQUIDITY_CHART_URL =
+  process.env.LIQUIDITY_CHART_URL ??
+  'https://agent-mcp-production-46d7.up.railway.app/public/liquidity-map';
