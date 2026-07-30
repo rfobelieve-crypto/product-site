@@ -343,7 +343,48 @@
     "quickLinks": "More records",
     "trackRecord": "Track record",
     "signalHistory": "Signal history",
-    "incidents": "Incidents"
+    "incidents": "Incidents",
+    "overview": {
+      "cum": "LIVE cum. net return",
+      "wr": "LIVE win rate",
+      "trades": "{n} closed trades",
+      "sweepProgress": "Liquidity-raid forward",
+      "nextVerdict": "Next verdict",
+      "nextVerdictVal": "Cancel flow · 2026-08-10"
+    },
+    "livePanel": {
+      "title": "OKX live execution",
+      "open": "Open position",
+      "flat": "Flat — waiting for the next Strong signal",
+      "held": "held {h}h",
+      "entry": "entry",
+      "cum": "Cum. net return",
+      "wr": "Win rate",
+      "trades": "Closed trades",
+      "recent": "Recent closes",
+      "time": "Entry (UTC)",
+      "dir": "Side",
+      "net": "Net",
+      "reason": "Exit reason",
+      "empty": "No closed trades yet",
+      "unavailable": "Live status temporarily unavailable"
+    },
+    "shadowPanel": {
+      "title": "Recent shadow closes (29-symbol basket)",
+      "sym": "Symbol",
+      "pool": "Pool",
+      "time": "Entry (UTC)",
+      "netr": "netR",
+      "b": "Variant B",
+      "empty": "No closed samples yet",
+      "unavailable": "Shadow status temporarily unavailable",
+      "kinds": {
+        "swing": "swing",
+        "session": "session",
+        "pdh_pdl": "prev-day",
+        "pwh_pwl": "prev-week"
+      }
+    }
   },
   "signals": {
     "meta": {

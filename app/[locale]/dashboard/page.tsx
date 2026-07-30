@@ -6,9 +6,14 @@ import { StrategyBoard } from '@/components/sections/StrategyBoard';
 import { V7KpiRow } from '@/components/sections/V7KpiRow';
 import { SweepKpiRow } from '@/components/sections/SweepKpiRow';
 import { CancelFlowKpiGrid } from '@/components/sections/CancelFlowKpiGrid';
+import { LiveTradesPanel } from '@/components/sections/LiveTradesPanel';
+import { ShadowTradesPanel } from '@/components/sections/ShadowTradesPanel';
 import { ChartDetail } from '@/components/sections/ChartDetail';
+import { StatCard, StatCardGrid } from '@/components/sections/StatCard';
 import { Link } from '@/i18n/navigation';
 import { V7_CHART_URL } from '@/lib/charts';
+import { getLiveStatus } from '@/lib/liveStatus';
+import { getSweepStatus } from '@/lib/sweepStatus';
 import { pageAlternates } from '@/lib/seo';
 
 export async function generateMetadata({
@@ -52,6 +57,8 @@ export default async function DashboardPage({
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'dashboardPage' });
   const tc = await getTranslations({ locale, namespace: 'chartsPage' });
+  const [live, sweep] = await Promise.all([getLiveStatus(), getSweepStatus()]);
+  const dash = '—';
 
   return (
     <div className="relative min-h-screen">
@@ -64,6 +71,42 @@ export default async function DashboardPage({
           <h1 className="mt-4 font-display text-3xl font-light leading-tight sm:text-4xl">
             {t('title')}
           </h1>
+
+          {/* portfolio overview strip — the "totals row" of a trading
+              console: live compounded return, live WR, forward-shadow
+              progress, next pre-registered verdict */}
+          <div className="mt-8">
+            <StatCardGrid>
+              <StatCard
+                label={t('overview.cum')}
+                value={
+                  live?.totals.cum_net_pct != null
+                    ? `${live.totals.cum_net_pct >= 0 ? '+' : ''}${live.totals.cum_net_pct.toFixed(1)}%`
+                    : dash
+                }
+                note={live ? t('overview.trades', { n: live.totals.n_closed }) : null}
+              />
+              <StatCard
+                label={t('overview.wr')}
+                value={
+                  live?.totals.win_rate_pct != null
+                    ? `${live.totals.win_rate_pct.toFixed(0)}%`
+                    : dash
+                }
+              />
+              <StatCard
+                label={t('overview.sweepProgress')}
+                value={sweep?.gate ? `${sweep.gate.n_closed}/${sweep.gate.floor}` : dash}
+                note={
+                  sweep?.gate?.mean_r != null
+                    ? `netR ${sweep.gate.mean_r >= 0 ? '+' : ''}${sweep.gate.mean_r.toFixed(2)}`
+                    : null
+                }
+              />
+              <StatCard label={t('overview.nextVerdict')} value={t('overview.nextVerdictVal')} />
+            </StatCardGrid>
+          </div>
+
           <StrategyBoard locale={locale} />
         </section>
 
@@ -71,6 +114,9 @@ export default async function DashboardPage({
           <SectionHeader title={t('v7Section')} href="/charts/v7" cta={t('detail')} />
           <div className="mt-4">
             <V7KpiRow locale={locale} />
+          </div>
+          <div className="mt-4">
+            <LiveTradesPanel locale={locale} live={live} />
           </div>
         </section>
         <div className="mx-auto mt-6 max-w-6xl">
@@ -81,6 +127,9 @@ export default async function DashboardPage({
           <SectionHeader title={t('sweepSection')} href="/charts/liquidity" cta={t('detail')} />
           <div className="mt-4">
             <SweepKpiRow locale={locale} />
+          </div>
+          <div className="mt-4">
+            <ShadowTradesPanel locale={locale} sweep={sweep} />
           </div>
           <p className="mt-3 font-body text-xs leading-relaxed text-mist/50">
             {tc('liquidity.shadowNote')}

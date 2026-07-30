@@ -343,7 +343,48 @@
     "quickLinks": "更多紀錄",
     "trackRecord": "績效紀錄",
     "signalHistory": "訊號紀錄",
-    "incidents": "事故紀錄"
+    "incidents": "事故紀錄",
+    "overview": {
+      "cum": "LIVE 累計淨報酬（複利）",
+      "wr": "LIVE 勝率",
+      "trades": "{n} 筆已平倉",
+      "sweepProgress": "流動性獵取 forward",
+      "nextVerdict": "下一個判決",
+      "nextVerdictVal": "撤單流 · 2026-08-10"
+    },
+    "livePanel": {
+      "title": "OKX 實盤執行",
+      "open": "當前持倉",
+      "flat": "空手——等待下一個 Strong 訊號",
+      "held": "已持有 {h} 小時",
+      "entry": "進場價",
+      "cum": "累計淨報酬",
+      "wr": "勝率",
+      "trades": "已平倉筆數",
+      "recent": "最近平倉",
+      "time": "進場（UTC）",
+      "dir": "方向",
+      "net": "淨報酬",
+      "reason": "出場原因",
+      "empty": "尚無平倉紀錄",
+      "unavailable": "live 狀態暫時無法讀取"
+    },
+    "shadowPanel": {
+      "title": "Shadow 最近平倉（29 幣籃）",
+      "sym": "幣種",
+      "pool": "池子",
+      "time": "進場（UTC）",
+      "netr": "netR",
+      "b": "變體B",
+      "empty": "尚無平倉樣本",
+      "unavailable": "shadow 狀態暫時無法讀取",
+      "kinds": {
+        "swing": "波段",
+        "session": "時段",
+        "pdh_pdl": "昨日高低",
+        "pwh_pwl": "上週高低"
+      }
+    }
   },
   "signals": {
     "meta": {
