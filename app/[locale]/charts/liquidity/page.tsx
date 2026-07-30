@@ -29,7 +29,7 @@ export default async function LiquidityChartPage({
     <div className="relative min-h-screen">
       <Nav />
       <main className="content-layer pb-24 pt-24">
-        <div className="mx-auto max-w-5xl px-6 sm:px-16">
+        <div className="mx-auto max-w-7xl px-4 sm:px-8">
           <Link
             href="/charts"
             className="font-body text-xs uppercase tracking-[0.25em] text-mist/50 transition-colors hover:text-mist"
@@ -37,13 +37,13 @@ export default async function LiquidityChartPage({
             ← {t('backToCharts')}
           </Link>
         </div>
-        <div className="mx-auto mt-8 max-w-5xl px-6 sm:px-16">
+        <div className="mx-auto mt-8 max-w-7xl px-4 sm:px-8">
           <SweepKpiRow locale={locale} />
           <p className="mt-4 font-body text-xs leading-relaxed text-mist/50">
             {t('liquidity.shadowNote')}
           </p>
         </div>
-        <div className="mt-6">
+        <div className="mx-auto mt-4 max-w-7xl px-4 sm:px-8">
           <ChartDetail
             src={LIQUIDITY_CHART_URL}
             label={t('liquidity.label')}

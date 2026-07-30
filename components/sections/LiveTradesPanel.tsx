@@ -20,7 +20,7 @@ export async function LiveTradesPanel({
   const op = live?.open_position;
 
   return (
-    <div className="glass-panel rounded-2xl border border-white/10 bg-ink/60 p-6 backdrop-blur-xl">
+    <div className="rounded-xl border border-white/[0.08] bg-ink/70 p-4 sm:p-5">
       <div className="grid gap-6 sm:grid-cols-2">
         <div>
           <div className="font-body text-xs uppercase tracking-[0.25em] text-iris-violet/80">

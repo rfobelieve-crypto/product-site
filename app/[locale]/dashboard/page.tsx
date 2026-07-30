@@ -32,8 +32,8 @@ export async function generateMetadata({
 
 function SectionHeader({ title, href, cta }: { title: string; href: string; cta: string }) {
   return (
-    <div className="flex items-baseline justify-between gap-4">
-      <h2 className="font-display text-xl font-light">{title}</h2>
+    <div className="flex items-baseline justify-between gap-4 border-l-2 border-iris-cyan/70 pl-3">
+      <h2 className="font-display text-base font-light">{title}</h2>
       <Link
         href={href}
         className="whitespace-nowrap font-body text-xs uppercase tracking-[0.25em] text-iris-cyan/80 transition-colors hover:text-iris-cyan"
@@ -64,7 +64,7 @@ export default async function DashboardPage({
     <div className="relative min-h-screen">
       <Nav />
       <main className="content-layer pb-24 pt-32">
-        <section className="mx-auto max-w-6xl px-6 sm:px-16">
+        <section className="mx-auto max-w-7xl px-4 sm:px-8">
           <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-cyan/80">
             {t('eyebrow')}
           </span>
@@ -75,7 +75,7 @@ export default async function DashboardPage({
           {/* portfolio overview strip — the "totals row" of a trading
               console: live compounded return, live WR, forward-shadow
               progress, next pre-registered verdict */}
-          <div className="mt-8">
+          <div className="mt-6">
             <StatCardGrid>
               <StatCard
                 label={t('overview.cum')}
@@ -110,25 +110,25 @@ export default async function DashboardPage({
           <StrategyBoard locale={locale} />
         </section>
 
-        <section className="mx-auto mt-14 max-w-6xl px-6 sm:px-16">
+        <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
           <SectionHeader title={t('v7Section')} href="/charts/v7" cta={t('detail')} />
-          <div className="mt-4">
+          <div className="mt-3">
             <V7KpiRow locale={locale} />
           </div>
-          <div className="mt-4">
+          <div className="mt-3">
             <LiveTradesPanel locale={locale} live={live} />
           </div>
         </section>
-        <div className="mx-auto mt-6 max-w-6xl">
+        <div className="mx-auto mt-3 max-w-7xl px-4 sm:px-8">
           <ChartDetail src={V7_CHART_URL} label={tc('v7.label')} title={tc('v7.title')} />
         </div>
 
-        <section className="mx-auto mt-14 max-w-6xl px-6 sm:px-16">
+        <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
           <SectionHeader title={t('sweepSection')} href="/charts/liquidity" cta={t('detail')} />
-          <div className="mt-4">
+          <div className="mt-3">
             <SweepKpiRow locale={locale} />
           </div>
-          <div className="mt-4">
+          <div className="mt-3">
             <ShadowTradesPanel locale={locale} sweep={sweep} />
           </div>
           <p className="mt-3 font-body text-xs leading-relaxed text-mist/50">
@@ -136,14 +136,14 @@ export default async function DashboardPage({
           </p>
         </section>
 
-        <section className="mx-auto mt-14 max-w-6xl px-6 sm:px-16">
+        <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
           <SectionHeader title={t('cancelSection')} href="/charts/cancel-flow" cta={t('detail')} />
-          <div className="mt-4">
+          <div className="mt-3">
             <CancelFlowKpiGrid locale={locale} />
           </div>
         </section>
 
-        <section className="mx-auto mt-14 max-w-6xl px-6 sm:px-16">
+        <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
           <h2 className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet/80">
             {t('quickLinks')}
           </h2>

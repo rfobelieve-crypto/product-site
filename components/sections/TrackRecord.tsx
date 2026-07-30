@@ -46,7 +46,7 @@ function Metric({
 }) {
   const t = useTranslations('trackRecord');
   return (
-    <div className="glass-panel rounded-2xl border border-white/10 bg-ink/60 p-6 backdrop-blur-xl sm:p-8">
+    <div className="rounded-xl border border-white/[0.08] bg-ink/70 p-5">
       <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet/80">
         {label}
       </span>
@@ -70,7 +70,7 @@ function Metric({
 export function TrackRecord({ data }: { data: TrackRecordData | null }) {
   const t = useTranslations('trackRecord');
   return (
-    <section className="relative px-6 py-32 sm:px-16">
+    <section className="relative mx-auto max-w-7xl px-4 py-16 sm:px-8">
       <motion.div
         initial={{ opacity: 0, y: 16 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -95,7 +95,7 @@ export function TrackRecord({ data }: { data: TrackRecordData | null }) {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true, margin: '-10%' }}
           transition={{ duration: 0.6, delay: 0.1 }}
-          className="grid gap-6 sm:grid-cols-2"
+          className="grid gap-3 sm:grid-cols-2"
         >
           <Metric
             label={t('signalLayer')}

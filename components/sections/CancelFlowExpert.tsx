@@ -11,7 +11,7 @@
 export function CancelFlowExpert({ src, title }: { src: string; title: string }) {
   return (
     <div className="mx-auto max-w-5xl px-6 sm:px-16">
-      <div className="glass-panel overflow-hidden rounded-2xl border border-white/10 bg-ink/60 backdrop-blur-xl">
+      <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-ink/70">
         {/* No loading="lazy" — the embedded page computes its panel
             heights from window.innerHeight once, synchronously, at first
             paint; a lazily-activated iframe reads that before its box has

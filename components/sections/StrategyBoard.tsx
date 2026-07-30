@@ -33,7 +33,7 @@ function Card({
   cta: string;
 }) {
   return (
-    <div className="glass-panel flex flex-col rounded-2xl border border-white/10 bg-ink/60 p-6 backdrop-blur-xl">
+    <div className="flex flex-col rounded-xl border border-white/[0.08] bg-ink/70 p-4">
       <div className="flex items-center justify-between gap-3">
         <span className="font-display text-lg font-light">{name}</span>
         <span
@@ -42,11 +42,11 @@ function Card({
           {modeLabel}
         </span>
       </div>
-      <p className="mt-2 font-body text-xs leading-relaxed text-mist/55">{desc}</p>
-      <div className="mt-4 font-body text-sm text-mist/80">{stat}</div>
+      <p className="mt-1.5 font-body text-[11px] leading-relaxed text-mist/50">{desc}</p>
+      <div className="mt-3 font-body text-sm text-mist/85 tabular-nums">{stat}</div>
       <Link
         href={href}
-        className="mt-4 inline-flex items-center gap-2 font-body text-xs uppercase tracking-[0.25em] text-iris-cyan/80 transition-colors hover:text-iris-cyan"
+        className="mt-3 inline-flex items-center gap-2 font-body text-[11px] uppercase tracking-[0.2em] text-iris-cyan/80 transition-colors hover:text-iris-cyan"
       >
         {cta}
         <span aria-hidden>→</span>
@@ -81,7 +81,7 @@ export async function StrategyBoard({ locale }: { locale: string }) {
       <h2 className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet/80">
         {t('title')}
       </h2>
-      <div className="mt-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
         <Card
           mode="live"
           modeLabel={t('live')}

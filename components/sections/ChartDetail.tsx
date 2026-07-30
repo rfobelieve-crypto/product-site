@@ -10,14 +10,14 @@ export function ChartDetail({
   title: string;
 }) {
   return (
-    <div className="glass-panel overflow-hidden rounded-2xl border border-white/10 bg-ink/60 backdrop-blur-xl">
-      <div className="p-6 pb-0 sm:p-8 sm:pb-0">
-        <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet/80">
+    <div className="overflow-hidden rounded-xl border border-white/[0.08] bg-ink/70">
+      <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1 border-b border-white/[0.06] px-4 py-2.5 sm:px-5">
+        <span className="font-body text-[10px] uppercase tracking-[0.2em] text-iris-violet/80">
           {label}
         </span>
-        <h1 className="mt-2 font-display text-xl font-light">{title}</h1>
+        <h1 className="font-display text-base font-light">{title}</h1>
       </div>
-      <div className="p-4 sm:p-6">
+      <div className="p-2 sm:p-3">
         {/* Already-rendered interactive HTML (TradingView Lightweight
             Charts — zoom/pan/crosshair built in) relayed from Railway; see
             lib/charts.ts. The page renders its own dark background/loading

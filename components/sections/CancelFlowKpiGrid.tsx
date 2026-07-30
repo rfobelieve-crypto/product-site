@@ -32,7 +32,7 @@ function CoinCard({
   // side," no valence attached.
   const skewColor = skew != null && skew >= 0 ? 'text-iris-violet/80' : 'text-iris-cyan/80';
   return (
-    <div className="glass-panel rounded-2xl border border-white/10 bg-ink/60 p-5 backdrop-blur-xl">
+    <div className="rounded-xl border border-white/[0.08] bg-ink/70 p-4">
       <div className="font-body text-xs uppercase tracking-[0.2em] text-mist/50">{coin}</div>
       {mature && cancelRatio != null ? (
         <>
@@ -69,7 +69,7 @@ export async function CancelFlowKpiGrid({ locale }: { locale: string }) {
     <div>
       <h2 className="font-display text-lg font-light">{t('title')}</h2>
       <p className="mt-2 max-w-2xl font-body text-sm text-mist/55">{t('body')}</p>
-      <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-6 grid grid-cols-2 gap-2 sm:grid-cols-3 lg:grid-cols-6">
         {stats.coins.map((c) => {
           const skew = c.ask_bid_skew_pct;
           const skewText = skew == null ? null : t(skew >= 0 ? 'askDominant' : 'bidDominant',

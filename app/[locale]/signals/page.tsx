@@ -46,7 +46,7 @@ export default async function SignalsPage({
     <div className="relative min-h-screen">
       <Nav />
       <main className="content-layer pt-32">
-        <section className="px-6 py-16 sm:px-16">
+        <section className="mx-auto max-w-7xl px-4 py-16 sm:px-8">
           <span className="font-body text-xs uppercase tracking-[0.3em] text-iris-cyan/80">
             {t('eyebrow')}
           </span>
@@ -109,38 +109,38 @@ async function SignalTable() {
     return <p className="mt-10 font-body text-sm text-mist/50">{t('unavailable')}</p>;
   }
   return (
-    <div className="glass-panel mt-10 overflow-x-auto rounded-2xl border border-white/10 bg-ink/50 backdrop-blur-xl">
-      <table className="w-full min-w-[560px] font-body text-sm">
+    <div className="mt-8 overflow-x-auto rounded-xl border border-white/[0.08] bg-ink/70">
+      <table className="w-full min-w-[560px] font-body text-xs">
         <thead>
-          <tr className="border-b border-white/10 text-left text-xs uppercase tracking-wider text-mist/50">
-            <th className="px-5 py-3">{t('table.time')}</th>
-            <th className="px-5 py-3">{t('table.direction')}</th>
-            <th className="px-5 py-3">{t('table.tier')}</th>
-            <th className="px-5 py-3">{t('table.confidence')}</th>
-            <th className="px-5 py-3">{t('table.regime')}</th>
-            <th className="px-5 py-3">{t('table.outcome')}</th>
+          <tr className="border-b border-white/[0.08] text-left text-[10px] uppercase tracking-wider text-mist/45">
+            <th className="px-3 py-2">{t('table.time')}</th>
+            <th className="px-3 py-2">{t('table.direction')}</th>
+            <th className="px-3 py-2">{t('table.tier')}</th>
+            <th className="px-3 py-2">{t('table.confidence')}</th>
+            <th className="px-3 py-2">{t('table.regime')}</th>
+            <th className="px-3 py-2">{t('table.outcome')}</th>
           </tr>
         </thead>
         <tbody>
           {history.signals.map((s, i) => (
-            <tr key={i} className="border-b border-white/5 last:border-0">
-              <td className="px-5 py-3 text-mist/60">{s.signal_time?.replace('T', ' ') ?? '—'}</td>
-              <td className={`px-5 py-3 font-medium ${s.direction ? DIRECTION_COLOR[s.direction] ?? '' : ''}`}>
+            <tr key={i} className="border-b border-white/5 transition-colors last:border-0 hover:bg-white/[0.03]">
+              <td className="px-3 py-2 text-mist/60">{s.signal_time?.replace('T', ' ') ?? '—'}</td>
+              <td className={`px-3 py-2 font-medium ${s.direction ? DIRECTION_COLOR[s.direction] ?? '' : ''}`}>
                 {localized(s.direction, directions) ?? '—'}
               </td>
-              <td className="px-5 py-3 text-mist/60">{localized(s.tier, tiers) ?? '—'}</td>
-              <td className="px-5 py-3 text-mist/60">
+              <td className="px-3 py-2 text-mist/60">{localized(s.tier, tiers) ?? '—'}</td>
+              <td className="px-3 py-2 text-mist/60">
                 {s.confidence != null ? s.confidence.toFixed(0) : '—'}
               </td>
-              <td className="px-5 py-3 text-mist/60">{localized(s.regime, regimes) ?? '—'}</td>
-              <td className="px-5 py-3 text-mist/60">
+              <td className="px-3 py-2 text-mist/60">{localized(s.regime, regimes) ?? '—'}</td>
+              <td className="px-3 py-2 text-mist/60">
                 {s.correct == null ? t('table.pending') : s.correct ? t('table.hit') : t('table.miss')}
               </td>
             </tr>
           ))}
         </tbody>
       </table>
-      <p className="border-t border-white/10 p-5 font-body text-xs leading-relaxed text-mist/50">
+      <p className="border-t border-white/[0.08] p-4 font-body text-[11px] leading-relaxed text-mist/50">
         {history.disclaimer}
       </p>
     </div>
