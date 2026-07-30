@@ -16,6 +16,7 @@ export function Nav() {
 
   const LINKS = [
     { label: t('home'), href: '/#top' },
+    { label: t('dashboard'), href: '/dashboard' },
     { label: t('system'), href: '/system' },
     { label: t('trackRecord'), href: '/track-record' },
     { label: t('signals'), href: '/signals' },

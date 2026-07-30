@@ -13,6 +13,7 @@
     "system": "系統",
     "trackRecord": "績效紀錄",
     "signals": "訊號",
+    "dashboard": "儀表板",
     "incidents": "事故紀錄",
     "charts": "圖表",
     "writeups": "研究筆記",
@@ -327,6 +328,22 @@
         "network": "網路錯誤——稍後再試一次。"
       }
     }
+  },
+  "dashboardPage": {
+    "meta": {
+      "title": "交易儀表板 — flowbot",
+      "description": "三策略總覽——實盤 V7、shadow 流動性獵取、研究中撤單流的狀態、關鍵指標與圖表，一頁看完。"
+    },
+    "eyebrow": "交易儀表板",
+    "title": "一頁看完整個系統。",
+    "v7Section": "V7 訊號引擎 — 實盤",
+    "sweepSection": "流動性獵取 — Shadow 驗證",
+    "cancelSection": "撤單流 — 研究監測",
+    "detail": "完整圖表頁",
+    "quickLinks": "更多紀錄",
+    "trackRecord": "績效紀錄",
+    "signalHistory": "訊號紀錄",
+    "incidents": "事故紀錄"
   },
   "signals": {
     "meta": {

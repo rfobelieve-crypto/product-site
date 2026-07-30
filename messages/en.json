@@ -13,6 +13,7 @@
     "system": "System",
     "trackRecord": "Track record",
     "signals": "Signals",
+    "dashboard": "Dashboard",
     "incidents": "Incidents",
     "charts": "Charts",
     "writeups": "Write-ups",
@@ -327,6 +328,22 @@
         "network": "Network error — try again shortly."
       }
     }
+  },
+  "dashboardPage": {
+    "meta": {
+      "title": "Trading dashboard — flowbot",
+      "description": "The whole system on one page — live V7, shadow liquidity raids, cancel-flow research: status, key metrics and charts."
+    },
+    "eyebrow": "Trading dashboard",
+    "title": "The whole system, one page.",
+    "v7Section": "V7 signal engine — LIVE",
+    "sweepSection": "Liquidity raids — SHADOW",
+    "cancelSection": "Cancel flow — RESEARCH",
+    "detail": "Full chart page",
+    "quickLinks": "More records",
+    "trackRecord": "Track record",
+    "signalHistory": "Signal history",
+    "incidents": "Incidents"
   },
   "signals": {
     "meta": {

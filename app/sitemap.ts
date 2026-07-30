@@ -5,12 +5,14 @@ import { listWriteups } from '@/lib/writeups';
 // login/register deliberately excluded.
 const PATHS = [
   '/',
+  '/dashboard',
   '/system',
   '/track-record',
   '/signals',
   '/incidents',
   '/charts',
   '/charts/v7',
+  '/charts/liquidity',
   '/charts/cancel-flow',
   '/writeups',
   '/privacy',
