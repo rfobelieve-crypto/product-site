@@ -481,7 +481,7 @@
       "label": "Liquidity raids",
       "title": "Sweep-failure reversal — shadow liquidity map",
       "body": "Strategy #2 (forward validation in progress) — four liquidity pool types (swing / session / prior-day / prior-week extremes) get swept, then the engine waits for the retest: resting pools, waiting sweeps, entry/exit markers and the cumulative netR curve, all on one interactive chart. Shadow mode — no live money.",
-      "shadowNote": "Forward shadow validation — rules frozen 2026-07-28, 29 symbols recorded hourly. No real capital until Gate F passes (n≥1400 and day-clustered CI low > 0).",
+      "shadowNote": "Forward shadow validation — rules frozen 2026-07-28, 29 symbols recorded hourly; no real capital until Gate F passes (n≥1400 and day-clustered CI low > 0). Variants: A = original (swing pools, no filter); B = four pool types + shallow pierce ≤0.25 ATR (bright marks / column B); C = B + flow-confirm close-back (observation cohort, column C).",
       "kpi": {
         "gate": "Gate F progress",
         "meanR": "Mean netR / trade",
