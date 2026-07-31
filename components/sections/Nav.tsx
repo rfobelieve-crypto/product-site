@@ -14,16 +14,16 @@ export function Nav() {
   const locale = useLocale();
   const pathname = usePathname();
 
+  // Consolidated 2026-07-31 (operator: nav had too many overlapping
+  // entries). Track record / signal history / incidents / live-signal all
+  // remain live at their URLs and are one tap away via the dashboard's
+  // quick links — the menu keeps only the top-level destinations.
   const LINKS = [
     { label: t('home'), href: '/#top' },
     { label: t('dashboard'), href: '/dashboard' },
-    { label: t('system'), href: '/system' },
-    { label: t('trackRecord'), href: '/track-record' },
-    { label: t('signals'), href: '/signals' },
-    { label: t('incidents'), href: '/incidents' },
     { label: t('charts'), href: '/charts' },
+    { label: t('system'), href: '/system' },
     { label: t('writeups'), href: '/writeups' },
-    { label: t('liveSignal'), href: '/#live-signal' },
   ];
 
   return (
