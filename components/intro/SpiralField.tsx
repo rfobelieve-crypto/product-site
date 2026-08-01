@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { gsap } from 'gsap';
 
 // Session-intro visual: a spiral starfield that dollies the camera forward
 // through it. Ported from a 21st.dev community bookmark
@@ -188,7 +187,8 @@ class Star {
 }
 
 class SpiralController {
-  private timeline: gsap.core.Timeline;
+  private raf = 0;
+  private stopped = false;
   time = 0;
   private ctx: CanvasRenderingContext2D;
   private width: number;
@@ -210,13 +210,25 @@ class SpiralController {
     this.dotColor = dotColor;
     this.accentColor = accentColor;
     this.stars = Array.from({ length: NUMBER_OF_STARS }, () => new Star());
-    this.timeline = gsap.timeline({ repeat: -1 }).to(this, {
-      time: 1,
-      duration: LOOP_DURATION,
-      repeat: -1,
-      ease: 'none',
-      onUpdate: () => this.render(),
-    });
+    this.start();
+  }
+
+  // Was a GSAP timeline driving `time` 0->1 on repeat. In production it
+  // rendered exactly one frame and then froze: the component re-created
+  // this controller on mount (see the dimensions effect below), the old
+  // timeline was killed, and the replacement never ticked. Verified live
+  // — fillRect/arc were called 0 times in 1.5s on the mounted canvas.
+  // A plain rAF loop removes the dependency on GSAP's ticker entirely
+  // and is trivially checkable. The spiral maths is untouched.
+  private start() {
+    const startedAt = performance.now();
+    const frame = (now: number) => {
+      if (this.stopped) return;
+      this.time = ((now - startedAt) / 1000 / LOOP_DURATION) % 1;
+      this.render();
+      this.raf = requestAnimationFrame(frame);
+    };
+    this.raf = requestAnimationFrame(frame);
   }
 
   private drawStartDot() {
@@ -273,7 +285,8 @@ class SpiralController {
   }
 
   destroy() {
-    this.timeline.kill();
+    this.stopped = true;
+    cancelAnimationFrame(this.raf);
   }
 }
 
@@ -288,14 +301,18 @@ export function SpiralField({
 }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const controllerRef = useRef<SpiralController | null>(null);
-  const [dimensions, setDimensions] = useState({
-    width: window.innerWidth,
-    height: window.innerHeight,
-  });
+  const [dimensions, setDimensions] = useState(() => ({
+    width: typeof window === 'undefined' ? 0 : window.innerWidth,
+    height: typeof window === 'undefined' ? 0 : window.innerHeight,
+  }));
 
   useEffect(() => {
     const handleResize = () =>
-      setDimensions({ width: window.innerWidth, height: window.innerHeight });
+      setDimensions((prev) =>
+        prev.width === window.innerWidth && prev.height === window.innerHeight
+          ? prev // same numbers -> same object -> controller survives
+          : { width: window.innerWidth, height: window.innerHeight },
+      );
     handleResize();
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);

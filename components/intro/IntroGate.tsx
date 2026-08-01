@@ -25,11 +25,15 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
   const t = useTranslations('intro');
   const [showGate, setShowGate] = useState<boolean | null>(null);
   const [reducedMotion, setReducedMotion] = useState(false);
+  const [showSpiral, setShowSpiral] = useState(false);
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     setReducedMotion(reduced);
     setShowGate(!reduced && sessionStorage.getItem(SESSION_KEY) !== '1');
+    // text (delay 0.3, duration 1.8) reads first; the field joins under it
+    const t = setTimeout(() => setShowSpiral(true), 1100);
+    return () => clearTimeout(t);
   }, []);
 
   const dismiss = () => {
@@ -51,7 +55,20 @@ export function IntroGate({ children }: { children: React.ReactNode }) {
             transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
             className="fixed inset-0 z-[60] flex items-center justify-center bg-void"
           >
-            {!reducedMotion && <SpiralField className="absolute inset-0" />}
+            {/* Sequence (operator, 2026-08-02): the TEXT lands first, the
+                spinning field arrives behind it. Mounting the spiral late
+                also keeps 5000 stars off the critical path of the first
+                paint. */}
+            {!reducedMotion && showSpiral && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 1.6, ease: [0.16, 1, 0.3, 1] }}
+                className="absolute inset-0"
+              >
+                <SpiralField className="absolute inset-0" />
+              </motion.div>
+            )}
             <div className="pointer-events-none absolute inset-x-0 top-1/2 h-40 -translate-y-1/2 px-6">
               <SmokyText
                 text={t('title')}
