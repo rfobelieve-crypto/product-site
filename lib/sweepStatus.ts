@@ -8,8 +8,32 @@ export type SweepGate = {
   status: 'PASS' | 'accumulating' | 'empty';
 };
 
+export type LedgerRow = {
+  key: string;
+  label_zh?: string;
+  n_closed: number;
+  n_open: number;
+  mean_r: number | null;
+  ci_low: number | null;
+  wr_pct: number | null;
+  status: string;
+};
+
+export type ResearchClocks = {
+  gate_b_closed: number;
+  gate_b_target: number;
+  depth_days: number;
+  depth_target: number;
+  tracked_strong: number;
+  next_verdict: string;
+} | null;
+
 export type SweepStatus = {
   gate: SweepGate;
+  cohorts?: LedgerRow[];
+  combos?: LedgerRow[];
+  clocks?: ResearchClocks;
+  watchlist_registered?: string;
   recent: {
     symbol: string;
     kind: string;

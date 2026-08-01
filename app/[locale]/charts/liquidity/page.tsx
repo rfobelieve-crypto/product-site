@@ -3,6 +3,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { ChartDetail } from '@/components/sections/ChartDetail';
 import { SweepKpiRow } from '@/components/sections/SweepKpiRow';
+import { ShadowLedgerBoard } from '@/components/sections/ShadowLedgerBoard';
+import { getSweepStatus } from '@/lib/sweepStatus';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
 import { LIQUIDITY_CHART_URL } from '@/lib/charts';
@@ -25,6 +27,7 @@ export default async function LiquidityChartPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'chartsPage' });
+  const sweep = await getSweepStatus();
   return (
     <div className="relative min-h-screen">
       <Nav />
@@ -52,6 +55,7 @@ export default async function LiquidityChartPage({
               <p>{t('liquidity.guideNumbers')}</p>
             </div>
           </details>
+          <ShadowLedgerBoard locale={locale} sweep={sweep} />
         </div>
         <div className="mx-auto mt-4 max-w-7xl px-4 sm:px-8">
           <ChartDetail

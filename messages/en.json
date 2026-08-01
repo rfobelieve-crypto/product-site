@@ -43,7 +43,35 @@
         "title": "Win rate, with the uncertainty attached",
         "body": "Signal and trade win rates with Wilson confidence intervals, and max drawdown."
       },
-      "signals": {
+      "ledger": {
+    "title": "Research ledger board",
+    "intro": "One hourly recorder feeds every ledger — the variant ladder and the combo watchlist are two labelings of the same signals. All numbers are forward-only; no backtest rows here.",
+    "unavailable": "Ledger feed temporarily unavailable.",
+    "cols": {
+      "ledger": "Ledger",
+      "closed": "Closed",
+      "open": "Open",
+      "mean": "Mean R",
+      "ci": "CI low",
+      "wr": "WR",
+      "state": "State",
+      "accumulating": "accumulating"
+    },
+    "cohortsHead": "Variant ladder (D⊂C⊂B⊂A nested filters + E instinct line)",
+    "combosHead": "Combo watchlist (frozen {date} · eight nominees · immutable definitions)",
+    "clocks": {
+      "gateB": "V7 Gate B",
+      "gateBNote": "30 unlocks the sizing gauntlet (~Sept)",
+      "depth": "L2 order book",
+      "depthNote": "90d opens the minute-level validation (~Oct)",
+      "tracked": "V7 signal sample",
+      "trackedNote": "Strong signals with outcomes",
+      "verdict": "Next verdict",
+      "verdictNote": "cancel-flow lead-IC auto verdict"
+    },
+    "promotion": "Promotion bar (all three required): enough forward samples + day-clustered CI low > 0 + the October pre-registered validation. No historical number on this board justifies going live."
+  },
+  "signals": {
         "kicker": "Signals",
         "title": "Full tracked-signal history",
         "body": "Every call, direction to realized outcome — sign in to see the whole list."

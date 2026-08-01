@@ -8,6 +8,7 @@ import { SweepKpiRow } from '@/components/sections/SweepKpiRow';
 import { CancelFlowKpiGrid } from '@/components/sections/CancelFlowKpiGrid';
 import { LiveTradesPanel } from '@/components/sections/LiveTradesPanel';
 import { ShadowTradesPanel } from '@/components/sections/ShadowTradesPanel';
+import { ShadowLedgerBoard } from '@/components/sections/ShadowLedgerBoard';
 import { ChartDetail } from '@/components/sections/ChartDetail';
 import { StatCard, StatCardGrid } from '@/components/sections/StatCard';
 import { Link } from '@/i18n/navigation';
@@ -131,6 +132,7 @@ export default async function DashboardPage({
           <div className="mt-3">
             <ShadowTradesPanel locale={locale} sweep={sweep} />
           </div>
+          <ShadowLedgerBoard locale={locale} sweep={sweep} />
           <p className="mt-3 font-body text-xs leading-relaxed text-mist/50">
             {tc('liquidity.shadowNote')}
           </p>

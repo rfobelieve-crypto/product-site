@@ -43,7 +43,35 @@
         "title": "勝率，附帶不確定性",
         "body": "訊號與交易勝率（附 Wilson 信賴區間），以及最大回撤。"
       },
-      "signals": {
+      "ledger": {
+    "title": "研究帳本總覽",
+    "intro": "同一個每小時記錄器餵所有帳本——變體階梯與組合 watchlist 是對同一批訊號的兩套標籤。每筆數字全前瞻，歷史回測不在此列。",
+    "unavailable": "帳本資料暫時無法讀取。",
+    "cols": {
+      "ledger": "帳本",
+      "closed": "平倉",
+      "open": "持倉",
+      "mean": "每筆均R",
+      "ci": "CI下緣",
+      "wr": "勝率",
+      "state": "狀態",
+      "accumulating": "累積中"
+    },
+    "cohortsHead": "變體階梯（D⊂C⊂B⊂A 巢狀濾網＋E 盤感線）",
+    "combosHead": "組合 watchlist（{date} 凍結·八個提名·定義不可改）",
+    "clocks": {
+      "gateB": "V7 Gate B",
+      "gateBNote": "滿 30 解鎖 sizing 驗證（~9月）",
+      "depth": "L2 撤單簿",
+      "depthNote": "滿 90 天開分鐘級驗證（~10月）",
+      "tracked": "V7 訊號樣本",
+      "trackedNote": "Strong 已有結果的筆數",
+      "verdict": "下個判決",
+      "verdictNote": "撤單流 lead-IC 自動判決"
+    },
+    "promotion": "上線判準（缺一不可）：forward 樣本足＋日聚類 CI 下緣 > 0＋十月預先登記驗證通過。表上任何歷史亮眼數字都不構成上線理由。"
+  },
+  "signals": {
         "kicker": "訊號",
         "title": "完整訊號追蹤紀錄",
         "body": "每一筆判斷，從方向到實際結果——登入查看完整列表。"
