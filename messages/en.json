@@ -43,7 +43,7 @@
         "title": "Win rate, with the uncertainty attached",
         "body": "Signal and trade win rates with Wilson confidence intervals, and max drawdown."
       },
-  "signals": {
+      "signals": {
         "kicker": "Signals",
         "title": "Full tracked-signal history",
         "body": "Every call, direction to realized outcome — sign in to see the whole list."
@@ -396,7 +396,11 @@
     "c3stat": "Un-swept pool <=1.8 ATR behind: 68% (p=0.0005, strongest)",
     "trigger": "Adoption trigger: {n} / {target} new Strong signals",
     "gap": "90d kept-vs-vetoed gap {gap}pp (threshold {thr}pp)",
-    "note": "All three passed permutation + bootstrap + quarterly checks; alerts now carry the terrain stamp (display-only). Executor adoption is tabled only when the trigger fills with the gap held; the operator picks the tier."
+    "note": "All three passed permutation + bootstrap + quarterly checks; alerts now carry the terrain stamp (display-only). Executor adoption is tabled only when the trigger fills with the gap held; the operator picks the tier.",
+    "c4": "Pool density (4th dim, verified, not yet integrated)",
+    "c4stat": ">=3 un-swept pools within 3 ATR ahead: 54% vs 62% when <=1 (p=0.0225)",
+    "c4tag": "queued",
+    "campaign": "Terrain campaign closed 2026-08-02: ten dimensions tested, four confirmed (all liquidity), two at the doorstep (discount, liquidation wall) with one re-review each, zero seats for the market-structure layer."
   },
   "ledger": {
     "title": "Research ledger board",
@@ -522,11 +526,11 @@
       "title": "Sweep-failure reversal — shadow liquidity map",
       "body": "Strategy #2 (forward validation in progress) — four liquidity pool types (swing / session / prior-day / prior-week extremes) get swept, then the engine waits for the retest: resting pools, waiting sweeps, entry/exit markers and the cumulative netR curve, all on one interactive chart. Shadow mode — no live money.",
       "shadowNote": "Forward shadow validation — rules frozen 2026-07-28, 29 symbols recorded hourly; no real capital until Gate F passes (n≥1400 and day-clustered CI low > 0). Variants: A = original (swing pools, no filter); B = four pool types + shallow pierce ≤0.25 ATR (bright marks / column B); C = B + close-back confirmation (1m price path; column C); D = C + high attack volume vs the symbol's own history — the order-flow combination (column D).",
-            "guideTitle": "Plain guide: flags and tracked combos",
+      "guideTitle": "Plain guide: flags and tracked combos",
       "guideFlags": "R close-back = price pierced the level then closed back inside within the hour (stops taken, snap back) | V volume = attack-minute volume high vs the symbol's own norm | Q stop-driven = OI down + taker pushing with the break (a stop sweep, not new money) | FAST = attack over within 5 minutes | PA = the V7 model sides with the fade | LIQ = liquidation burst",
       "guideCombos": "Eight tracked combos (historical stats are an entry ticket, not evidence): R∧V | R∧Q | R∧V∧Q triple-confirm (fattest, ~70% WR) | R∧FAST | R∧FAST∧Q | R alone | PA | V∧LIQ",
       "guideNumbers": "Reading the numbers: n = occurrences; netR = average gain per trade as a fraction of the stop distance, net of fees. Common core: pierce, take the stops, snap back — the completed-hunt signature. Promotion needs the forward scoreboard (accumulating hourly) plus the October pre-registered validation.",
-"kpi": {
+      "kpi": {
         "gate": "Gate F progress",
         "meanR": "Mean netR / trade",
         "ciLow": "Clustered CI low",

@@ -25,16 +25,29 @@ export async function V7FilterCard({
           <span className="font-body text-[11px] text-mist/45">UTC {f.asof_utc}</span>
         )}
       </div>
-      <div className="mt-3 grid gap-2 sm:grid-cols-3">
+      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         {(
           [
-            [t('c1'), t('c1stat')],
-            [t('c2'), t('c2stat')],
-            [t('c3'), t('c3stat')],
+            [t('c1'), t('c1stat'), false],
+            [t('c2'), t('c2stat'), false],
+            [t('c3'), t('c3stat'), false],
+            [t('c4'), t('c4stat'), true],
           ] as const
-        ).map(([name, stat]) => (
-          <div key={name} className="rounded-lg border border-white/[0.07] bg-white/[0.02] px-3.5 py-3">
-            <div className="font-body text-xs text-mist">{name}</div>
+        ).map(([name, stat, queued]) => (
+          <div
+            key={name}
+            className={`rounded-lg border bg-white/[0.02] px-3.5 py-3 ${
+              queued ? 'border-dashed border-white/[0.12]' : 'border-white/[0.07]'
+            }`}
+          >
+            <div className="flex items-start justify-between gap-2">
+              <div className="font-body text-xs text-mist">{name}</div>
+              {queued && (
+                <span className="shrink-0 rounded border border-[#f0b90b]/30 px-1.5 py-px font-body text-[9px] uppercase tracking-wider text-[#f0b90b]/80">
+                  {t('c4tag')}
+                </span>
+              )}
+            </div>
             <div className="mt-1 font-body text-[11px] text-mist/50">{stat}</div>
           </div>
         ))}
@@ -61,6 +74,7 @@ export async function V7FilterCard({
         </div>
       )}
       <p className="mt-3 font-body text-[11px] leading-relaxed text-mist/45">{t('note')}</p>
+      <p className="mt-1.5 font-body text-[11px] leading-relaxed text-mist/35">{t('campaign')}</p>
     </div>
   );
 }
