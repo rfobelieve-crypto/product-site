@@ -28,7 +28,20 @@ export type ResearchClocks = {
   next_verdict: string;
 } | null;
 
+export type V7Clock = {
+  tier: string;
+  kept_wr: number | null;
+  veto_wr: number | null;
+  gap_pp: number | null;
+  n_kept: number;
+  n_veto: number;
+  since_trigger: number;
+  trigger_target: number;
+  gap_threshold_pp: number;
+};
+
 export type V7Filters = {
+  clocks?: { strong?: V7Clock; moderate?: V7Clock };
   kept_wr: number | null;
   veto_wr: number | null;
   gap_pp: number | null;

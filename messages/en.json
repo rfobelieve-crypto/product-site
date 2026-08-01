@@ -400,7 +400,12 @@
     "c4": "Pool density (4th dim, verified, not yet integrated)",
     "c4stat": ">=3 un-swept pools within 3 ATR ahead: 54% vs 62% when <=1 (p=0.0225)",
     "c4tag": "queued",
-    "campaign": "Terrain campaign closed 2026-08-02: ten dimensions tested, four confirmed (all liquidity), two at the doorstep (discount, liquidation wall) with one re-review each, zero seats for the market-structure layer."
+    "campaign": "Terrain campaign closed 2026-08-02: ten dimensions tested, four confirmed (all liquidity), two at the doorstep (discount, liquidation wall) with one re-review each, zero seats for the market-structure layer.",
+    "clocksTitle": "Adoption trigger — two parallel clocks, both started 2026-08-02",
+    "clockStrong": "Strong (direct evidence — the tier the executor actually trades)",
+    "clockModerate": "Moderate (indirect — tests generality, fills 3-5x faster)",
+    "clockRow": "{n} / {target} signals · 90d gap {gap}pp (threshold {thr}pp)",
+    "clockNote": "Neither clock authorises adoption on its own; a clock that falls below the threshold is void and restarts — no averaging, no picking the flattering one."
   },
   "ledger": {
     "title": "Research ledger board",

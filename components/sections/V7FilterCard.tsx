@@ -14,7 +14,6 @@ export async function V7FilterCard({
 }) {
   const t = await getTranslations({ locale, namespace: 'v7Filters' });
   const f = sweep?.v7_filters ?? null;
-  const pct = f ? Math.min(100, (f.strong_since_trigger / f.trigger_target) * 100) : 0;
   return (
     <div className="mt-3 rounded-xl border border-white/[0.08] bg-ink/70 p-4 sm:p-5">
       <div className="flex flex-wrap items-baseline justify-between gap-2">
@@ -54,23 +53,58 @@ export async function V7FilterCard({
       </div>
       {f && (
         <div className="mt-3">
-          <div className="flex items-baseline justify-between font-body text-[11px] text-mist/55">
-            <span>
-              {t('trigger', { n: f.strong_since_trigger, target: f.trigger_target })}
-            </span>
-            <span className={(f.gap_pp ?? 0) >= f.gap_threshold_pp ? 'text-[#00ffa3]' : ''}>
-              {t('gap', {
-                gap: f.gap_pp != null ? f.gap_pp.toFixed(1) : '—',
-                thr: f.gap_threshold_pp.toFixed(0),
-              })}
-            </span>
+          <div className="font-body text-[10px] uppercase tracking-[0.16em] text-mist/40">
+            {t('clocksTitle')}
           </div>
-          <div className="mt-1.5 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
-            <div
-              className="h-full rounded-full bg-iris-cyan/70"
-              style={{ width: `${pct}%` }}
-            />
-          </div>
+          {(
+            [
+              ['strong', t('clockStrong'), f.clocks?.strong] as const,
+              ['moderate', t('clockModerate'), f.clocks?.moderate] as const,
+            ]
+          ).map(([key, label, c]) => {
+            const clock =
+              c ??
+              (key === 'strong'
+                ? {
+                    since_trigger: f.strong_since_trigger,
+                    trigger_target: f.trigger_target,
+                    gap_pp: f.gap_pp,
+                    gap_threshold_pp: f.gap_threshold_pp,
+                  }
+                : null);
+            if (!clock) return null;
+            const width = Math.min(
+              100,
+              (clock.since_trigger / clock.trigger_target) * 100,
+            );
+            const gapOk = (clock.gap_pp ?? 0) >= clock.gap_threshold_pp;
+            return (
+              <div key={key} className="mt-2">
+                <div className="flex flex-wrap items-baseline justify-between gap-x-3 font-body text-[11px] text-mist/55">
+                  <span>{label}</span>
+                  <span className={gapOk ? 'text-[#00ffa3]' : 'text-mist/45'}>
+                    {t('clockRow', {
+                      n: clock.since_trigger,
+                      target: clock.trigger_target,
+                      gap: clock.gap_pp != null ? clock.gap_pp.toFixed(1) : '—',
+                      thr: clock.gap_threshold_pp.toFixed(0),
+                    })}
+                  </span>
+                </div>
+                <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                  <div
+                    className={`h-full rounded-full ${
+                      key === 'strong' ? 'bg-iris-cyan/70' : 'bg-iris-violet/60'
+                    }`}
+                    style={{ width: `${width}%` }}
+                  />
+                </div>
+              </div>
+            );
+          })}
+          <p className="mt-2 font-body text-[10px] leading-relaxed text-mist/35">
+            {t('clockNote')}
+          </p>
         </div>
       )}
       <p className="mt-3 font-body text-[11px] leading-relaxed text-mist/45">{t('note')}</p>
