@@ -510,7 +510,11 @@
         "strongWr": "Strong signal WR",
         "tradeWr": "Trade WR (net)",
         "mdd": "Max drawdown"
-      }
+      },
+      "accumLabel": "Cumulative",
+      "accumTitle": "V7 signal edge / filter tiers / rolling win rate / live",
+      "accumOpen": "expand",
+      "accumNote": "Panels 1 and 3 are signal quality — no costs, no stops, no sizing — not trading performance. Panel 2 compares MEAN return per signal because a filter takes fewer trades, and its shaded band is the data the filters were derived on, so it is not evidence. Only panel 4 is real money. Refreshes every 30 minutes."
     },
     "cancelFlow": {
       "label": "Cancel-flow indicator",

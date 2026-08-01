@@ -17,6 +17,15 @@ export const CANCEL_FLOW_CHART_I_URL =
   process.env.CANCEL_FLOW_CHART_I_URL ??
   'https://agent-mcp-production-46d7.up.railway.app/public/cancel-flow-chart-i';
 
+// V7 cumulative performance PNG (2026-08-02). Static image, not an
+// interactive page: it is four matplotlib panels rendered on the
+// indicator service and relayed by the agent with a 30-min TTL, because
+// each render is a subprocess. Consumed via <img> (ImagePanel), not an
+// iframe.
+export const V7_ACCUM_URL =
+  process.env.V7_ACCUM_URL ??
+  'https://agent-mcp-production-46d7.up.railway.app/public/v7-accum';
+
 // Strategy #2 (sweep-failure) shadow liquidity map — BTC, last 72h window.
 // The agent route pins the symbol server-side on purpose (a public symbol
 // passthrough would fan out subprocess renders on the indicator service).
