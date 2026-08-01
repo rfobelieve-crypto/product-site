@@ -9,6 +9,7 @@ import { CancelFlowKpiGrid } from '@/components/sections/CancelFlowKpiGrid';
 import { LiveTradesPanel } from '@/components/sections/LiveTradesPanel';
 import { ShadowTradesPanel } from '@/components/sections/ShadowTradesPanel';
 import { ShadowLedgerBoard } from '@/components/sections/ShadowLedgerBoard';
+import { V7FilterCard } from '@/components/sections/V7FilterCard';
 import { ChartDetail } from '@/components/sections/ChartDetail';
 import { StatCard, StatCardGrid } from '@/components/sections/StatCard';
 import { Link } from '@/i18n/navigation';
@@ -119,6 +120,7 @@ export default async function DashboardPage({
           <div className="mt-3">
             <LiveTradesPanel locale={locale} live={live} />
           </div>
+          <V7FilterCard locale={locale} sweep={sweep} />
         </section>
         <div className="mx-auto mt-3 max-w-7xl px-4 sm:px-8">
           <ChartDetail src={V7_CHART_URL} label={tc('v7.label')} title={tc('v7.title')} />

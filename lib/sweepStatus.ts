@@ -28,8 +28,21 @@ export type ResearchClocks = {
   next_verdict: string;
 } | null;
 
+export type V7Filters = {
+  kept_wr: number | null;
+  veto_wr: number | null;
+  gap_pp: number | null;
+  n_kept: number;
+  n_veto: number;
+  strong_since_trigger: number;
+  trigger_target: number;
+  gap_threshold_pp: number;
+  asof_utc: string;
+} | null;
+
 export type SweepStatus = {
   gate: SweepGate;
+  v7_filters?: V7Filters;
   cohorts?: LedgerRow[];
   combos?: LedgerRow[];
   clocks?: ResearchClocks;

@@ -386,6 +386,18 @@
       }
     }
   },
+  "v7Filters": {
+    "title": "V7 structural filters (verified · adoption countdown)",
+    "c1": "Chase veto",
+    "c1stat": "Firing with a <=4h raid break: 52% vs 64% (p=0.008)",
+    "c2": "Wall ahead",
+    "c2stat": "Un-swept pool <=1.4 ATR ahead: 57% vs clean runway 65% (p=0.028)",
+    "c3": "Support behind",
+    "c3stat": "Un-swept pool <=1.8 ATR behind: 68% (p=0.0005, strongest)",
+    "trigger": "Adoption trigger: {n} / {target} new Strong signals",
+    "gap": "90d kept-vs-vetoed gap {gap}pp (threshold {thr}pp)",
+    "note": "All three passed permutation + bootstrap + quarterly checks; alerts now carry the terrain stamp (display-only). Executor adoption is tabled only when the trigger fills with the gap held; the operator picks the tier."
+  },
   "ledger": {
     "title": "Research ledger board",
     "intro": "One hourly recorder feeds every ledger — the variant ladder and the combo watchlist are two labelings of the same signals. All numbers are forward-only; no backtest rows here.",

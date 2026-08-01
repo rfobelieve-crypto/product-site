@@ -3,6 +3,8 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { ChartDetail } from '@/components/sections/ChartDetail';
 import { V7KpiRow } from '@/components/sections/V7KpiRow';
+import { V7FilterCard } from '@/components/sections/V7FilterCard';
+import { getSweepStatus } from '@/lib/sweepStatus';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
 import { V7_CHART_URL } from '@/lib/charts';
@@ -25,6 +27,7 @@ export default async function V7ChartPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'chartsPage' });
+  const sweep = await getSweepStatus();
   return (
     <div className="relative min-h-screen">
       <Nav />
@@ -39,6 +42,7 @@ export default async function V7ChartPage({
         </div>
         <div className="mx-auto mt-8 max-w-7xl px-4 sm:px-8">
           <V7KpiRow locale={locale} />
+          <V7FilterCard locale={locale} sweep={sweep} />
         </div>
         <div className="mx-auto mt-4 max-w-7xl px-4 sm:px-8">
           <ChartDetail src={V7_CHART_URL} label={t('v7.label')} title={t('v7.title')} />
