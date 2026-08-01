@@ -482,7 +482,11 @@
       "title": "Sweep-failure reversal — shadow liquidity map",
       "body": "Strategy #2 (forward validation in progress) — four liquidity pool types (swing / session / prior-day / prior-week extremes) get swept, then the engine waits for the retest: resting pools, waiting sweeps, entry/exit markers and the cumulative netR curve, all on one interactive chart. Shadow mode — no live money.",
       "shadowNote": "Forward shadow validation — rules frozen 2026-07-28, 29 symbols recorded hourly; no real capital until Gate F passes (n≥1400 and day-clustered CI low > 0). Variants: A = original (swing pools, no filter); B = four pool types + shallow pierce ≤0.25 ATR (bright marks / column B); C = B + close-back confirmation (1m price path; column C); D = C + high attack volume vs the symbol's own history — the order-flow combination (column D).",
-      "kpi": {
+            "guideTitle": "Plain guide: flags and tracked combos",
+      "guideFlags": "R close-back = price pierced the level then closed back inside within the hour (stops taken, snap back) | V volume = attack-minute volume high vs the symbol's own norm | Q stop-driven = OI down + taker pushing with the break (a stop sweep, not new money) | FAST = attack over within 5 minutes | PA = the V7 model sides with the fade | LIQ = liquidation burst",
+      "guideCombos": "Eight tracked combos (historical stats are an entry ticket, not evidence): R∧V | R∧Q | R∧V∧Q triple-confirm (fattest, ~70% WR) | R∧FAST | R∧FAST∧Q | R alone | PA | V∧LIQ",
+      "guideNumbers": "Reading the numbers: n = occurrences; netR = average gain per trade as a fraction of the stop distance, net of fees. Common core: pierce, take the stops, snap back — the completed-hunt signature. Promotion needs the forward scoreboard (accumulating hourly) plus the October pre-registered validation.",
+"kpi": {
         "gate": "Gate F progress",
         "meanR": "Mean netR / trade",
         "ciLow": "Clustered CI low",

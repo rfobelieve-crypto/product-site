@@ -42,6 +42,16 @@ export default async function LiquidityChartPage({
           <p className="mt-4 font-body text-xs leading-relaxed text-mist/50">
             {t('liquidity.shadowNote')}
           </p>
+          <details className="mt-3 rounded-lg border border-white/[0.07] bg-white/[0.02] p-4">
+            <summary className="cursor-pointer font-body text-xs text-iris-cyan/80">
+              {t('liquidity.guideTitle')}
+            </summary>
+            <div className="mt-3 space-y-2 font-body text-[11px] leading-relaxed text-mist/55">
+              <p>{t('liquidity.guideFlags')}</p>
+              <p>{t('liquidity.guideCombos')}</p>
+              <p>{t('liquidity.guideNumbers')}</p>
+            </div>
+          </details>
         </div>
         <div className="mx-auto mt-4 max-w-7xl px-4 sm:px-8">
           <ChartDetail
