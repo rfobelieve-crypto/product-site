@@ -66,7 +66,9 @@ export async function V7FilterCard({
               c ??
               (key === 'strong'
                 ? {
+                    // legacy payload shape (no clocks map): no fired count
                     since_trigger: f.strong_since_trigger,
+                    since_trigger_fired: undefined as number | undefined,
                     trigger_target: f.trigger_target,
                     gap_pp: f.gap_pp,
                     gap_threshold_pp: f.gap_threshold_pp,
@@ -89,6 +91,20 @@ export async function V7FilterCard({
                       gap: clock.gap_pp != null ? clock.gap_pp.toFixed(1) : '—',
                       thr: clock.gap_threshold_pp.toFixed(0),
                     })}
+                    {/* A signal's outcome backfills ~4h after its bar, so
+                        the evidence count cannot move immediately. Showing
+                        the fired-but-unresolved tail keeps a just-printed
+                        signal visible instead of leaving the board looking
+                        stuck (operator, 2026-08-02). */}
+                    {typeof clock.since_trigger_fired === 'number' &&
+                      clock.since_trigger_fired > clock.since_trigger && (
+                        <span className="text-mist/35">
+                          {' '}
+                          {t('clockPending', {
+                            p: clock.since_trigger_fired - clock.since_trigger,
+                          })}
+                        </span>
+                      )}
                   </span>
                 </div>
                 <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">

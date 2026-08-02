@@ -405,7 +405,8 @@
     "clockStrong": "Strong（直接證據·executor 實際交易的層級）",
     "clockModerate": "Moderate（間接證據·驗證機制普遍性，速度快 3-5 倍）",
     "clockRow": "{n} / {target} 筆 · 90d gap {gap}pp（門檻 {thr}pp）",
-    "clockNote": "兩條都不能單獨授權進 executor；任一條 gap 掉到門檻以下即該條作廢重數，不取平均、不挑好看的講。"
+    "clockNote": "兩條都不能單獨授權進 executor；任一條 gap 掉到門檻以下即該條作廢重數，不取平均、不挑好看的講。",
+    "clockPending": "（+{p} 待結算）"
   },
   "ledger": {
     "title": "研究帳本總覽",

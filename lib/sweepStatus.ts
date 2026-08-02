@@ -36,6 +36,7 @@ export type V7Clock = {
   n_kept: number;
   n_veto: number;
   since_trigger: number;
+  since_trigger_fired?: number;
   trigger_target: number;
   gap_threshold_pp: number;
 };

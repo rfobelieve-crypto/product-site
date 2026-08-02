@@ -405,7 +405,8 @@
     "clockStrong": "Strong (direct evidence — the tier the executor actually trades)",
     "clockModerate": "Moderate (indirect — tests generality, fills 3-5x faster)",
     "clockRow": "{n} / {target} signals · 90d gap {gap}pp (threshold {thr}pp)",
-    "clockNote": "Neither clock authorises adoption on its own; a clock that falls below the threshold is void and restarts — no averaging, no picking the flattering one."
+    "clockNote": "Neither clock authorises adoption on its own; a clock that falls below the threshold is void and restarts — no averaging, no picking the flattering one.",
+    "clockPending": "(+{p} awaiting outcome)"
   },
   "ledger": {
     "title": "Research ledger board",
