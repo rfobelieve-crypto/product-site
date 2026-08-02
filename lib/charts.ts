@@ -22,9 +22,12 @@ export const CANCEL_FLOW_CHART_I_URL =
 // indicator service and relayed by the agent with a 30-min TTL, because
 // each render is a subprocess. Consumed via <img> (ImagePanel), not an
 // iframe.
-export const V7_ACCUM_URL =
-  process.env.V7_ACCUM_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/v7-accum';
+// Interactive four-pane version (zoom/pan/crosshair), same data the PNG
+// route renders. The site embeds this one — a static image was the wrong
+// shape next to charts that are all operable.
+export const V7_ACCUM_I_URL =
+  process.env.V7_ACCUM_I_URL ??
+  'https://agent-mcp-production-46d7.up.railway.app/public/v7-accum-i';
 
 // Strategy #2 (sweep-failure) shadow liquidity map — BTC, last 72h window.
 // The agent route pins the symbol server-side on purpose (a public symbol

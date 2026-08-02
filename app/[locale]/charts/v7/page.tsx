@@ -2,13 +2,12 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { ChartDetail } from '@/components/sections/ChartDetail';
-import { ImagePanel } from '@/components/sections/ImagePanel';
 import { V7KpiRow } from '@/components/sections/V7KpiRow';
 import { V7FilterCard } from '@/components/sections/V7FilterCard';
 import { getSweepStatus } from '@/lib/sweepStatus';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
-import { V7_CHART_URL, V7_ACCUM_URL } from '@/lib/charts';
+import { V7_CHART_URL, V7_ACCUM_I_URL } from '@/lib/charts';
 
 export async function generateMetadata({
   params,
@@ -49,13 +48,14 @@ export default async function V7ChartPage({
           <ChartDetail src={V7_CHART_URL} label={t('v7.label')} title={t('v7.title')} />
         </div>
         <div className="mx-auto mt-3 max-w-7xl px-4 sm:px-8">
-          <ImagePanel
-            src={V7_ACCUM_URL}
+          <ChartDetail
+            src={V7_ACCUM_I_URL}
             label={t('v7.accumLabel')}
             title={t('v7.accumTitle')}
-            note={t('v7.accumNote')}
-            openLabel={t('v7.accumOpen')}
           />
+          <p className="mt-2 px-1 font-body text-[11px] leading-relaxed text-mist/45">
+            {t('v7.accumNote')}
+          </p>
         </div>
       </main>
       <Footer />
