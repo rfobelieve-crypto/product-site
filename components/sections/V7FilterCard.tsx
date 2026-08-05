@@ -79,6 +79,18 @@ export async function V7FilterCard({
               100,
               (clock.since_trigger / clock.trigger_target) * 100,
             );
+            // 已開火但還沒回填的尾巴。門檻只認 since_trigger（證據），這裡純呈現：
+            // 訊號開火後要等 ~4h 才結算，主數字在那段時間完全不動，操作者兩次
+            // （2026-08-02、2026-08-05）都以為訊號沒被記錄到。淡色延伸段讓
+            // 「管線裡有東西」看得見，而不用去讀一行灰字。
+            const firedN = Math.max(
+              clock.since_trigger,
+              clock.since_trigger_fired ?? clock.since_trigger,
+            );
+            const widthFired = Math.min(
+              100,
+              (firedN / clock.trigger_target) * 100,
+            );
             const gapOk = (clock.gap_pp ?? 0) >= clock.gap_threshold_pp;
             return (
               <div key={key} className="mt-2">
@@ -96,20 +108,25 @@ export async function V7FilterCard({
                         the fired-but-unresolved tail keeps a just-printed
                         signal visible instead of leaving the board looking
                         stuck (operator, 2026-08-02). */}
-                    {typeof clock.since_trigger_fired === 'number' &&
-                      clock.since_trigger_fired > clock.since_trigger && (
-                        <span className="text-mist/35">
-                          {' '}
-                          {t('clockPending', {
-                            p: clock.since_trigger_fired - clock.since_trigger,
-                          })}
-                        </span>
-                      )}
+                    {firedN > clock.since_trigger && (
+                      <span className="text-amber-300/80">
+                        {' '}
+                        {t('clockPending', {
+                          p: firedN - clock.since_trigger,
+                        })}
+                      </span>
+                    )}
                   </span>
                 </div>
-                <div className="mt-1 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                <div className="relative mt-1 h-1.5 overflow-hidden rounded-full bg-white/[0.06]">
+                  {/* 淡色底段 = 已開火（含待結算）；實心段 = 已結算證據。
+                      扳機門檻只看實心段。 */}
                   <div
-                    className={`h-full rounded-full ${
+                    className="absolute inset-y-0 left-0 rounded-full bg-amber-300/25"
+                    style={{ width: `${widthFired}%` }}
+                  />
+                  <div
+                    className={`absolute inset-y-0 left-0 rounded-full ${
                       key === 'strong' ? 'bg-iris-cyan/70' : 'bg-iris-violet/60'
                     }`}
                     style={{ width: `${width}%` }}
