@@ -10,6 +10,7 @@ import { LiveTradesPanel } from '@/components/sections/LiveTradesPanel';
 import { ShadowTradesPanel } from '@/components/sections/ShadowTradesPanel';
 import { ShadowLedgerBoard } from '@/components/sections/ShadowLedgerBoard';
 import { V7FilterCard } from '@/components/sections/V7FilterCard';
+import { WeatherStationCard } from '@/components/sections/WeatherStationCard';
 import { StatCard, StatCardGrid } from '@/components/sections/StatCard';
 import { Link } from '@/i18n/navigation';
 import { getLiveStatus } from '@/lib/liveStatus';
@@ -119,6 +120,9 @@ export default async function DashboardPage({
             <LiveTradesPanel locale={locale} live={live} />
           </div>
           <V7FilterCard locale={locale} sweep={sweep} />
+          <div className="mt-6">
+            <WeatherStationCard locale={locale} />
+          </div>
         </section>
         <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
           <SectionHeader title={t('sweepSection')} href="/charts/liquidity" cta={t('detail')} />
