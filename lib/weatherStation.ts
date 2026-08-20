@@ -16,11 +16,36 @@ export type WeatherSensor = {
   value: string;
 };
 
+// Reefing (縮帆, 2026-08-20) — the station's response arm. Two
+// PRE-REGISTERED de-sizing rules (§0.52 ADX / §0.53 vol targeting) whose
+// forward verdicts have not landed; the card must render this as
+// 預註冊·forward累積中, never as an active rule.
+export type ReefingClock = {
+  id: string;
+  label_zh: string;
+  due: string;
+  days_left: number;
+};
+
+export type Reefing = {
+  status: string; // 'preregistered'
+  label_zh: string;
+  label_en: string;
+  note_zh: string;
+  note_en: string;
+  vol_target_w_btc: number | null;
+  vol_target_w_core9: number | null;
+  adx_desize_now: string; // 'x0.5' | 'x1.0'
+  mr_family_corr_60d: number | null;
+  clocks: ReefingClock[];
+};
+
 export type WeatherStation = {
   updated_utc: string;
   asof_utc?: string;
   gauges: WeatherGauge[];
   sensors: WeatherSensor[];
+  reefing?: Reefing;
   cadence: string;
   disclaimer: string;
 };

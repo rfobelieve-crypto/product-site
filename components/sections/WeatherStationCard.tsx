@@ -26,6 +26,14 @@ const L = {
     sensors: '感測器（無註冊預測）',
     unavailable: '資料暫不可用',
     updated: '更新',
+    reefingChip: '預註冊 · forward 累積中',
+    reefingSail: '此刻帆量',
+    reefingBtc: 'BTC',
+    reefingCore9: 'core9 平均',
+    reefingAdx: 'ADX 檔位',
+    reefingCorr: '回歸家族相關 60d',
+    reefingVerdict: '判決',
+    reefingDays: '天後',
   },
   en: {
     title: 'Market Weather Station',
@@ -42,6 +50,14 @@ const L = {
     sensors: 'Sensors (no registered predictions)',
     unavailable: 'temporarily unavailable',
     updated: 'updated',
+    reefingChip: 'pre-registered · accumulating forward',
+    reefingSail: 'sail right now',
+    reefingBtc: 'BTC',
+    reefingCore9: 'core9 avg',
+    reefingAdx: 'ADX gear',
+    reefingCorr: 'MR-family corr 60d',
+    reefingVerdict: 'verdict',
+    reefingDays: 'days',
   },
 } as const;
 
@@ -153,6 +169,58 @@ export async function WeatherStationCard({ locale }: { locale: string }) {
               </span>
             ))}
           </div>
+          {w.reefing ? (
+            // Reefing (縮帆) — the station's response arm. Dashed border +
+            // amber chip = the D5-style 待整合 pattern: pre-registered
+            // research whose forward verdict has NOT landed. Nothing here
+            // is an active rule; weights are what the frozen rules WOULD
+            // carry right now.
+            <div className="mt-3 rounded-lg border border-dashed border-amber-400/30 bg-white/[0.02] px-3.5 py-3">
+              <div className="flex flex-wrap items-center justify-between gap-2">
+                <div className="font-body text-[10px] uppercase tracking-[0.14em] text-mist/45">
+                  {locale === 'zh' ? w.reefing.label_zh : w.reefing.label_en}
+                </div>
+                <span className="rounded-full border border-amber-400/40 px-2 py-0.5 text-[9px] uppercase tracking-[0.12em] text-amber-300/80">
+                  {t.reefingChip}
+                </span>
+              </div>
+              <div className="mt-2 flex flex-wrap items-baseline gap-x-5 gap-y-1.5">
+                <span className="font-body text-[11px] text-mist/45">
+                  {t.reefingSail}{' '}
+                  <span className="font-display text-base tabular-nums text-mist">
+                    {t.reefingBtc} {w.reefing.vol_target_w_btc ?? '—'}
+                  </span>{' '}
+                  <span className="font-display text-base tabular-nums text-mist/70">
+                    · {t.reefingCore9} {w.reefing.vol_target_w_core9 ?? '—'}
+                  </span>
+                </span>
+                <span className="font-body text-[11px] text-mist/45">
+                  {t.reefingAdx}{' '}
+                  <span
+                    className={`font-display tabular-nums ${w.reefing.adx_desize_now === 'x0.5' ? 'text-amber-300/90' : 'text-mist/70'}`}
+                  >
+                    {w.reefing.adx_desize_now}
+                  </span>
+                </span>
+                <span className="font-body text-[11px] text-mist/45">
+                  {t.reefingCorr}{' '}
+                  <span className="font-display tabular-nums text-mist/70">
+                    {w.reefing.mr_family_corr_60d ?? '—'}
+                  </span>
+                </span>
+              </div>
+              <div className="mt-1.5 flex flex-wrap items-center gap-x-4 gap-y-1">
+                {w.reefing.clocks.map((c) => (
+                  <span key={c.id} className="font-body text-[10px] text-mist/40">
+                    {c.label_zh} · {c.due}（{c.days_left} {t.reefingDays}）
+                  </span>
+                ))}
+              </div>
+              <p className="mt-1.5 font-body text-[10px] text-mist/35">
+                {locale === 'zh' ? w.reefing.note_zh : w.reefing.note_en}
+              </p>
+            </div>
+          ) : null}
           <p className="mt-2 font-body text-[10px] text-mist/30">{w.disclaimer}</p>
         </>
       )}
