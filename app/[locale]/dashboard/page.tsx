@@ -11,6 +11,7 @@ import { ShadowTradesPanel } from '@/components/sections/ShadowTradesPanel';
 import { ShadowLedgerBoard } from '@/components/sections/ShadowLedgerBoard';
 import { V7FilterCard } from '@/components/sections/V7FilterCard';
 import { WeatherStationCard } from '@/components/sections/WeatherStationCard';
+import { PreregBoardCard } from '@/components/sections/PreregBoardCard';
 import { StatCard, StatCardGrid } from '@/components/sections/StatCard';
 import { Link } from '@/i18n/navigation';
 import { getLiveStatus } from '@/lib/liveStatus';
@@ -109,6 +110,14 @@ export default async function DashboardPage({
           </div>
 
           <StrategyBoard locale={locale} />
+        </section>
+
+        {/* The pre-registration board sits above the per-strategy sections
+            because it spans all three lines: it answers "what is still
+            undecided, and how far along is it" — a question no individual
+            strategy card can answer. */}
+        <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
+          <PreregBoardCard locale={locale} />
         </section>
 
         <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
