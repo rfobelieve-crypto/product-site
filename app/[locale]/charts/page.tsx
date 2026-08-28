@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { LiveCharts } from '@/components/sections/LiveCharts';
+import { PreregBoardCard } from '@/components/sections/PreregBoardCard';
 import { Footer } from '@/components/sections/Footer';
 
 export async function generateMetadata({
@@ -26,6 +27,11 @@ export default async function ChartsPage({
       <Nav />
       <main className="content-layer pb-24 pt-24">
         <LiveCharts />
+        {/* The research progress board lives here too — this is the page the
+            operator actually visits; /dashboard keeps its copy. */}
+        <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
+          <PreregBoardCard locale={locale} />
+        </section>
       </main>
       <Footer />
     </div>

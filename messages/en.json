@@ -15,7 +15,7 @@
     "signals": "Signals",
     "dashboard": "Dashboard",
     "incidents": "Incidents",
-    "charts": "Charts",
+    "charts": "Strategies",
     "writeups": "Write-ups",
     "liveSignal": "Live signal",
     "signIn": "Sign in",
@@ -495,11 +495,11 @@
   },
   "chartsPage": {
     "meta": {
-      "title": "Charts — flowbot",
+      "title": "Strategies — flowbot",
       "description": "Live chart output from the V7 signal engine and the cancel-flow indicator, straight off the same Railway services that run the real system."
     },
     "enter": "Enter",
-    "backToCharts": "Charts",
+    "backToCharts": "Strategies",
     "v7": {
       "label": "V7 signal engine",
       "title": "4h prediction chart",

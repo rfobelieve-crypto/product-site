@@ -15,7 +15,7 @@
     "signals": "訊號",
     "dashboard": "儀表板",
     "incidents": "事故紀錄",
-    "charts": "圖表",
+    "charts": "策略",
     "writeups": "研究筆記",
     "liveSignal": "即時訊號",
     "signIn": "登入",
@@ -495,11 +495,11 @@
   },
   "chartsPage": {
     "meta": {
-      "title": "圖表 — flowbot",
+      "title": "策略 — flowbot",
       "description": "V7 訊號引擎與撤單流指標的即時圖表輸出，直接來自跑正式系統的同一組 Railway 服務。"
     },
     "enter": "由此進入",
-    "backToCharts": "圖表",
+    "backToCharts": "策略",
     "v7": {
       "label": "V7 訊號引擎",
       "title": "4 小時預測圖",
