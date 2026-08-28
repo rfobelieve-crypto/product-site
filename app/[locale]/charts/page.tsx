@@ -3,6 +3,7 @@ import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { LiveCharts } from '@/components/sections/LiveCharts';
 import { PreregBoardCard } from '@/components/sections/PreregBoardCard';
+import { AllocationCard } from '@/components/sections/AllocationCard';
 import { Footer } from '@/components/sections/Footer';
 
 export async function generateMetadata({
@@ -31,6 +32,9 @@ export default async function ChartsPage({
             operator actually visits; /dashboard keeps its copy. */}
         <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
           <PreregBoardCard locale={locale} />
+        </section>
+        <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
+          <AllocationCard locale={locale} />
         </section>
       </main>
       <Footer />
