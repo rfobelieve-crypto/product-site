@@ -551,6 +551,24 @@
         "pass": "PASS",
         "unavailable": "Status temporarily unavailable"
       }
+    },
+    "arb": {
+      "label": "Arbitrage (line 4)",
+      "title": "Two-venue spread — recording",
+      "body": "The same instrument listed on two young venues drifts apart in price — short the rich side, long the cheap side, direction risk cancels, profit is the convergence. No market prediction; recording only for now, pass criteria frozen before any data was seen.",
+      "status": "Recording · no verdict yet",
+      "pageNote": "Record-only: a script logs both venues' quotes every minute. After 7 full days a frozen scorer decides whether the line advances. No wallet is touched before it passes.",
+      "battlefield": "Battlefield",
+      "battlefieldActive": "SNDK · Entropy vs Lighter (0 fees both sides)",
+      "progressTitle": "Recording progress",
+      "minutes": "Minutes logged",
+      "daysLabel": "Days elapsed",
+      "verdictDate": "Verdict date",
+      "criteriaTitle": "Frozen pass criteria (2026-08-28, written before data)",
+      "criteria1": "A threshold band with ≥1 bps net of fees exists",
+      "criteria2": "Fires on average ≥10 times/day",
+      "criteria3": "Both halves of the recording pass independently",
+      "criteriaFail": "Any miss → the line closes, total cost ≈ zero"
     }
   }
 }
