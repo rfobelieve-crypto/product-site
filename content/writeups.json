@@ -736,5 +736,801 @@
         }
       ]
     }
+  },
+  {
+    "slug": "cost-model-lying",
+    "date": "2026-08-03",
+    "tags": [
+      "回測",
+      "成本模型"
+    ],
+    "zh": {
+      "title": "含成本的回測，跑贏了零成本的回測",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "p",
+          "text": "一個符號 bug、一條五秒鐘的檢查，和一次跨資產的救贖，來自一套 BTC 實盤量化系統"
+        },
+        {
+          "type": "h",
+          "text": "t = 8.27"
+        },
+        {
+          "type": "p",
+          "text": "上週一晚上，我準備啟動一條新策略的 forward 驗證。它的回測履歷漂亮得不像話：兩年半、近七千筆交易、9 個幣種全部為正，合池 t 值 +8.27。"
+        },
+        {
+          "type": "p",
+          "text": "t 值 8.27 是什麼概念？學術界發表因子論文的門檻是 3。教科書會告訴你：這種數字，直接上錢。"
+        },
+        {
+          "type": "p",
+          "text": "但這套系統有一條慣例，是用真錢的學費換來的：上錢之前，先審儀器。"
+        },
+        {
+          "type": "h",
+          "text": "五秒鐘的檢查"
+        },
+        {
+          "type": "p",
+          "text": "第一個檢查便宜到不好意思說：把成本參數設成 0，再跑一次。"
+        },
+        {
+          "type": "p",
+          "text": "邏輯很簡單。含成本的回測，成績必須比零成本的差。差多少可以討論，但方向不能錯——成本是從你口袋拿錢的東西。"
+        },
+        {
+          "type": "p",
+          "text": "結果：含成本 +0.062R，零成本 +0.060R。"
+        },
+        {
+          "type": "p",
+          "text": "含成本的版本比較賺。"
+        },
+        {
+          "type": "p",
+          "text": "這在物理上不可能。所以不用再看任何其他數字——成本模型壞了。"
+        },
+        {
+          "type": "h",
+          "text": "第一刀：符號"
+        },
+        {
+          "type": "p",
+          "text": "挖下去十分鐘就找到了。進場滑價的符號寫反了：程式碼的註解寫著「滑價對我們不利」，實作卻讓每筆進場都拿到一個更好的價格，剛好和出場的不利滑價互相抵銷。"
+        },
+        {
+          "type": "p",
+          "text": "整份「含成本」的回測，實質上是零成本回測。"
+        },
+        {
+          "type": "p",
+          "text": "修正符號、改用每個標的自己的真實費率重算（這裡還有一個小陷阱：用統一單位算滑價，會系統性奉承低波動的標的——它們的相對成本被低估了一半）。"
+        },
+        {
+          "type": "p",
+          "text": "t 值從 8.27 掉到 3.35。"
+        },
+        {
+          "type": "h",
+          "text": "第二刀：假裝獨立的樣本"
+        },
+        {
+          "type": "p",
+          "text": "3.35 還是很好看。但七千筆交易來自 9 個高度相關的加密貨幣——大盤一跌，9 個一起跌。這七千筆不是七千個獨立的樣本，比較像兩千多個樣本被數了三次。"
+        },
+        {
+          "type": "p",
+          "text": "把交易按日期分群、整天整天地重抽（day-clustered bootstrap），變異數膨脹係數 2.95——幾乎剛好是「被數了三次」。"
+        },
+        {
+          "type": "p",
+          "text": "有效 t 值：1.95。信賴區間下緣：貼著零。"
+        },
+        {
+          "type": "p",
+          "text": "從教科書級的 8.27，到「比丟硬幣好一點點」的 1.95，只花了一個晚上。而這中間沒有任何市場變化——變的只是量尺的誠實程度。"
+        },
+        {
+          "type": "h",
+          "text": "轉折：這個假設不是機器挖出來的"
+        },
+        {
+          "type": "p",
+          "text": "故事到這裡，正常的結局是把它歸檔到「又一個回測神話」。但這個策略有一點不一樣：它的假設不是從資料裡挖出來的。"
+        },
+        {
+          "type": "p",
+          "text": "它是我自己看盤多年的一條老生常談——假突破反轉。價格掃過一個關鍵高低點、觸發完停損之後，如果站不穩又跌回來，往往會朝反方向走一段。每個做過交易的人都聽過這句話。"
+        },
+        {
+          "type": "p",
+          "text": "我做的只是把這句話寫成五條凍結的機械規則，然後讓機器去審。"
+        },
+        {
+          "type": "p",
+          "text": "而「人的假設」有一種資料探勘假設永遠拿不到的檢查方式：把凍結的規則，原封不動地搬到它從來沒見過的市場。"
+        },
+        {
+          "type": "h",
+          "text": "納斯達克的證詞"
+        },
+        {
+          "type": "p",
+          "text": "同一套規則、同一組參數、一個字都不改，換成股指期貨和外匯的一小時 K 線："
+        },
+        {
+          "type": "p",
+          "text": "納指期貨：t +2.9。標普期貨：t +3.4。前後兩段時間都為正。歐元美元：毛利顯著，但外匯的點差把一半吃掉。黃金：不行，明確拒絕。"
+        },
+        {
+          "type": "p",
+          "text": "四個資產類別，三個活了，一個死了——順帶一提，「全部都過」反而才可疑。"
+        },
+        {
+          "type": "p",
+          "text": "在加密貨幣上長出來的規則，不可能「過擬合」到納斯達克期貨的資料上。跨市場、跨資料源、零調整的重現，是對「這只是資料探勘的幸運」最有力的反駁。比任何樣本內的統計量都硬。"
+        },
+        {
+          "type": "h",
+          "text": "三條可以帶走的規則"
+        },
+        {
+          "type": "p",
+          "text": "一、任何宣稱含成本的回測，收工前跑一次成本歸零的對照組。含成本的成績 ≥ 零成本 = 成本模型壞了。這個檢查五秒鐘，擋掉一整類災難。"
+        },
+        {
+          "type": "p",
+          "text": "二、相關標的的合池 t 值是灌水的。配一個按日分群的 bootstrap，讓相關性自己現形——你的 n 可能只有帳面上的三分之一。"
+        },
+        {
+          "type": "p",
+          "text": "三、對抗過擬合最硬的證據不是更多的樣本內統計，是零調整的跨市場重現。規則凍結，換一個它沒見過的世界，看它活不活。"
+        },
+        {
+          "type": "h",
+          "text": "結局（還沒到）"
+        },
+        {
+          "type": "p",
+          "text": "即使有納斯達克的證詞，這條策略今天依然一毛真錢都碰不到。它被關進一個預先註冊的 forward 驗證：規則凍結那天之後的新資料，要自己累積上千筆、扣完成本、去完相關性之後依然顯著，才有資格見到第一張百元鈔票。"
+        },
+        {
+          "type": "p",
+          "text": "因為 1.95 的意思是「值得等」，不是「值得信」。"
+        },
+        {
+          "type": "p",
+          "text": "上週我最大的收穫不是找到一個策略，是又一次確認了同一件事：回測數字不是證據，是申請書。審核申請書的，永遠應該是那個最想拒絕它的人。"
+        }
+      ]
+    }
+  },
+  {
+    "slug": "terrain-verdicts",
+    "date": "2026-08-10",
+    "tags": [
+      "預註冊",
+      "特徵工程"
+    ],
+    "cover": "06_terrain_verdicts.png",
+    "zh": {
+      "title": "我測了十個維度，最有價值的兩個結果都是「沒有」",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "模型不知道自己站在哪裡"
+        },
+        {
+          "type": "p",
+          "text": "我的 4 小時方向模型有 136 個特徵，訂單流、未平倉、資金費率、多空比、清算都在裡面。價格本身只以十根報酬率的落後值進去，全部是無量綱的變化率。"
+        },
+        {
+          "type": "p",
+          "text": "換句話說，它從來不知道一件很基本的事：開火的那一刻，價格離最近的、還沒被成交掉的掛單區有多遠。它知道有多少錢被清算，不知道那些價位在它上面還是下面。"
+        },
+        {
+          "type": "p",
+          "text": "去年六月我試過把這類位置特徵直接加進模型，結果是零提升。那時候我把這條路判死了。"
+        },
+        {
+          "type": "p",
+          "text": "後來我發現，那次問的是「模型還沒吸收這個資訊嗎」。而我真正想問的是另一件事：「槍已經開了，哪一種情境比較準」。這是兩個問題，可以有兩個不同的答案。"
+        },
+        {
+          "type": "p",
+          "text": "所以我把它整個重做一次，這次不碰模型，只看訊號開火當下的地形。"
+        },
+        {
+          "type": "h",
+          "text": "先寫預測，再看數據"
+        },
+        {
+          "type": "p",
+          "text": "我把十個維度一次寫進一份目錄，順序凍結，每一個都先寫下我預期哪一邊比較好。這一步很重要：如果邊測邊想下一個測什麼，等於讓數據幫我選題目。"
+        },
+        {
+          "type": "p",
+          "text": "然後是三道關卡，同樣事先寫死。"
+        },
+        {
+          "type": "p",
+          "text": "第一關，分桶之後效果量至少 4 個百分點，而且把樣本切成前後兩半，方向要一致。第二關，在已經定案的維度桶內還要剩下殘餘效果，防止一個維度只是另一個維度換張皮。第三關，置換檢定加 bootstrap 信賴區間，再看每一季的正負號。"
+        },
+        {
+          "type": "p",
+          "text": "整份目錄大約是 24 次觀察。以這個規模，光靠運氣就會有一到兩個假陽性。這套協議不是為了把好東西找出來，是為了讓那一兩個假陽性過不了關。"
+        },
+        {
+          "type": "h",
+          "text": "十個維度，一個席位"
+        },
+        {
+          "type": "p",
+          "text": "全部跑完，只有一個維度取得席位。"
+        },
+        {
+          "type": "p",
+          "text": "是「前方池子的密度」：訊號開火時，往目標方向 3 個 ATR 之內如果只有 1 個以下的未掃流動性池，勝率 62.2%；如果有 3 個以上，掉到 54.0%。基準是 59.5%。"
+        },
+        {
+          "type": "p",
+          "text": "它三關全過，前後兩半 +9.4 和 +9.9，桶內殘餘五格全部同向，置換檢定 p=0.0225，信賴區間 [+1.0, +15.6]，三個季度沒有一季逆風。"
+        },
+        {
+          "type": "p",
+          "text": "然後我又打了它六輪。其中最該打的一輪是這樣的：池子的距離是用 ATR 換算的，波動低的時候 ATR 小，池子看起來自然就密。那這個維度會不會只是波動率的機械副作用？我把樣本按波動分成三份，密池的佔比是 42%、38%、37%，幾乎持平。這個解釋被駁回了。"
+        },
+        {
+          "type": "p",
+          "text": "我也把它的形狀誠實寫下來：不是越疏越好的斜線，是要到 3 個池才掉下去的一道階梯。"
+        },
+        {
+          "type": "h",
+          "text": "差 0.0 就是差 0.0"
+        },
+        {
+          "type": "p",
+          "text": "有一個維度停在門口。折價區開火勝率 65.5%，溢價區 57.2%，前後兩半同向，桶內殘餘四格過關，置換檢定 p=0.0215，三季全部順風。"
+        },
+        {
+          "type": "p",
+          "text": "但 bootstrap 信賴區間的下緣是 -0.0，剛好碰到零。按照事先寫好的協議，這叫失敗。"
+        },
+        {
+          "type": "p",
+          "text": "我沒有改門檻。"
+        },
+        {
+          "type": "p",
+          "text": "放寬門檻的代價不是這次多收一個假陽性，是從此以後每一個結論都要多問一句「這次的門檻是事前定的還是事後調的」。整套協議會在那一刻停止成為證據。"
+        },
+        {
+          "type": "p",
+          "text": "它拿到一次復審權：等樣本長大之後可以重跑一次，不准改門檻、不准換分桶。只有一次，避免它反覆敲門直到某次剛好過關。"
+        },
+        {
+          "type": "h",
+          "text": "兩個「沒有」，比那個席位更值錢"
+        },
+        {
+          "type": "p",
+          "text": "第一個。教科書上的支撐阻力翻轉：一個剛被掃穿的價位，之後會不會反過來變成支撐？我拿 4 到 24 小時內剛被掃過的價位當墊背，勝率 55%，而背後什麼都沒有的真空區是 56%。差 1 個百分點，兩半還反向。"
+        },
+        {
+          "type": "p",
+          "text": "第二個，是我另外做的一批資料。我把爆量清算那根 K 棒的極值當成「槓桿死亡現場」，重建了 1565 個這樣的價位。其中 1523 個已經被價格掃過，佔 97%。用剩下的來當墊背，勝率 57%，真空區 55%，一樣不成立。"
+        },
+        {
+          "type": "p",
+          "text": "兩個獨立的路徑，同一個結論：被消耗掉的流動性，不留下任何效應。"
+        },
+        {
+          "type": "p",
+          "text": "這件事反過來解釋了整場戰役裡最硬的一個維度。「背後有支撐」是 +12.1 個百分點、p=0.0005，遠比其他維度強。它有效不是因為價格記得那裡發生過什麼，是因為那裡真的還掛著沒被吃掉的單。"
+        },
+        {
+          "type": "p",
+          "text": "同一個價位，有單和沒單，是兩種完全不同的東西。這句話我沒辦法用「找到一個有效因子」的方式證明，它只能從兩個否定裡讀出來。"
+        },
+        {
+          "type": "h",
+          "text": "同一天，我自己的儀器壞了兩次"
+        },
+        {
+          "type": "p",
+          "text": "第一次。最終統計關的腳本裡，我把「背後有支撐」這組的好桶壞桶槽位寫反了。它跑出 -12.1 個百分點、三個逆風季，跟前面每一個切面完全相反。"
+        },
+        {
+          "type": "p",
+          "text": "我沒有去解讀那個數字，我去查了產生它的程式碼。修正之後是 +12.1，p=0.0005。"
+        },
+        {
+          "type": "p",
+          "text": "第二次。另一個維度要比較不同等級的牆，第一版跑出來，波段級的桶子樣本數是 0，週級的也是 0。原因是同一個價位常常同時是好幾種池，一個波段高點幾乎必然也是某個時段的高點，而我的歸屬規則在同距離時是按確認時間決定的，波段就被時段整碗端走。改成取最高等級的標籤之後，四個桶都有樣本了。"
+        },
+        {
+          "type": "p",
+          "text": "兩個 bug 都不會拋例外，都不會讓數字看起來畸形。一個給我一個乾淨的、可以發表的反向結論，一個給我一張分佈很極端但講得通的表。"
+        },
+        {
+          "type": "p",
+          "text": "我抓到它們純粹是因為碰巧有先驗可以對照：一個跟前面三輪切片矛盾，一個出現了物理上不可能的 0。沒有先驗的維度，同一種 bug 會直接變成結論。"
+        },
+        {
+          "type": "h",
+          "text": "三條可以帶走的規則"
+        },
+        {
+          "type": "p",
+          "text": "一、先寫預測再看數據，而且要一次把整份目錄寫完。逐個維度邊測邊決定下一個測什麼，跟事後挑格子沒有本質差別。"
+        },
+        {
+          "type": "p",
+          "text": "二、分桶分析的第一個檢查不是效果量，是每個桶的樣本數在物理上說不說得通。有桶是 0，或某個桶吃掉九成，先當儀器壞掉，不要先當發現。"
+        },
+        {
+          "type": "p",
+          "text": "三、把「什麼都沒有」寫進結論，跟寫「找到了什麼」一樣重要。兩個獨立的否定，有時候會告訴你一件正向結果講不出來的事。"
+        },
+        {
+          "type": "h",
+          "text": "結局（還沒到）"
+        },
+        {
+          "type": "p",
+          "text": "這四個地形維度今天在系統裡是純顯示。每一則訊號的告警會多帶一行地形標記，讓我即時看到「如果濾網上線，它會怎麼判這一筆」，但進場規則一行都沒有改。"
+        },
+        {
+          "type": "p",
+          "text": "上線的扳機在收官那天就凍結了：要累積 60 筆全新的訊號，而且 90 天的保留組與否決組勝率差要維持在 8 個百分點以上，兩個條件同時成立，我才把它送進執行層。"
+        },
+        {
+          "type": "p",
+          "text": "目前是 0 / 60。以現在的訊號速率，那 60 筆大約要三個月。"
+        },
+        {
+          "type": "p",
+          "text": "一天的研究，換三個月的等待。這個比例看起來很不划算，但它就是「樣本內篩出來的東西只是入場券」的價格。我寧可付這個，也不想再付一次相信儀器的錢。"
+        }
+      ]
+    },
+    "en": {
+      "title": "I tested ten dimensions. The two most useful results were both nothing",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "The model does not know where it is standing"
+        },
+        {
+          "type": "p",
+          "text": "My 4 hour direction model has 136 features. Order flow, open interest, funding, long short ratios, liquidations are all in there. Price itself enters only as ten lagged returns, all of them dimensionless rates of change."
+        },
+        {
+          "type": "p",
+          "text": "So it has never known something quite basic: at the moment it fires, how far is price from the nearest pocket of resting orders that has not been filled yet. It knows how much money got liquidated. It does not know whether those levels sit above it or below it."
+        },
+        {
+          "type": "p",
+          "text": "I tried adding location features to the model last June and got nothing. Zero lift in an ensemble A/B, so I wrote the idea off. What I missed is that the A/B was answering a different question. It asks whether the model has already absorbed this information. What I actually wanted to ask is which situations the model is more accurate in, given that it has already fired. Two questions, and they are allowed to have two different answers."
+        },
+        {
+          "type": "h",
+          "text": "Predictions first, data second"
+        },
+        {
+          "type": "p",
+          "text": "I wrote all ten dimensions into one catalogue before running anything, froze the order, and wrote down which side I expected to win for each one. That step matters more than it sounds. If you decide what to test next after seeing the last result, you have let the data pick your questions."
+        },
+        {
+          "type": "p",
+          "text": "Then three gates, also fixed in advance. First, the effect has to be at least 4 percentage points, and when I split the sample into an earlier and a later half, both halves have to point the same way. Second, the effect has to survive inside the buckets of the dimensions I had already settled, so that a new dimension cannot just be an old one wearing a different label. Third, a permutation test, a bootstrap confidence interval, and the sign of every quarter."
+        },
+        {
+          "type": "p",
+          "text": "The full catalogue is about 24 looks at the same data. At that scale, chance alone is expected to hand me one or two false positives. The protocol does not exist to find the good ones. It exists so those one or two cannot get through."
+        },
+        {
+          "type": "h",
+          "text": "Ten dimensions, one seat"
+        },
+        {
+          "type": "p",
+          "text": "One dimension survived: the density of liquidity pools ahead. If there is at most one unswept pool within 3 ATR in the direction the signal is pointing, the win rate is 62.2 percent. With three or more, it drops to 54.0 percent. Baseline is 59.5 percent."
+        },
+        {
+          "type": "p",
+          "text": "It cleared all three gates. Both halves at +9.4 and +9.9, all five residual cells pointing the same way, permutation p=0.0225, confidence interval [+1.0, +15.6], and no losing quarter out of three."
+        },
+        {
+          "type": "p",
+          "text": "Then I attacked it six more ways. The attack that mattered most was this one: pool distance is measured in ATR, and when volatility is low, ATR is small, so pools automatically look denser. Is this dimension just a mechanical side effect of volatility? I split the sample into volatility terciles and the share of dense cases was 42, 38 and 37 percent. Flat. That explanation is dead."
+        },
+        {
+          "type": "p",
+          "text": "I also wrote down its shape honestly. It is not a gradient where sparser is always better. It is a step that only appears once you get to three pools."
+        },
+        {
+          "type": "h",
+          "text": "Missing by 0.0 is still missing"
+        },
+        {
+          "type": "p",
+          "text": "One dimension stopped at the door. Firing in the discount zone won 65.5 percent of the time against 57.2 percent in the premium zone. Both halves agreed, four of five residual cells agreed, permutation p=0.0215, all three quarters positive."
+        },
+        {
+          "type": "p",
+          "text": "But the lower bound of the bootstrap interval came out at -0.0. It touched zero. Under the protocol I wrote before I started, that is a failure."
+        },
+        {
+          "type": "p",
+          "text": "I did not move the threshold. The cost of moving it is not one extra false positive today. It is that from then on, every conclusion in the project carries an unanswerable question: was that threshold set before or after someone saw the number? The whole protocol stops being evidence at that moment. What the dimension gets instead is one, and exactly one, right of appeal once the sample grows. No changing the threshold, no re-cutting the buckets. One attempt, so it cannot keep knocking until a lucky draw lets it in."
+        },
+        {
+          "type": "h",
+          "text": "The two nothings were worth more than the seat"
+        },
+        {
+          "type": "p",
+          "text": "First one. The textbook support and resistance flip: a level that just got swept, does it turn into support afterwards? Using levels swept in the last 4 to 24 hours as a floor gives 55 percent. Having nothing behind the entry at all gives 56 percent. One point apart, and the two halves disagree."
+        },
+        {
+          "type": "p",
+          "text": "Second one, from a completely separate dataset. I took the extreme of each bar with a liquidation spike as the scene of a leverage wipeout, and rebuilt 1565 of those levels. 1523 of them, 97 percent, had already been swept by price. Using the survivors as a floor gives 57 percent against 55 percent for a vacuum. It does not hold either."
+        },
+        {
+          "type": "p",
+          "text": "Two independent paths, one conclusion: liquidity that has already been consumed leaves nothing behind."
+        },
+        {
+          "type": "p",
+          "text": "That turns around and explains the strongest dimension of the whole campaign. Having unswept liquidity behind the entry is worth +12.1 percentage points at p=0.0005, far ahead of everything else. It works not because price remembers what happened at that level, but because there are still real unfilled orders sitting there. The same price with orders and without orders are two different things. I could not have proven that sentence by finding a working factor. It only falls out of the two negatives."
+        },
+        {
+          "type": "h",
+          "text": "My own instruments broke twice that day"
+        },
+        {
+          "type": "p",
+          "text": "First. In the final statistics script I had the good and bad bucket slots swapped for the support dimension. It printed -12.1 percentage points and three losing quarters, the exact opposite of every earlier slice. I did not interpret that number. I went and read the code that produced it. Corrected, it is +12.1 at p=0.0005."
+        },
+        {
+          "type": "p",
+          "text": "Second. Another dimension compares walls of different grades, and the first version came back with zero samples in the swing bucket and zero in the weekly bucket. The reason is that one price level is usually several kinds of pool at once. A swing high is almost always also some session's high, and my tie break at equal distance went by confirmation time, so session ate swing entirely. Taking the highest grade label instead gave all four buckets samples."
+        },
+        {
+          "type": "p",
+          "text": "Neither bug threw an exception. Neither produced a number that looked deformed. One handed me a clean, publishable, backwards conclusion. The other handed me a table with a strange but arguable distribution. I caught them only because I happened to have priors to check against: one contradicted three earlier slices, the other showed a count that is physically impossible. On a dimension where I have no prior, the same class of bug becomes the finding."
+        },
+        {
+          "type": "h",
+          "text": "Three things worth stealing"
+        },
+        {
+          "type": "p",
+          "text": "One. Write the predictions before the data, and write the whole catalogue at once. Deciding what to test next after seeing the last result is not meaningfully different from picking cells after the fact."
+        },
+        {
+          "type": "p",
+          "text": "Two. The first check on any bucketed analysis is not the effect size. It is whether the sample count in each bucket makes physical sense. A bucket at zero, or one bucket holding ninety percent, means a broken instrument until proven otherwise. Treat it as a bug before you treat it as a discovery."
+        },
+        {
+          "type": "p",
+          "text": "Three. Write the nothings into the conclusions with the same care as the somethings. Two independent negatives can tell you something no positive result in the same study is able to say."
+        },
+        {
+          "type": "h",
+          "text": "No ending yet"
+        },
+        {
+          "type": "p",
+          "text": "All four terrain dimensions are display only today. Every alert carries an extra line showing me how the filter would have judged that signal, and the entry rules have not changed by a single line."
+        },
+        {
+          "type": "p",
+          "text": "The trigger for going live was frozen on the day the campaign closed: 60 brand new signals have to accumulate, and the 90 day win rate gap between the kept and the vetoed group has to stay at 8 percentage points or better. Both conditions, or it does not reach the execution layer. Right now it is 0 of 60. At the current signal rate those 60 will take about three months."
+        },
+        {
+          "type": "p",
+          "text": "One day of research, three months of waiting. The ratio looks terrible, and it is exactly the price of treating anything found in sample as an entry ticket rather than a result. I would rather pay that than pay again for trusting an instrument."
+        }
+      ]
+    }
+  },
+  {
+    "slug": "two-models",
+    "date": "2026-08-17",
+    "tags": [
+      "模型架構",
+      "信心校準"
+    ],
+    "cover": "07_mag_quintiles.png",
+    "zh": {
+      "title": "我的信心分數，曾經越高越不準",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "兩個模型，兩個不同的問題"
+        },
+        {
+          "type": "p",
+          "text": "我的系統核心是兩個 XGBoost 迴歸器。一個回答「接下來 4 小時往哪走」，一個回答「會走多遠」。"
+        },
+        {
+          "type": "p",
+          "text": "這個拆分是被逼出來的。一開始我想用一個模型同時吐出方向和幅度，兩種訊號互相污染，誰都學不乾淨。拆開之後兩邊都乾淨了，但我後來才發現，難的不是拆，是合。"
+        },
+        {
+          "type": "h",
+          "text": "方向模型：預測一段路，不是一個點"
+        },
+        {
+          "type": "p",
+          "text": "方向模型吃 136 個特徵，輸出一個帶正負號的報酬預測值。"
+        },
+        {
+          "type": "p",
+          "text": "它的目標不是「4 小時後的收盤價相對現在漲跌多少」，而是「接下來 4 根 K 線的平均價相對現在漲跌多少」。前者是一個點，可以被最後一根的一次插針決定；後者是一段路。我要知道的是這段路往哪走，不是第 4 個小時最後那一秒剛好收在哪裡。"
+        },
+        {
+          "type": "p",
+          "text": "這個選擇也讓標籤本身安靜很多。同一段行情，用收盤對收盤算會忽上忽下，用路徑均價算平滑得多，而模型能從噪音比較低的標籤裡學到比較多東西。"
+        },
+        {
+          "type": "h",
+          "text": "它不做分類，所以沒有「上漲機率 78%」這種數字"
+        },
+        {
+          "type": "p",
+          "text": "方向模型是迴歸不是分類器，它不輸出機率。要把那個預測值變成 UP、DOWN 或中性，我拿它自己最近 500 根的預測值當參照：落在最極端的 5% 是 Strong，15% 是 Moderate，其餘不發訊號。"
+        },
+        {
+          "type": "p",
+          "text": "為什麼不用固定門檻？因為模型輸出的尺度會隨市場狀態漂移。固定門檻的結果是某些時期一天發好幾則，另一些時期整週安靜。改成滾動分位數之後，「Strong」的語意被固定成「相對於最近的自己最極端的那 5%」。"
+        },
+        {
+          "type": "p",
+          "text": "代價也要寫清楚：這代表 Strong 的絕對強度不是固定的。低波動期分位數會掉得很低，低到把雜訊也發成訊號，所以我另外加了一道絕對值地板，兩者取大的那個。"
+        },
+        {
+          "type": "p",
+          "text": "有一組數字很能說明這個問題有多難：這個模型的樣本內相關係數是 0.84，乾淨 walk-forward 的樣本外 AUC 是 0.54。這個落差不是 bug，是這個問題本來的樣子。"
+        },
+        {
+          "type": "h",
+          "text": "幅度模型：預測倍數，不預測百分比"
+        },
+        {
+          "type": "p",
+          "text": "幅度模型吃 76 個特徵，是方向那 136 個剪枝之後的子集。"
+        },
+        {
+          "type": "p",
+          "text": "它預測的不是「會走百分之幾」，是「會是當下波動的幾倍」。訓練目標是 4 小時絕對報酬除以當前的實現波動，推論的時候再乘回當下的波動，還原成報酬尺度。"
+        },
+        {
+          "type": "p",
+          "text": "理由很實際。絕對幅度隨市場狀態變化太大，直接學絕對值，模型會把大部分容量用來記住「現在是高波動期還是低波動期」，而那件事我用一個簡單的統計量就算得出來，不需要一個 300 棵樹的模型去學。改成預測倍數，它才有空間去學真正的資訊：在同樣的波動水準下，這一根為什麼會走得比平常大。"
+        },
+        {
+          "type": "h",
+          "text": "然後我把兩個模型乘起來了"
+        },
+        {
+          "type": "p",
+          "text": "直覺非常順：方向對加上幅度大等於大贏。所以早期的信心分數是方向強度再乘一個幅度加成。"
+        },
+        {
+          "type": "p",
+          "text": "資料是反過來的。把樣本外預測按實際 4 小時絕對報酬分成五組，方向準確率依序是 50.1、52.1、51.7、48.8、47.9。走得最大的那一組是 47.9%，比丟硬幣還差。"
+        },
+        {
+          "type": "p",
+          "text": "而幅度加成正好系統性地把這些 K 線推進高信心區。結果是一個訊號系統能出現的最糟故障：信心分數和勝率反轉。高信心那一組勝率 48%，低信心那一組 67%。"
+        },
+        {
+          "type": "p",
+          "text": "我在 2026 年 5 月 9 日把加成拿掉。現在的信心分數只有一個來源：這個預測相對於當前 Strong 門檻有多極端。同一天我也把「用幅度分級」在設定裡關掉，程式碼註解到今天還寫著那句話：迴歸模式不以幅度決定 Strong。"
+        },
+        {
+          "type": "h",
+          "text": "為什麼會這樣"
+        },
+        {
+          "type": "p",
+          "text": "走得特別大的那些 K 線，多半是被新聞或清算連鎖這種外生衝擊推動的。方向模型吃的是訂單流和部位結構，這些資料在衝擊落地之前不會告訴它衝擊要來。它在那些 K 線上沒有資訊，而幅度模型剛好在那些 K 線上喊得最大聲。"
+        },
+        {
+          "type": "p",
+          "text": "接下來那個直覺的修法也是錯的。「那就把高波動的時候濾掉」，我測了：按 20 根實現波動分位切，最差的是中波動（IC -0.047），高波動反而是正的（+0.074），最好的是低波動（+0.125）。把高波動濾掉，整體 IC 從 +0.037 掉到 +0.020。"
+        },
+        {
+          "type": "p",
+          "text": "原因是「走得大」是事後量到的，「波動高」是事前量到的，兩件事。一段安靜了 20 小時的行情，照樣可以突然來一根大棒。"
+        },
+        {
+          "type": "h",
+          "text": "所以它們現在的分工"
+        },
+        {
+          "type": "p",
+          "text": "方向模型決定要不要開槍、往哪邊開。幅度模型不參與這個決定，它出現在圖表面板和訊號紀錄裡，當作「這一筆預期的波動有多大」的背景資訊。"
+        },
+        {
+          "type": "p",
+          "text": "它們的失效方式也不一樣，所以監控不能共用一套指標。幅度模型發生過概念漂移，walk-forward 的樣本外 IC 從 0.30 掉到 0.10；方向模型在同一段時間沒有。如果我拿一個總體指標同時看兩個，一定會漏掉其中一個。"
+        },
+        {
+          "type": "h",
+          "text": "三件可以帶走的事"
+        },
+        {
+          "type": "p",
+          "text": "一、把一個問題拆成兩個模型之前，先想好它們的輸出要怎麼合。拆開的好處是各自可以用最適合的目標和特徵，代價是你必須額外決定一條合成規則，而那條規則不會被任何訓練過程驗證。我的乘法就是這樣混進去的：它從來沒有被回測過，它只是聽起來很對。"
+        },
+        {
+          "type": "p",
+          "text": "二、任何把多個模型輸出合成一個分數的公式，上線之後要定期檢查「分數高低」對「實際準確率」是不是單調。這一個檢查就抓得到反轉，而反轉是這類公式最常見的死法。"
+        },
+        {
+          "type": "p",
+          "text": "三、預測「相對於當下的幾倍」通常比預測絕對值有用。絕對值會讓模型去學市場狀態，而市場狀態本來就會變。"
+        },
+        {
+          "type": "h",
+          "text": "最後"
+        },
+        {
+          "type": "p",
+          "text": "兩個模型都沒有錯。方向模型在它的天花板附近做它能做的事，幅度模型也確實預測得動幅度。錯的是我以為它們可以互相背書。"
+        },
+        {
+          "type": "p",
+          "text": "一個模型說「往上」，另一個模型說「會很大」，聽起來像兩個證人指認同一件事。實際上它們回答的是兩個不同的問題，而其中一個問題答得最大聲的時候，正好是另一個問題最難答的時候。"
+        }
+      ]
+    },
+    "en": {
+      "title": "My confidence score used to get less accurate as it got higher",
+      "subtitle": "",
+      "blocks": [
+        {
+          "type": "h",
+          "text": "Two models, two different questions"
+        },
+        {
+          "type": "p",
+          "text": "The core of my system is two XGBoost regressors. One answers where price goes over the next four hours. The other answers how far it goes."
+        },
+        {
+          "type": "p",
+          "text": "The split was forced on me. My first attempt had a single model emitting both, and the two signals contaminated each other until neither was learned cleanly. Splitting them fixed that. What I did not appreciate at the time is that splitting is the easy part. Recombining is the hard part."
+        },
+        {
+          "type": "h",
+          "text": "Direction: predicting a path, not a point"
+        },
+        {
+          "type": "p",
+          "text": "The direction model takes 136 features and outputs a signed return prediction. Its target is not the close four hours from now against the price today. It is the average of the next four hourly closes against the price today."
+        },
+        {
+          "type": "p",
+          "text": "A single closing price is a point, and one wick in the final bar can decide it. An average is a path. What I want to know is where the path goes, not where the last second of the fourth hour happens to land. The choice also makes the label much quieter: close to close labels jump around, path labels are smoother, and a model learns more from a label with less noise in it."
+        },
+        {
+          "type": "h",
+          "text": "It is not a classifier, so there is no 78 percent chance of going up"
+        },
+        {
+          "type": "p",
+          "text": "The direction model is a regressor and it does not output a probability. To turn its number into up, down or neutral, I compare it to its own last 500 predictions. The most extreme 5 percent is a Strong signal, 15 percent is Moderate, everything else fires nothing."
+        },
+        {
+          "type": "p",
+          "text": "Why not a fixed threshold? Because the scale of the model's output drifts with market conditions. A fixed threshold gives you several signals a day in one regime and silence for a week in another. A rolling percentile pins the meaning of Strong to something stable: the most extreme 5 percent relative to its own recent self."
+        },
+        {
+          "type": "p",
+          "text": "The cost is worth stating. It means the absolute strength of a Strong signal is not constant. In quiet regimes the percentile cutoff can sink low enough to promote noise, so there is also an absolute floor underneath it and the effective cutoff is whichever is higher."
+        },
+        {
+          "type": "p",
+          "text": "One pair of numbers shows how hard this problem is. In sample, the model's correlation with the target is 0.84. On a clean walk forward, its out of sample AUC is 0.54. That gap is not a bug. That is what this problem looks like."
+        },
+        {
+          "type": "h",
+          "text": "Magnitude: predicting a multiple, not a percentage"
+        },
+        {
+          "type": "p",
+          "text": "The magnitude model takes 76 features, a pruned subset of the direction model's 136. It does not predict how many percent price will move. It predicts how many times current volatility it will move: the training target is the 4 hour absolute return divided by current realised volatility, and inference multiplies the output back by current volatility to get back to return scale."
+        },
+        {
+          "type": "p",
+          "text": "The reason is practical. Absolute move size varies enormously with regime, so a model trained on raw absolute values spends most of its capacity memorising whether we are currently in a high or low volatility period. I can compute that with one simple statistic. I do not need 300 trees for it. Framed as a multiple, the model has room to learn the thing I actually want: given this level of volatility, why would this particular bar move more than usual."
+        },
+        {
+          "type": "h",
+          "text": "And then I multiplied them together"
+        },
+        {
+          "type": "p",
+          "text": "The intuition is very appealing. Right direction plus large magnitude equals a large win. So the early confidence score was directional strength with a magnitude bonus layered on top."
+        },
+        {
+          "type": "p",
+          "text": "The data says the opposite. Bucketing out of sample predictions by realised 4 hour absolute return gives directional accuracy of 50.1, 52.1, 51.7, 48.8 and 47.9 percent. The biggest moves land at 47.9 percent, worse than a coin flip."
+        },
+        {
+          "type": "p",
+          "text": "And the magnitude bonus was systematically pushing exactly those bars into the high confidence band. The result is the worst failure a signal system can have: confidence and win rate inverted. The high confidence group won 48 percent of the time, the low confidence group won 67 percent."
+        },
+        {
+          "type": "p",
+          "text": "I removed the bonus on 9 May 2026. Confidence now has a single input: how extreme this prediction is relative to the current Strong cutoff. The same day I disabled magnitude gating in the config, and the comment is still sitting in the code today: regression mode does not gate Strong on magnitude."
+        },
+        {
+          "type": "h",
+          "text": "Why it happens"
+        },
+        {
+          "type": "p",
+          "text": "The bars that move the most are usually driven by something exogenous, news or a liquidation cascade. The direction model eats order flow and positioning data, and none of that tells it a shock is coming before the shock lands. It has no information on those bars, and the magnitude model is loudest on exactly those bars."
+        },
+        {
+          "type": "p",
+          "text": "The obvious follow up fix is also wrong. Filter out high volatility periods, surely? I tested it. Slicing the same sample by trailing 20 bar realised volatility, the worst bucket is mid volatility at IC -0.047, high volatility is positive at +0.074, and low volatility is the best at +0.125. Filtering out high volatility drops overall IC from +0.037 to +0.020."
+        },
+        {
+          "type": "p",
+          "text": "The reason is that a big move is measured after the fact and high volatility is measured before it. They are not the same thing. Twenty quiet hours can still be followed by one very large bar."
+        },
+        {
+          "type": "h",
+          "text": "How they divide the work now"
+        },
+        {
+          "type": "p",
+          "text": "The direction model decides whether to fire and which way. The magnitude model takes no part in that decision. It shows up in the chart panel and in the signal log as context: how large a move to expect on this one."
+        },
+        {
+          "type": "p",
+          "text": "They also fail differently, which means they cannot share one monitoring metric. The magnitude model went through a concept drift where its walk forward out of sample IC halved from 0.30 to 0.10. The direction model did not, over the same window. One aggregate health number watching both would have missed it."
+        },
+        {
+          "type": "h",
+          "text": "Three things worth stealing"
+        },
+        {
+          "type": "p",
+          "text": "One. Before splitting a problem into two models, decide how their outputs will be combined. The upside of splitting is that each half gets the target and features that suit it. The cost is that you now owe the system a combination rule, and that rule is never validated by any training process. My multiplication got in exactly that way. It was never backtested. It just sounded right."
+        },
+        {
+          "type": "p",
+          "text": "Two. Any formula that collapses several model outputs into one score needs a recurring check that the score is monotone against realised accuracy. That single check catches inversion, which is how these formulas usually die."
+        },
+        {
+          "type": "p",
+          "text": "Three. Predicting a multiple of the current level usually beats predicting the absolute value. Absolute targets push the model into learning the regime, and the regime is the thing that changes."
+        },
+        {
+          "type": "h",
+          "text": "Closing"
+        },
+        {
+          "type": "p",
+          "text": "Neither model was wrong. The direction model does what it can near its ceiling, and the magnitude model really does predict magnitude. What was wrong was my assumption that they could vouch for each other."
+        },
+        {
+          "type": "p",
+          "text": "One model saying up and another saying big sounds like two witnesses identifying the same thing. They are answering two different questions, and the moment one of them answers loudest is precisely the moment the other one is hardest to answer."
+        }
+      ]
+    }
   }
 ]
