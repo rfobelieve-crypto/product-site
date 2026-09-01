@@ -559,7 +559,7 @@
       "status": "錄製中 · 未判決",
       "pageNote": "這條線只錄不做：程式每分鐘記下兩邊的買賣價，累積滿 7 個完整天後由凍結的判決程式決定要不要進下一階段。及格前不碰任何錢包。",
       "battlefield": "戰場",
-      "battlefieldActive": "SNDK · Entropy vs Lighter（兩邊手續費 0）",
+      "battlefieldActive": "七個配對 · Entropy/HL vs Lighter（兩邊手續費 0）",
       "progressTitle": "錄製進度",
       "minutes": "已錄分鐘",
       "daysLabel": "經過天數",

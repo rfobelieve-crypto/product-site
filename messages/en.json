@@ -559,7 +559,7 @@
       "status": "Recording · no verdict yet",
       "pageNote": "Record-only: a script logs both venues' quotes every minute. After 7 full days a frozen scorer decides whether the line advances. No wallet is touched before it passes.",
       "battlefield": "Battlefield",
-      "battlefieldActive": "SNDK · Entropy vs Lighter (0 fees both sides)",
+      "battlefieldActive": "seven pairs · Entropy/HL vs Lighter (0 fees both legs)",
       "progressTitle": "Recording progress",
       "minutes": "Minutes logged",
       "daysLabel": "Days elapsed",

@@ -4,6 +4,8 @@ import { Nav } from '@/components/sections/Nav';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
 import { getPreregBoard } from '@/lib/prereg';
+import { getArbStatus } from '@/lib/arb';
+import { ArbFamilyTable } from '@/components/sections/ArbFamilyTable';
 
 // Line 4 (arbitrage) has no chart iframe — its whole public face is the
 // recording clock. Progress numbers come from the same prereg-clocks feed
@@ -28,7 +30,7 @@ export default async function ArbChartPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations({ locale, namespace: 'chartsPage' });
-  const board = await getPreregBoard();
+  const [board, arb] = await Promise.all([getPreregBoard(), getArbStatus()]);
   const clock = board?.open.find((c) => c.id === '0.75') ?? null;
   const pct =
     clock?.n != null && clock?.gate_n
@@ -106,6 +108,8 @@ export default async function ArbChartPage({
               <p className="mt-4 font-body text-xs text-mist/40">—</p>
             )}
           </div>
+
+          <ArbFamilyTable status={arb} locale={locale} />
 
           <div className="mt-6 rounded-xl border border-white/[0.08] bg-ink/70 p-5">
             <h2 className="font-body text-[11px] uppercase tracking-[0.2em] text-iris-violet/80">
