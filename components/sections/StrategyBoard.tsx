@@ -1,7 +1,7 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { getSignalFeed } from '@/lib/signalFeed';
-import { getSweepStatus } from '@/lib/sweepStatus';
+import { getSweepStatus, SWEEP_B_VERDICT, SWEEP_SETTLED } from '@/lib/sweepStatus';
 
 const DIRECTION_LABEL: Record<string, string> = {
   UP: '↑ UP',
@@ -66,7 +66,9 @@ export async function StrategyBoard({ locale }: { locale: string }) {
         feed.confidence != null ? ` · ${feed.confidence.toFixed(0)}` : ''
       }`
     : t('unavailable');
-  const g = sweep?.gate;
+  // Same rule as SweepKpiRow: B is settled, so the frozen verdict numbers win
+  // over the endpoint's in-image recount.
+  const g = SWEEP_SETTLED.B === 'FAIL' ? SWEEP_B_VERDICT : sweep?.gate;
   const sweepStat = g
     ? t('sweepGate', {
         n: g.n_closed,

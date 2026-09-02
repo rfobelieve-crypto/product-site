@@ -1,4 +1,5 @@
 import { getTranslations } from 'next-intl/server';
+import { SWEEP_B_VERDICT, SWEEP_SETTLED } from '@/lib/sweepStatus';
 import type { LedgerRow, SweepStatus } from '@/lib/sweepStatus';
 
 function num(v: number | null | undefined, digits = 3, signed = true): string {
@@ -7,14 +8,32 @@ function num(v: number | null | undefined, digits = 3, signed = true): string {
   return signed && v >= 0 ? `+${s}` : s;
 }
 
+type LedgerCols = {
+  ledger: string;
+  closed: string;
+  open: string;
+  mean: string;
+  ci: string;
+  wr: string;
+  state: string;
+  accumulating: string;
+  fail: string;
+  voided: string;
+};
+
+// settled: verdicts already read at the frozen floor (SWEEP_SETTLED). They win
+// over the live `status` field, which stays 'accumulating' until the recorder
+// service redeploys.
 function LedgerTable({
   rows,
   head,
   cols,
+  settled,
 }: {
   rows: LedgerRow[];
   head: string;
-  cols: { ledger: string; closed: string; open: string; mean: string; ci: string; wr: string; state: string; accumulating: string };
+  cols: LedgerCols;
+  settled?: Record<string, 'FAIL' | 'VOID'>;
 }) {
   return (
     <div className="mt-3 overflow-x-auto rounded-xl border border-white/[0.08] bg-ink/70">
@@ -34,8 +53,28 @@ function LedgerTable({
           </tr>
         </thead>
         <tbody>
-          {rows.map((r) => (
-            <tr key={r.key} className="border-t border-white/5 text-mist/75 transition-colors hover:bg-white/[0.03]">
+          {rows.map((r) => {
+            const state =
+              settled?.[r.key] ??
+              (r.status === 'PASS' ? 'PASS' : r.status === 'FAIL' ? 'FAIL' : 'ACC');
+            const tone =
+              state === 'PASS'
+                ? 'border-[#00ffa3]/40 text-[#00ffa3]'
+                : state === 'FAIL'
+                  ? 'border-[#ff3860]/40 text-[#ff3860]'
+                  : state === 'VOID'
+                    ? 'border-white/12 text-mist/35'
+                    : 'border-white/15 text-mist/50';
+            const stateLabel =
+              state === 'PASS'
+                ? 'PASS'
+                : state === 'FAIL'
+                  ? cols.fail
+                  : state === 'VOID'
+                    ? cols.voided
+                    : cols.accumulating;
+            return (
+            <tr key={r.key} className={`border-t border-white/5 transition-colors hover:bg-white/[0.03] ${state === 'VOID' ? 'text-mist/40' : 'text-mist/75'}`}>
               <td className="px-3 py-2">
                 <span className="font-medium text-mist">{r.key}</span>
                 {r.label_zh && <span className="ml-2 text-[11px] text-mist/50">{r.label_zh}</span>}
@@ -50,16 +89,11 @@ function LedgerTable({
               </td>
               <td className="px-3 py-2 text-right tabular-nums">{r.wr_pct != null ? `${r.wr_pct.toFixed(0)}%` : '—'}</td>
               <td className="px-3 py-2">
-                <span
-                  className={`rounded-full border px-2 py-0.5 text-[10px] ${
-                    r.status === 'PASS' ? 'border-[#00ffa3]/40 text-[#00ffa3]' : 'border-white/15 text-mist/50'
-                  }`}
-                >
-                  {r.status === 'PASS' ? 'PASS' : cols.accumulating}
-                </span>
+                <span className={`rounded-full border px-2 py-0.5 text-[10px] ${tone}`}>{stateLabel}</span>
               </td>
             </tr>
-          ))}
+            );
+          })}
         </tbody>
       </table>
     </div>
@@ -89,7 +123,22 @@ export async function ShadowLedgerBoard({
     wr: t('cols.wr'),
     state: t('cols.state'),
     accumulating: t('cols.accumulating'),
+    fail: t('cols.fail'),
+    voided: t('cols.voided'),
   };
+  // B's row carries the frozen verdict numbers (the endpoint recomputes it
+  // in-image and lags a flow_system deploy); open count stays live.
+  const cohorts = sweep.cohorts.map((r) =>
+    r.key === 'B' && SWEEP_SETTLED.B === 'FAIL'
+      ? {
+          ...r,
+          n_closed: SWEEP_B_VERDICT.n_closed,
+          mean_r: SWEEP_B_VERDICT.mean_r,
+          ci_low: SWEEP_B_VERDICT.ci_low,
+          wr_pct: SWEEP_B_VERDICT.wr_pct,
+        }
+      : r,
+  );
   const c = sweep.clocks;
   return (
     <section className="mt-6">
@@ -97,7 +146,8 @@ export async function ShadowLedgerBoard({
         {t('title')}
       </h2>
       <p className="mt-2 font-body text-[11px] leading-relaxed text-mist/50">{t('intro')}</p>
-      <LedgerTable rows={sweep.cohorts} head={t('cohortsHead')} cols={cols} />
+      <LedgerTable rows={cohorts} head={t('cohortsHead')} cols={cols} settled={SWEEP_SETTLED} />
+      <p className="mt-2 font-body text-[11px] leading-relaxed text-mist/50">{t('verdict')}</p>
       {sweep.combos && sweep.combos.length > 0 && (
         <LedgerTable
           rows={sweep.combos}
