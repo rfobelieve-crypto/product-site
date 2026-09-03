@@ -18,7 +18,7 @@ import type { ArbPair, ArbSide, ArbStatus } from '@/lib/arb';
 const COPY = {
   zh: {
     title: '錄製家族',
-    sub: '同一套凍結判準，七個配對，全部報告——不挑好看的',
+    sub: '同一套凍結判準，全部報告——不挑好看的',
     pair: '配對',
     progress: '進度',
     band: '價差帶',
@@ -26,6 +26,10 @@ const COPY = {
     converge: '會收斂',
     depth: '盤口',
     carry: '資金費率',
+    afterFee: '扣費後',
+    needBand: '需要',
+    zeroFee: '零費對照',
+    unverified: '費率未查證',
     control: '對照組',
     reportOnly: '報告用',
     yes: '是',
@@ -40,7 +44,7 @@ const COPY = {
   },
   en: {
     title: 'Recording family',
-    sub: 'One frozen gate, seven pairs, all reported — no cherry-picking',
+    sub: 'One frozen gate, all pairs reported — no cherry-picking',
     pair: 'Pair',
     progress: 'Progress',
     band: 'Band',
@@ -48,6 +52,10 @@ const COPY = {
     converge: 'Converges',
     depth: 'Book',
     carry: 'Funding',
+    afterFee: 'After fees',
+    needBand: 'need',
+    zeroFee: 'zero-fee control',
+    unverified: 'fee unverified',
     control: 'control',
     reportOnly: 'report only',
     yes: 'yes',
@@ -94,12 +102,13 @@ export function ArbFamilyTable({
       </div>
 
       <div className="mt-4 overflow-x-auto">
-        <table className="w-full min-w-[560px] border-collapse font-body text-sm">
+        <table className="w-full min-w-[640px] border-collapse font-body text-sm">
           <thead>
             <tr className="text-[10px] uppercase tracking-[0.15em] text-mist/40">
               <th className="pb-2 text-left font-normal">{c.pair}</th>
               <th className="pb-2 text-right font-normal">{c.progress}</th>
               <th className="pb-2 text-right font-normal">{c.band}</th>
+              <th className="pb-2 text-right font-normal">{c.afterFee}</th>
               <th className="pb-2 text-right font-normal">{c.fires}</th>
               <th className="pb-2 text-right font-normal">{c.converge}</th>
               <th className="pb-2 text-right font-normal">{c.depth}</th>
@@ -133,6 +142,11 @@ export function ArbFamilyTable({
                         {c.control}
                       </span>
                     )}
+                    {p.zero_fee && (
+                      <span className="ml-2 rounded border border-emerald-400/20 px-1.5 py-0.5 text-[9px] uppercase tracking-[0.15em] text-emerald-300/60">
+                        {c.zeroFee}
+                      </span>
+                    )}
                   </td>
                   <td className="py-2 text-right">
                     {p.days?.toFixed(1) ?? '—'}
@@ -143,6 +157,35 @@ export function ArbFamilyTable({
                   </td>
                   <td className="py-2 text-right">
                     {s?.band_bps != null ? `${s.band_bps.toFixed(2)} bps` : '—'}
+                  </td>
+                  <td
+                    className="py-2 text-right"
+                    title={
+                      s?.required_band_bps != null
+                        ? `${c.needBand} ${s.required_band_bps.toFixed(1)} bps`
+                        : undefined
+                    }
+                  >
+                    {s?.net_bps_per_trade != null ? (
+                      <span
+                        className={
+                          s.fee_ok ? 'text-emerald-300/70' : 'text-rose-300/60'
+                        }
+                      >
+                        {s.net_bps_per_trade > 0 ? '+' : ''}
+                        {s.net_bps_per_trade.toFixed(1)}
+                      </span>
+                    ) : (
+                      '—'
+                    )}
+                    {s?.fee_unverified && s.fee_unverified.length > 0 && (
+                      <span
+                        className="ml-1 text-[9px] text-amber-300/60"
+                        title={`${c.unverified}: ${s.fee_unverified.join(',')}`}
+                      >
+                        ?
+                      </span>
+                    )}
                   </td>
                   <td className="py-2 text-right">
                     {s?.fires_per_day != null ? s.fires_per_day.toFixed(0) : '—'}
@@ -186,6 +229,11 @@ export function ArbFamilyTable({
       <p className="mt-2 font-body text-xs leading-relaxed text-mist/35">
         {status.carry_note}
       </p>
+      {status.fee_note && (
+        <p className="mt-2 font-body text-xs leading-relaxed text-amber-200/50">
+          {status.fee_note}
+        </p>
+      )}
       {status.asof_utc && (
         <p className="mt-3 font-body text-[10px] uppercase tracking-[0.15em] text-mist/25">
           asof {status.asof_utc} UTC

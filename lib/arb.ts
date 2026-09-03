@@ -20,6 +20,17 @@ export type ArbSide = {
   median_minutes_to_converge: number | null;
   depth_tier: 'thin' | 'moderate' | 'deep' | null;
   stale_prints: number | null;
+  // 2026-09-03/04: what the operator's own fee schedule does to this side.
+  // The frozen gate was written "fees are 0+0"; that premise fell on
+  // 2026-09-03 (the Entropy leg's zero was a referral promotion, and on
+  // 2026-09-04 the account page showed it is a 25% discount, not 100%).
+  // The gate is untouched; the fee truth is shown beside it.
+  fee_venues?: string[];
+  required_band_bps?: number | null;
+  required_band_bps_schedule?: number | null;
+  net_bps_per_trade?: number | null;
+  fee_ok?: boolean;
+  fee_unverified?: string[];
 };
 
 export type ArbCarry = {
@@ -43,6 +54,7 @@ export type ArbPair = {
   buy: ArbSide | null;
   carry: ArbCarry | null;
   verdict?: string | null;
+  zero_fee?: boolean;
 };
 
 // The battlefield scan (2026-09-03). The recording family is the weapon and
@@ -102,6 +114,7 @@ export type ArbStatus = {
   scan?: ArbScan | null;
   principle: string;
   carry_note: string;
+  fee_note?: string | null;
   disclaimer: string;
 };
 
