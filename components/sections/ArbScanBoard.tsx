@@ -38,6 +38,7 @@ const COPY = {
     quotes: '報價',
     spanDays: '天',
     control: '對照組雜訊底',
+    pending: '累積中（樣本未達門檻，不列入）',
     ladderTitle: '離「真的賺到」還有幾關',
     thin: '薄',
     moderate: '中',
@@ -69,6 +70,7 @@ const COPY = {
     quotes: 'quotes',
     spanDays: 'd',
     control: 'control noise floor',
+    pending: 'still counting (below sample threshold, not listed)',
     ladderTitle: 'Steps still between this and money',
     thin: 'thin',
     moderate: 'mid',
@@ -130,6 +132,11 @@ export function ArbScanBoard({
         {scan.control_band_bps != null && (
           <span className="tabular-nums">
             {c.control}: {scan.control_band_bps.toFixed(2)} bps
+          </span>
+        )}
+        {scan.pending_pairs != null && scan.pending_pairs > 0 && (
+          <span className="tabular-nums text-amber-300/45">
+            {scan.pending_pairs.toLocaleString()} {c.pending}
           </span>
         )}
       </div>

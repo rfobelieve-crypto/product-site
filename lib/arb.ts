@@ -83,6 +83,10 @@ export type ArbScan = {
   pairs?: number | null;
   gate_ok?: boolean;
   control_band_bps?: number | null;
+  // Pairs still below the per-pair sample threshold. The board lists only
+  // pairs that cleared it, so without this number a newly added venue looks
+  // like it was never scanned rather than like it is still counting.
+  pending_pairs?: number | null;
   rows: ArbScanRow[];
   fees?: ArbFeeRow[];
   fee_rule?: string;
