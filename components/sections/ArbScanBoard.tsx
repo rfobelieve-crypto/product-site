@@ -24,6 +24,15 @@ const COPY = {
     depth: '盤口',
     samples: '樣本',
     stage: '階段',
+    need: '需要帶',
+    net: '每筆淨',
+    feeTitle: '你的費率（決定哪些戰場活著）',
+    feeVenue: '場館',
+    feeTaker: '吃單',
+    feeRebate: '返佣',
+    feeEff: '實際',
+    feeUnverified: '待查證',
+    feeKilled: '費率吃光',
     coverage: '涵蓋',
     pairsWord: '配對',
     quotes: '報價',
@@ -46,6 +55,15 @@ const COPY = {
     depth: 'Book',
     samples: 'Samples',
     stage: 'Stage',
+    need: 'Needs',
+    net: 'Net/trade',
+    feeTitle: 'Your fees (they decide which battlefields survive)',
+    feeVenue: 'Venue',
+    feeTaker: 'Taker',
+    feeRebate: 'Rebate',
+    feeEff: 'Effective',
+    feeUnverified: 'unverified',
+    feeKilled: 'eaten by fees',
     coverage: 'Coverage',
     pairsWord: 'pairs',
     quotes: 'quotes',
@@ -117,12 +135,14 @@ export function ArbScanBoard({
       </div>
 
       <div className="mt-4 overflow-x-auto">
-        <table className="w-full min-w-[620px] border-collapse font-body text-sm">
+        <table className="w-full min-w-[760px] border-collapse font-body text-sm">
           <thead>
             <tr className="text-[10px] uppercase tracking-[0.15em] text-mist/40">
               <th className="pb-2 text-left font-normal">{c.pair}</th>
               <th className="pb-2 text-left font-normal">{c.cls}</th>
               <th className="pb-2 text-right font-normal">{c.band}</th>
+              <th className="pb-2 text-right font-normal">{c.need}</th>
+              <th className="pb-2 text-right font-normal">{c.net}</th>
               <th className="pb-2 text-right font-normal">{c.vsControl}</th>
               <th className="pb-2 text-right font-normal">{c.fires}</th>
               <th className="pb-2 text-right font-normal">{c.depth}</th>
@@ -145,6 +165,24 @@ export function ArbScanBoard({
                   </td>
                   <td className="py-2 text-right">
                     {r.band_bps != null ? `${r.band_bps.toFixed(2)} bps` : '—'}
+                  </td>
+                  <td className="py-2 text-right text-mist/45">
+                    {r.required_band_bps != null
+                      ? r.required_band_bps.toFixed(1)
+                      : '—'}
+                  </td>
+                  <td
+                    className={`py-2 text-right ${
+                      r.fee_ok ? 'text-emerald-300/70' : 'text-rose-300/50'
+                    }`}
+                    title={r.fee_ok ? undefined : c.feeKilled}
+                  >
+                    {r.net_per_trade_bps != null
+                      ? `${r.net_per_trade_bps > 0 ? '+' : ''}${r.net_per_trade_bps.toFixed(2)}`
+                      : '—'}
+                    {r.fee_unverified?.length > 0 && (
+                      <span className="ml-1 text-[9px] text-amber-300/50">*</span>
+                    )}
                   </td>
                   <td
                     className={`py-2 text-right ${noise ? 'text-mist/30' : 'text-mist/70'}`}
@@ -176,6 +214,52 @@ export function ArbScanBoard({
           </tbody>
         </table>
       </div>
+
+      {scan.fees && scan.fees.length > 0 && (
+        <div className="mt-5 rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
+          <h3 className="font-body text-[10px] uppercase tracking-[0.2em] text-mist/40">
+            {c.feeTitle}
+          </h3>
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[420px] border-collapse font-body text-xs">
+              <thead>
+                <tr className="text-[10px] uppercase tracking-[0.15em] text-mist/35">
+                  <th className="pb-1 text-left font-normal">{c.feeVenue}</th>
+                  <th className="pb-1 text-right font-normal">{c.feeTaker}</th>
+                  <th className="pb-1 text-right font-normal">{c.feeRebate}</th>
+                  <th className="pb-1 text-right font-normal">{c.feeEff}</th>
+                </tr>
+              </thead>
+              <tbody className="tabular-nums">
+                {scan.fees.map((f) => (
+                  <tr key={f.venue} className="border-t border-white/[0.04] text-mist/60">
+                    <td className="py-1 text-left">
+                      {f.venue}
+                      {!f.verified && (
+                        <span className="ml-2 text-[9px] uppercase tracking-[0.15em] text-amber-300/50">
+                          {c.feeUnverified}
+                        </span>
+                      )}
+                    </td>
+                    <td className="py-1 text-right">{f.taker_bps.toFixed(2)}</td>
+                    <td className="py-1 text-right text-mist/40">
+                      {f.rebate_pct > 0 ? `-${f.rebate_pct}%` : '—'}
+                    </td>
+                    <td className="py-1 text-right text-mist/80">
+                      {f.effective_bps.toFixed(2)} bps
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          {scan.fee_rule && (
+            <p className="mt-3 font-body text-xs leading-relaxed text-mist/45">
+              {scan.fee_rule}
+            </p>
+          )}
+        </div>
+      )}
 
       <div className="mt-5 rounded-lg border border-white/[0.06] bg-white/[0.02] p-4">
         <h3 className="font-body text-[10px] uppercase tracking-[0.2em] text-mist/40">

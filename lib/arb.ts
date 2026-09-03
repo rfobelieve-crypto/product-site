@@ -50,10 +50,23 @@ export type ArbPair = {
 // a verdict board: scan_rank.py owns the promotion metric, premium_verdict.py
 // owns every verdict, and the ranking metric itself (capturable USD/day)
 // never crosses the wire — only the ORDER it produces does.
+export type ArbFeeRow = {
+  venue: string;
+  taker_bps: number;
+  rebate_pct: number;
+  effective_bps: number;
+  verified: boolean;
+  note: string;
+};
+
 export type ArbScanRow = {
   pair: string;
   asset_class: string;
   band_bps: number | null;
+  required_band_bps: number | null;
+  net_per_trade_bps: number | null;
+  fee_ok: boolean;
+  fee_unverified: string[];
   band_vs_control: number | null;
   fires_per_day: number | null;
   depth_tier: 'thin' | 'moderate' | 'deep' | null;
@@ -71,6 +84,8 @@ export type ArbScan = {
   gate_ok?: boolean;
   control_band_bps?: number | null;
   rows: ArbScanRow[];
+  fees?: ArbFeeRow[];
+  fee_rule?: string;
   ladder: ArbLadderStep[];
   caveat: string;
 };
