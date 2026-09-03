@@ -45,11 +45,42 @@ export type ArbPair = {
   verdict?: string | null;
 };
 
+// The battlefield scan (2026-09-03). The recording family is the weapon and
+// it is fixed; this is the search for where to point it. A SEARCH board, not
+// a verdict board: scan_rank.py owns the promotion metric, premium_verdict.py
+// owns every verdict, and the ranking metric itself (capturable USD/day)
+// never crosses the wire — only the ORDER it produces does.
+export type ArbScanRow = {
+  pair: string;
+  asset_class: string;
+  band_bps: number | null;
+  band_vs_control: number | null;
+  fires_per_day: number | null;
+  depth_tier: 'thin' | 'moderate' | 'deep' | null;
+  samples: number | null;
+  stage: string;
+};
+
+export type ArbLadderStep = { step: string; state: string; means: string };
+
+export type ArbScan = {
+  asof_utc?: string | null;
+  span_days?: number | null;
+  quotes?: number | null;
+  pairs?: number | null;
+  gate_ok?: boolean;
+  control_band_bps?: number | null;
+  rows: ArbScanRow[];
+  ladder: ArbLadderStep[];
+  caveat: string;
+};
+
 export type ArbStatus = {
   asof_utc?: string;
   published_utc?: string | null;
   gate_days?: number;
   pairs: ArbPair[];
+  scan?: ArbScan | null;
   principle: string;
   carry_note: string;
   disclaimer: string;

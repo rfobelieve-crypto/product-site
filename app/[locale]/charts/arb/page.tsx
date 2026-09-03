@@ -6,6 +6,7 @@ import { Link } from '@/i18n/navigation';
 import { getPreregBoard } from '@/lib/prereg';
 import { getArbStatus } from '@/lib/arb';
 import { ArbFamilyTable } from '@/components/sections/ArbFamilyTable';
+import { ArbScanBoard } from '@/components/sections/ArbScanBoard';
 
 // Line 4 (arbitrage) has no chart iframe — its whole public face is the
 // recording clock. Progress numbers come from the same prereg-clocks feed
@@ -110,6 +111,8 @@ export default async function ArbChartPage({
           </div>
 
           <ArbFamilyTable status={arb} locale={locale} />
+
+          <ArbScanBoard status={arb} locale={locale} />
 
           <div className="mt-6 rounded-xl border border-white/[0.08] bg-ink/70 p-5">
             <h2 className="font-body text-[11px] uppercase tracking-[0.2em] text-iris-violet/80">
