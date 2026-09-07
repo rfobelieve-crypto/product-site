@@ -574,6 +574,18 @@
       "criteria2": "Fires on average ≥10 times/day",
       "criteria3": "Both halves of the recording pass independently",
       "criteriaFail": "Any miss → the line closes, total cost ≈ zero"
+    },
+    "backtest": {
+      "label": "Backtest audit",
+      "title": "Sweep failure — historical backtest viewer",
+      "body": "A different question from the live map: not what is on the book now, but where the frozen engine actually entered and exited on every past trade. The level line, the fill, the disaster stop and the exit are all taken from the same record the backtest scores — not redrawn. Click any row to jump to that trade. Nine core coins.",
+      "note": "Status: historical backtest (rules frozen 2026-07-28). Forward validation is undecided — Gate F track A is still accumulating and its day-clustered CI still contains zero. This page shows backtest only. It is not a signal source and not a prediction of future results.",
+      "renderNote": "First switch to a coin re-renders; a few seconds",
+      "guideTitle": "How to read this chart",
+      "guideMarks": "Dashed line = the swept level, drawn from the wick tip that created it to the sweep bar | arrow = the sweep | dot = the retest fill, drawn at the price including adverse slippage | square = the exit, drawn at the price implied by that trade's scored R (a trailing \"!\" means the disaster stop was hit). Yellow is buy-side liquidity (raid it, go short); violet is sell-side.",
+      "guideTable": "Every row in the table is clickable — the chart jumps to that trade and draws the level, entry, stop and exit as four price lines, with a plain-language walkthrough above. \"Wait\" is hours from sweep to fill (capped at 8); \"held\" is hours from fill to exit (capped at 8).",
+      "guideKpi": "Each of the six KPIs prints the full-period figure beside it, because the visible window is only a slice — picking a flattering window is exactly what pre-registration exists to prevent. R is the return unit: 1R is what one disaster stop loses (3.5 x ATR), so +0.05 R means the average trade earns 5% of one stop. The t value is not day-clustered and is looser than the one used for verdicts.",
+      "guideAudit": "Auditability: every drawn line and every performance figure come from the same record, and the exit price is solved back from the scored R, so the two cannot disagree by construction — pinned by tests/test_backtest_detail_parity.py (byte-for-byte over 7,083 trades across nine coins, reverse-proved: injecting a defect turns the guard red)."
     }
   }
 }

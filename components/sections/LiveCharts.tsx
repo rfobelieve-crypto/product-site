@@ -38,7 +38,7 @@ function EntryCard({
 export function LiveCharts() {
   const t = useTranslations('chartsPage');
   return (
-    <div className="mx-auto grid max-w-7xl gap-3 px-4 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
+    <div className="mx-auto grid max-w-7xl gap-3 px-4 sm:grid-cols-2 sm:px-8 lg:grid-cols-5">
       <EntryCard
         href="/charts/v7"
         label={t('v7.label')}
@@ -50,6 +50,12 @@ export function LiveCharts() {
         label={t('liquidity.label')}
         title={t('liquidity.title')}
         body={t('liquidity.body')}
+      />
+      <EntryCard
+        href="/charts/backtest"
+        label={t('backtest.label')}
+        title={t('backtest.title')}
+        body={t('backtest.body')}
       />
       <EntryCard
         href="/charts/cancel-flow"

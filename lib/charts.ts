@@ -35,3 +35,19 @@ export const V7_ACCUM_I_URL =
 export const LIQUIDITY_CHART_URL =
   process.env.LIQUIDITY_CHART_URL ??
   'https://agent-mcp-production-46d7.up.railway.app/public/liquidity-map';
+
+// Strategy #2 (sweep-failure) HISTORICAL backtest viewer, 2026-09-07.
+// Different question from LIQUIDITY_CHART_URL: that one is a live map of
+// what is on the book right now; this one replays every trade the FROZEN
+// engine actually took, with the level line, the fill, the disaster stop
+// and the exit drawn from the SAME record the backtest scores (pinned by
+// research/sweep_failure/tests/test_backtest_detail_parity.py in
+// flow_system). It exists so entries and exits can be eyeballed against
+// the rules instead of trusted.
+//
+// Symbol IS a query param here (core9 only); the agent route pins the
+// window server-side so the origin sees one cache key per symbol, not one
+// per symbol x range. Range control lives inside the page (zoom/pan).
+export const BACKTEST_CHART_URL =
+  process.env.BACKTEST_CHART_URL ??
+  'https://agent-mcp-production-46d7.up.railway.app/public/backtest-chart';
