@@ -554,7 +554,8 @@
         "pass": "PASS",
         "unavailable": "Status temporarily unavailable",
         "fail": "FAIL",
-        "verdictNote": "verdict {date} (frozen)"
+        "verdictNote": "verdict {date} (frozen)",
+        "recomputing": "Recomputing"
       }
     },
     "arb": {
@@ -586,6 +587,14 @@
       "guideTable": "Every row in the table is clickable — the chart jumps to that trade and draws the level, entry, stop and exit as four price lines, with a plain-language walkthrough above. \"Wait\" is hours from sweep to fill (capped at 8); \"held\" is hours from fill to exit (capped at 8).",
       "guideKpi": "Each of the six KPIs prints the full-period figure beside it, because the visible window is only a slice — picking a flattering window is exactly what pre-registration exists to prevent. R is the return unit: 1R is what one disaster stop loses (3.5 x ATR), so +0.05 R means the average trade earns 5% of one stop. The t value is not day-clustered and is looser than the one used for verdicts.",
       "guideAudit": "Auditability: every drawn line and every performance figure come from the same record, and the exit price is solved back from the scored R, so the two cannot disagree by construction — pinned by tests/test_backtest_detail_parity.py (byte-for-byte over 7,083 trades across nine coins, reverse-proved: injecting a defect turns the guard red)."
+    },
+    "recompute": {
+      "title": "Performance figures under recomputation",
+      "chip": "Recomputing",
+      "body": "Verdict 2026-09-07: this line's per-trade return figures rested on the assumption of a passive fill at the level, and that assumption is refuted. On 57.9% of trades the frozen engine books a fill at the level, but on those the sweep bar itself had already closed back on the other side — the market sat a median 42.6 bps away from the level (4-6x the cost model). That price was not available.",
+      "standing": "**The signal logic still stands**: the engine passed all six self-audit checks (levels sit a median 2.305 ATR from price, pierce depth 0.525 ATR, no duplicate events), and the A/B decomposition shows only the entry price was broken. Signal-layer properties such as 9/9 coins positive and t=3.03 are unaffected.",
+      "pending": "**The real edge is not yet determined**: history must be re-scored using the fill rates and markouts from the pierce-depth table. Until that is done this page carries no performance figure — neither the old value nor a corrected guess.",
+      "clocks": "The three forward clocks (Gate F·A, §0.59, §0.474b E) measure the edge **under the old entry price**. They keep running as a historical record, but their conclusions apply only to an entry price now known to be unexecutable."
     }
   }
 }

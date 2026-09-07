@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Nav } from '@/components/sections/Nav';
 import { BacktestChart } from '@/components/sections/BacktestChart';
+import { RecomputeNotice } from '@/components/sections/RecomputeNotice';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
 import { BACKTEST_CHART_URL } from '@/lib/charts';
@@ -38,6 +39,7 @@ export default async function BacktestChartPage({
           </Link>
         </div>
         <div className="mx-auto mt-8 max-w-7xl px-4 sm:px-8">
+          <RecomputeNotice locale={locale} />
           <p className="font-body text-xs leading-relaxed text-mist/50">
             {b('note')}
           </p>

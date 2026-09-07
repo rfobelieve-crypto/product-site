@@ -5,6 +5,7 @@ import { ChartDetail } from '@/components/sections/ChartDetail';
 import { SweepKpiRow } from '@/components/sections/SweepKpiRow';
 import { ShadowLedgerBoard } from '@/components/sections/ShadowLedgerBoard';
 import { getSweepStatus } from '@/lib/sweepStatus';
+import { RecomputeNotice } from '@/components/sections/RecomputeNotice';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
 import { LIQUIDITY_CHART_URL } from '@/lib/charts';
@@ -41,6 +42,7 @@ export default async function LiquidityChartPage({
           </Link>
         </div>
         <div className="mx-auto mt-8 max-w-7xl px-4 sm:px-8">
+          <RecomputeNotice locale={locale} />
           <SweepKpiRow locale={locale} />
           <p className="mt-4 font-body text-xs leading-relaxed text-mist/50">
             {t('liquidity.shadowNote')}

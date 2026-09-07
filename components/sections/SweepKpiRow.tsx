@@ -17,9 +17,18 @@ export async function SweepKpiRow({ locale }: { locale: string }) {
   const g = settledB ? { ...s?.gate, ...settledB } : s?.gate;
   const live = s?.gate;
   const gate = g ? `${g.n_closed}/${g.floor}` : dash;
-  const meanR = g?.mean_r != null ? `${g.mean_r >= 0 ? '+' : ''}${g.mean_r.toFixed(3)}` : dash;
-  const ciLow = g?.ci_low != null ? `${g.ci_low >= 0 ? '+' : ''}${g.ci_low.toFixed(3)}` : dash;
-  const wr = g?.wr_pct != null ? `${g.wr_pct.toFixed(1)}%` : dash;
+  // 2026-09-07 判決（flow_system research/poc/honest_fill.py）：這條線的
+  // 每筆報酬建立在「在價位上被動成交」的假設,而該假設已被推翻——57.9% 的
+  // 交易上市場距離價位中位 42.6 bps,那個價格拿不到。用真實可成交價重算
+  // +0.0365R -> -0.0483R、0/9 幣為正。
+  //
+  // 依操作者指示:在用分層表的成交率與 markout 重算完歷史之前,本頁**不提供
+  // 任何績效數字**——不是舊值,也不是修正後的猜測值。計數(gate/open)與狀態
+  // 是事實不是績效,保留。勝率同樣依賴進場價,一併撤下。
+  const RECOMPUTING = t('recomputing');
+  const meanR = RECOMPUTING;
+  const ciLow = RECOMPUTING;
+  const wr = RECOMPUTING;
   const open = live ? `${live.n_open}` : dash;
   const status = !g
     ? t('unavailable')
