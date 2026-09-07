@@ -589,12 +589,12 @@
       "guideAudit": "Auditability: every drawn line and every performance figure come from the same record, and the exit price is solved back from the scored R, so the two cannot disagree by construction — pinned by tests/test_backtest_detail_parity.py (byte-for-byte over 7,083 trades across nine coins, reverse-proved: injecting a defect turns the guard red)."
     },
     "recompute": {
-      "title": "Performance figures under recomputation",
-      "chip": "Recomputing",
-      "body": "Verdict 2026-09-07: this line's per-trade return figures rested on the assumption of a passive fill at the level, and that assumption is refuted. On 57.9% of trades the frozen engine books a fill at the level, but on those the sweep bar itself had already closed back on the other side — the market sat a median 42.6 bps away from the level (4-6x the cost model). That price was not available.",
-      "standing": "**The signal logic still stands**: the engine passed all six self-audit checks (levels sit a median 2.305 ATR from price, pierce depth 0.525 ATR, no duplicate events), and the A/B decomposition shows only the entry price was broken. Signal-layer properties such as 9/9 coins positive and t=3.03 are unaffected.",
-      "pending": "**The real edge is not yet determined**: history must be re-scored using the fill rates and markouts from the pierce-depth table. Until that is done this page carries no performance figure — neither the old value nor a corrected guess.",
-      "clocks": "The three forward clocks (Gate F·A, §0.59, §0.474b E) measure the edge **under the old entry price**. They keep running as a historical record, but their conclusions apply only to an entry price now known to be unexecutable."
+      "title": "The signal holds; this trade design does not execute",
+      "chip": "Settled 2026-09-07",
+      "body": "The per-trade return rested on a passive fill at the level. Measured: on 57.9% of trades the market had already crossed the level when the order would be placed, and on 44.7% of those the fill bar never traded at the level at all — the booked price did not exist. The failure is a level test (low <= level) used as a crossing test; it cannot tell 'price came back down' from 'price was already below'.",
+      "standing": "**The signal logic stands**: six engine self-audit checks all pass (levels sit a median 2.305 ATR from price, pierce depth 0.525 ATR, no duplicate events), and the parameters are not curve-fitted (all 81 grid combinations positive, the frozen set ranks at the 51st percentile, and the first-half optimum loses to it out of sample). The problem is executability, not validity.",
+      "pending": "Recomputed across four entry paths: frozen phantom price +0.0366, immediate market -0.0008, confirmed-reclaim -0.0495, resting limit -0.0504 (in R). The best after costs is -0.0293 R. **Every honest entry is negative and they cluster together** — no entry design rescues it, because the edge was never in the trade, it was in the accounting.",
+      "clocks": "The three forward clocks (Gate F·A, §0.59, §0.474b E) measure the edge under the old entry price. Decision: let them finish as a historical record, not reopened, with conclusions applying only to an entry price now known to be unexecutable. The underlying phenomenon is not refuted — event-level measurement does not pass through the fill assumption and is under separate study."
     }
   }
 }

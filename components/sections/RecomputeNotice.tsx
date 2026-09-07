@@ -10,19 +10,20 @@ import { getTranslations } from 'next-intl/server';
  * with a real executable price the number flips sign and goes 0/9 coins
  * positive.
  *
- * Per the operator's instruction the page carries NO performance figure until
- * history is re-scored — not the old value, not a corrected guess. This
- * component exists so the absence is explained rather than silent.
+ * 2026-09-07 (second pass): the recompute is done. Four entry paths were
+ * measured; every honest one is negative and they cluster together, so the
+ * page now carries the verdict instead of "recomputing". The numbers shown
+ * are the recomputed ones, never the refuted +0.0381.
  */
 export async function RecomputeNotice({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'chartsPage.recompute' });
   return (
-    <div className="rounded-xl border border-amber-400/30 bg-amber-400/[0.04] p-5">
+    <div className="rounded-xl border border-rose-400/30 bg-rose-400/[0.04] p-5">
       <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-        <span className="rounded border border-amber-400/50 px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.18em] text-amber-300">
+        <span className="rounded border border-rose-400/50 px-2 py-0.5 font-body text-[10px] uppercase tracking-[0.18em] text-rose-300">
           {t('chip')}
         </span>
-        <h2 className="font-display text-base font-light text-amber-100">
+        <h2 className="font-display text-base font-light text-rose-100">
           {t('title')}
         </h2>
       </div>
