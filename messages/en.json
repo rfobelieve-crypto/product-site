@@ -583,13 +583,13 @@
     "backtest": {
       "label": "Backtest audit",
       "title": "Conjunction — historical backtest viewer",
-      "body": "How the rule set now going to small-size live (sweep ∧ forced flow) would have entered and exited on every past trade: the level line, the sweep, the entry, the stop and the exit are all taken from the same scored record — not redrawn. Click any row to jump to that trade. Nine core coins; the closed sweep-failure line stays on a second tab as the record.",
+      "body": "Now drawn under the honest definition: entries are anchored to the minute the event actually forms, not to its earliest component. The previous version anchored to the earliest minute, which put 22.3% of trades before the event existed — half the edge came from that. Honestly anchored, every delay is negative after costs; the order-intent layer is stopped and the small-size live test is on hold. The signal itself is not refuted (gross is positive at every delay, CI clear of zero); what fails is that the edge is smaller than the cost. Click any row to jump to that trade.",
       "tabConj": "Conjunction (current)",
       "tabSweep": "Sweep failure (closed)",
       "renderNote": "First switch to a coin re-renders; a few seconds",
       "conj": {
-        "title": "Conjunction — historical backtest viewer",
-        "note": "Status: historical backtest of the current live rule set (frozen 2026-09-07). The forward clocks judge on their own criterion — the OR clock n/300 and the AND clock n/200 use the day-clustered CI of the matched difference, not this page's trade R. This page shows backtest only. It is not a signal source and not a prediction of future results.",
+        "title": "Conjunction — historical backtest viewer (execution halted)",
+        "note": "Status: execution halted (2026-09-09). The entry timestamp was taken from the wrong minute, which was look-ahead; honestly anchored, no tradable delay has a net CI lower bound above zero. This page already shows the honest version. The forward clocks measure a matched difference (event-study framing) — they show that continuation follows a conjunction, not that the continuation is tradable; this page's trade returns and the clocks are not evidence for each other. Not a signal source and not a prediction of future results.",
         "guideTitle": "How to read this chart",
         "guideMarks": "Dashed line = the swept level, from pivot formation to the minute it was swept | arrow = the sweep (first crossing) | dot = the entry (open of the bar two minutes after the anchor) | square = the exit (the stop price, or the close 60 minutes after entry; a trailing \"!\" means the stop was hit). Yellow is a buy-side level (crossed upward); violet is sell-side. Candles are 5-minute for display; the rule runs on 1-minute bars, and the four price lines drawn on a selected trade are exact.",
         "guideTable": "Every row is clickable — the chart jumps to that trade, draws level / entry / stop / exit as four price lines, and the text above walks through the trade minute by minute. \"Signature\" lists which events fired together: D = extreme aggressor volume, V = volume burst; the S+D+V (AND) cell is the population of the separate AND clock. \"Period\" marks in-sample vs forward (after the freeze date).",
