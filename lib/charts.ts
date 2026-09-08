@@ -32,9 +32,17 @@ export const V7_ACCUM_I_URL =
 // Strategy #2 (sweep-failure) shadow liquidity map — BTC, last 72h window.
 // The agent route pins the symbol server-side on purpose (a public symbol
 // passthrough would fan out subprocess renders on the indicator service).
+// ?bare=1 是必須的，不是可選的美化（2026-09-08 修）。那個頁面自己帶一個
+// 固定高度的表頭（變體表 + 三段說明 + 圖例，約 400px），而圖表的高度寫成
+// `#c{height:62vh}` —— **固定像素的表頭 + 百分比的圖**，在 iframe 那個矮
+// 視窗裡（75vh ≈ 530px）表頭就把整個框填滿，圖被推到框外看不見。
+// bare 模式（`html.bare body>*:not(#c){display:none}` + `#c{height:96vh}`）
+// 本來就是為嵌入設計的，只是這裡一直沒帶參數。
+// 表頭的內容不會因此消失——變體表與 KPI 在 /charts/liquidity 頁面上本來
+// 就各有一份，iframe 裡那份是重複的。
 export const LIQUIDITY_CHART_URL =
   process.env.LIQUIDITY_CHART_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/liquidity-map';
+  'https://agent-mcp-production-46d7.up.railway.app/public/liquidity-map?bare=1';
 
 // Strategy #2 (sweep-failure) HISTORICAL backtest viewer, 2026-09-07.
 // Different question from LIQUIDITY_CHART_URL: that one is a live map of
