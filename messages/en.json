@@ -452,19 +452,23 @@
     "signOut": "Sign out",
     "unavailable": "Signal history unavailable right now.",
     "board": {
-      "title": "Three strategies",
+      "title": "Strategy status",
       "live": "LIVE",
       "shadow": "SHADOW",
       "research": "RESEARCH",
       "v7Name": "V7 signal engine",
       "v7Desc": "4h dual-model direction forecast — BTC, executing live",
       "sweepName": "Liquidity raids",
-      "sweepDesc": "Sweep-failure reversal — variant B failed its forward gate (2026-09-02); formal track A still accumulating",
-      "sweepGate": "Gate F {n}/{floor} · mean {mean}R · WR {wr}% · FAIL",
+      "sweepDesc": "Sweep-failure reversal — closed 2026-09-07: the signal is real, but six entry designs and 48 exit structures were all unexecutable",
+      "sweepGate": "Gate F {n}/{floor} · running out as historical record",
       "cancelName": "Cancel flow",
       "cancelDesc": "Order-book cancellation microstructure — monitoring, pre-registered verdict 2026-08-10",
       "viewChart": "View chart",
-      "unavailable": "status feed interrupted"
+      "unavailable": "status feed interrupted",
+      "settled": "Settled",
+      "conjName": "Conjunction events",
+      "conjDesc": "Sweep x forced flow, held 60 min with the move. All research gates passed; forward validation accumulating",
+      "conjClock": "Forward {n}/{gate} · accumulating"
     },
     "table": {
       "time": "Time (UTC)",

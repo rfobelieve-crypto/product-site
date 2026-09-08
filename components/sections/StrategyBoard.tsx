@@ -2,6 +2,7 @@ import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { getSignalFeed } from '@/lib/signalFeed';
 import { getSweepStatus, SWEEP_B_VERDICT, SWEEP_SETTLED } from '@/lib/sweepStatus';
+import { getPreregBoard } from '@/lib/prereg';
 
 const DIRECTION_LABEL: Record<string, string> = {
   UP: '↑ UP',
@@ -59,7 +60,11 @@ function Card({
 // fed by its own null-safe fetch so one feed outage degrades one card.
 export async function StrategyBoard({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'signals.board' });
-  const [feed, sweep] = await Promise.all([getSignalFeed(), getSweepStatus()]);
+  const [feed, sweep, prereg] = await Promise.all([
+    getSignalFeed(),
+    getSweepStatus(),
+    getPreregBoard(),
+  ]);
 
   const v7Stat = feed?.direction
     ? `${DIRECTION_LABEL[feed.direction] ?? feed.direction}${feed.tier ? ` · ${feed.tier}` : ''}${
@@ -78,12 +83,21 @@ export async function StrategyBoard({ locale }: { locale: string }) {
       })
     : t('unavailable');
 
+  // 交會事件（2026-09-07 註冊）。進度只從預註冊看板讀 —— 那裡的每個時鐘
+  // 都有單一的擁有者計分器，所以這裡不可能跟真正做決定的數字漂開
+  // （lib/prereg.ts 檔頭的原則）。
+  const conj = prereg?.open?.find((c) => c.id === '交會事件') ?? null;
+  const conjStat =
+    conj && conj.gate_n != null
+      ? t('conjClock', { n: conj.n ?? 0, gate: conj.gate_n })
+      : t('unavailable');
+
   return (
     <section className="mt-10">
       <h2 className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet/80">
         {t('title')}
       </h2>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
+      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
         <Card
           mode="live"
           modeLabel={t('live')}
@@ -94,11 +108,20 @@ export async function StrategyBoard({ locale }: { locale: string }) {
           cta={t('viewChart')}
         />
         <Card
-          mode="shadow"
-          modeLabel={t('shadow')}
+          mode="research"
+          modeLabel={t('settled')}
           name={t('sweepName')}
           desc={t('sweepDesc')}
           stat={sweepStat}
+          href="/charts/liquidity"
+          cta={t('viewChart')}
+        />
+        <Card
+          mode="shadow"
+          modeLabel={t('shadow')}
+          name={t('conjName')}
+          desc={t('conjDesc')}
+          stat={conjStat}
           href="/charts/liquidity"
           cta={t('viewChart')}
         />

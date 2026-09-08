@@ -452,19 +452,23 @@
     "signOut": "登出",
     "unavailable": "訊號紀錄目前暫時無法取得。",
     "board": {
-      "title": "三策略狀態",
+      "title": "策略狀態",
       "live": "實盤",
       "shadow": "Shadow 驗證",
       "research": "研究監測",
       "v7Name": "V7 訊號引擎",
       "v7Desc": "4 小時雙模型方向預測——BTC，實盤執行中",
       "sweepName": "流動性獵取",
-      "sweepDesc": "掃單失敗反轉——變體 B 前瞻判決未通過（2026-09-02），正式軌道 A 累積中",
-      "sweepGate": "Gate F {n}/{floor} · 平均 {mean}R · 勝率 {wr}% · 未通過",
+      "sweepDesc": "掃單失敗反轉——2026-09-07 結案：訊號有效，但六種進場、48 種出場結構全部無法執行",
+      "sweepGate": "Gate F {n}/{floor} · 跑完當歷史紀錄",
       "cancelName": "撤單流",
       "cancelDesc": "訂單簿撤單微結構——監測中，2026-08-10 預登記判決",
       "viewChart": "看圖表",
-      "unavailable": "狀態讀取中斷"
+      "unavailable": "狀態讀取中斷",
+      "settled": "已結案",
+      "conjName": "交會事件",
+      "conjDesc": "插針 × 強制流的交會——順勢持有 60 分鐘。研究關全過，前瞻驗證累積中",
+      "conjClock": "前瞻 {n}/{gate} · 累積中"
     },
     "table": {
       "time": "時間（UTC）",
