@@ -59,3 +59,18 @@ export const LIQUIDITY_CHART_URL =
 export const BACKTEST_CHART_URL =
   process.env.BACKTEST_CHART_URL ??
   'https://agent-mcp-production-46d7.up.railway.app/public/backtest-chart';
+
+// Conjunction line (sweep ∧ forced flow, TODO §1.03 in flow_system) —
+// the rule set that goes to small-size live on 2026-09-08 — gets the SAME
+// kind of viewer, 2026-09-08 ("那個歷史回測應該要顯示交會的那個策略才對").
+// The sweep-failure viewer above stays reachable as the closed line's
+// record; this one is the page's primary tab.
+//
+// No origin render behind this route: the page needs minute bars, OI and
+// event tables that live only on the research machine, so that machine
+// renders one HTML per core9 symbol into `conj_backtest_pages` and the
+// agent relays the row (same off-cloud-recorder pattern as the V7 veto
+// clock). Symbol is a query param; window is fixed at 90 days server-side.
+export const CONJ_BACKTEST_CHART_URL =
+  process.env.CONJ_BACKTEST_CHART_URL ??
+  'https://agent-mcp-production-46d7.up.railway.app/public/conj-backtest';
