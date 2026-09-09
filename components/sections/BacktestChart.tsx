@@ -108,6 +108,10 @@ export function BacktestChart({
             key={`${line}-${sym}`}
             src={url}
             title={`${sym} ${line} backtest`}
+            // 沒有這個,iframe 內部呼叫 requestFullscreen() 會被政策擋掉,
+            // 圖表只能退回「撐滿 iframe」而不是真的撐滿螢幕。
+            allow="fullscreen"
+            allowFullScreen
             className="h-[85vh] max-h-[1100px] min-h-[560px] w-full rounded-xl border-0"
           />
         </div>
