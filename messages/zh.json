@@ -19,7 +19,8 @@
     "writeups": "研究筆記",
     "liveSignal": "即時訊號",
     "signIn": "登入",
-    "signOut": "登出"
+    "signOut": "登出",
+    "method": "方法"
   },
   "hero": {
     "eyebrow": "OKX 實盤運行中 · 雙模型訊號引擎",

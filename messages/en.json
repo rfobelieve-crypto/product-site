@@ -19,7 +19,8 @@
     "writeups": "Write-ups",
     "liveSignal": "Live signal",
     "signIn": "Sign in",
-    "signOut": "Sign out"
+    "signOut": "Sign out",
+    "method": "Method"
   },
   "hero": {
     "eyebrow": "Live on OKX · Dual-model signal engine",
