@@ -106,6 +106,32 @@ function Frame({
   );
 }
 
+// 標籤避讓。兩個值只差一點點（後半 -2.201 vs -2.214）時，把文字各畫在自己的
+// y 上會**疊成一團，看不出那是兩條線**——而這張圖的整個論點就是「六條裡有
+// 五條翻號」，讀者數不出條數，這張圖就沒有作用。做法：照 y 排序後由上往下
+// 推，強制至少相隔 gap 像素。**圓點與線仍然畫在真實位置，被推開的只有文字**，
+// 所以這裡動的是像素不是數字（這個元件不做算術）。
+function declutter(ys: number[], lo: number, hi: number, gap = 11): number[] {
+  const out = new Array<number>(ys.length);
+  const order = ys.map((v, i) => ({ v, i })).sort((a, b) => a.v - b.v);
+  let prev = -Infinity;
+  for (const { v, i } of order) {
+    const placed = Math.max(v, prev + gap);
+    out[i] = placed;
+    prev = placed;
+  }
+  // 往下推可能推出畫布；整組上移，再夾回上緣。gap × (n-1) 一定塞得下
+  // （六個標籤 55px，欄高 200px 以上），所以這裡不會把它們再壓在一起。
+  const overflow = prev - hi;
+  if (overflow > 0) for (let i = 0; i < out.length; i += 1) out[i] -= overflow;
+  let floorY = lo;
+  for (const { i } of order) {
+    out[i] = Math.max(out[i], floorY);
+    floorY = out[i] + gap;
+  }
+  return out;
+}
+
 // ── 斜線圖：前半 -> 後半 ────────────────────────────────────────────────
 function Slope({ chart, t }: { chart: Chart; t: Labels }) {
   const pts = chart.series as SlopePoint[];
@@ -120,13 +146,15 @@ function Slope({ chart, t }: { chart: Chart; t: Labels }) {
   const padY = 26;
   const y = (v: number) => padY + (1 - (v - lo) / (hi - lo || 1)) * (H - padY * 2);
   const zero = y(0);
+  const labL = declutter(pts.map((p) => y(p.first)), padY - 8, H - padY);
+  const labR = declutter(pts.map((p) => y(p.second)), padY - 8, H - padY);
   return (
     <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[520px]" role="img">
       <line x1={padL} y1={zero} x2={W - padR} y2={zero} stroke={MUTED} strokeDasharray="3 4" />
       <text x={padL - 8} y={zero + 4} textAnchor="end" className="fill-mist/30" fontSize="10">
         0
       </text>
-      {pts.map((p) => {
+      {pts.map((p, i) => {
         const col = p.flipped ? ROSE : CYAN;
         return (
           <g key={p.arm}>
@@ -141,9 +169,16 @@ function Slope({ chart, t }: { chart: Chart; t: Labels }) {
             />
             <circle cx={padL} cy={y(p.first)} r="3" fill={col} opacity="0.9" />
             <circle cx={W - padR} cy={y(p.second)} r="3" fill={col} opacity="0.9" />
+            <polyline
+              points={`${padL - 6},${y(p.first)} ${padL - 12},${labL[i]} ${padL - 16},${labL[i]}`}
+              fill="none"
+              stroke={col}
+              strokeWidth="0.6"
+              opacity="0.35"
+            />
             <text
-              x={padL - 8}
-              y={y(p.first) + 3}
+              x={padL - 20}
+              y={labL[i] + 3}
               textAnchor="end"
               fontSize="10"
               fill={col}
@@ -151,9 +186,16 @@ function Slope({ chart, t }: { chart: Chart; t: Labels }) {
             >
               {p.arm}
             </text>
+            <polyline
+              points={`${W - padR + 6},${y(p.second)} ${W - padR + 12},${labR[i]} ${W - padR + 16},${labR[i]}`}
+              fill="none"
+              stroke={col}
+              strokeWidth="0.6"
+              opacity="0.35"
+            />
             <text
-              x={W - padR + 8}
-              y={y(p.second) + 3}
+              x={W - padR + 20}
+              y={labR[i] + 3}
               fontSize="10"
               fill={col}
               opacity="0.6"
@@ -270,6 +312,26 @@ function Bars({ chart, t }: { chart: Chart; t: Labels }) {
     <>
       <svg viewBox={`0 0 ${W} ${H}`} className="w-full min-w-[520px]" role="img">
         <line x1={padL} y1={H - padB} x2={W - 8} y2={H - padB} stroke={MUTED} />
+        {/* 兩個系列都是「相對不等待」的比值，所以 100 就是不等待本身。
+            沒有這條線，讀者看到的是一排沒有刻度的長條，分不出哪幾格其實
+            比不等待還差——而那正是這張圖要講的事。 */}
+        <line
+          x1={padL}
+          y1={H - padB - h(100)}
+          x2={W - 8}
+          y2={H - padB - h(100)}
+          stroke={MUTED}
+          strokeDasharray="3 4"
+        />
+        <text
+          x={padL - 6}
+          y={H - padB - h(100) + 3}
+          textAnchor="end"
+          className="fill-mist/35"
+          fontSize="10"
+        >
+          1.00×
+        </text>
         {pts.map((p, i) => {
           const x = padL + i * bw;
           const he = h(p.events_pct);
