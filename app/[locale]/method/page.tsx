@@ -3,6 +3,7 @@ import { setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
 import { Nav } from '@/components/sections/Nav';
 import { Footer } from '@/components/sections/Footer';
+import { ResearchCharts } from '@/components/sections/ResearchCharts';
 import { pageAlternates } from '@/lib/seo';
 import {
   listPrinciples,
@@ -126,6 +127,8 @@ export default async function MethodPage({
               </li>
             ))}
           </ol>
+
+          <ResearchCharts locale={locale} />
 
           <section className="mt-20 rounded-2xl border border-white/10 bg-ink/40 p-6">
             <h2 className="font-display text-xl font-light leading-snug text-mist">
