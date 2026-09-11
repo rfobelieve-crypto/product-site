@@ -18,6 +18,10 @@ type CopyBase = {
   title: string;
   lede?: string;
   note?: string;
+  // 灰色的方法副標（樣本數／期間／怎麼切的）與圖裡的琥珀色註解。
+  // 兩者都由產生端寫出，這一層不得自己組字。
+  sample?: string;
+  callout?: string;
   xlabel?: string;
   ylabel?: string;
   unit?: string;
