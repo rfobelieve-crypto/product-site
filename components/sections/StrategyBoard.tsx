@@ -3,6 +3,7 @@ import { Link } from '@/i18n/navigation';
 import { getSignalFeed } from '@/lib/signalFeed';
 import { getSweepStatus, SWEEP_B_VERDICT, SWEEP_SETTLED } from '@/lib/sweepStatus';
 import { getPreregBoard } from '@/lib/prereg';
+import { getOnchainStatus } from '@/lib/onchain';
 
 const DIRECTION_LABEL: Record<string, string> = {
   UP: '↑ UP',
@@ -92,12 +93,21 @@ export async function StrategyBoard({ locale }: { locale: string }) {
       ? t('conjClock', { n: conj.n ?? 0, gate: conj.gate_n })
       : t('unavailable');
 
+  // 鏈上量化（2026-09-11）。數字來自 lib/onchain 的靜態狀態檔，而那一份是
+  // research/hl/onchain_publish.py **產生**的 —— 不手抄，否則就是第二份實作。
+  const oc = getOnchainStatus(locale);
+  const ocStat = t('onchainStat', {
+    markets: oc.markets,
+    venues: oc.venues,
+    cov: oc.coveragePct == null ? '—' : oc.coveragePct.toFixed(1),
+  });
+
   return (
     <section className="mt-10">
       <h2 className="font-body text-xs uppercase tracking-[0.3em] text-iris-violet/80">
         {t('title')}
       </h2>
-      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
         <Card
           mode="live"
           modeLabel={t('live')}
@@ -123,6 +133,15 @@ export async function StrategyBoard({ locale }: { locale: string }) {
           desc={t('conjDesc')}
           stat={conjStat}
           href="/charts/liquidity"
+          cta={t('viewChart')}
+        />
+        <Card
+          mode="shadow"
+          modeLabel={t('shadow')}
+          name={t('onchainName')}
+          desc={t('onchainDesc')}
+          stat={ocStat}
+          href="/onchain"
           cta={t('viewChart')}
         />
         <Card

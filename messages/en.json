@@ -20,7 +20,8 @@
     "liveSignal": "Live signal",
     "signIn": "Sign in",
     "signOut": "Sign out",
-    "method": "Method"
+    "method": "Method",
+    "onchain": "On-chain"
   },
   "hero": {
     "eyebrow": "Live on OKX · Dual-model signal engine",
@@ -469,7 +470,10 @@
       "settled": "Settled",
       "conjName": "Conjunction events",
       "conjDesc": "Sweep x forced flow, held 60 min with the move. All research gates passed; forward validation accumulating",
-      "conjClock": "Forward {n}/{gate} · accumulating"
+      "conjClock": "Forward {n}/{gate} · accumulating",
+      "onchainName": "On-chain quant",
+      "onchainDesc": "Per-address positions, liquidation prices and real stop orders on perp DEXs — not published by centralised venues, and proxying them failed three times",
+      "onchainStat": "Recording · {markets} markets / {venues} venues · {cov}% covered"
     },
     "table": {
       "time": "Time (UTC)",

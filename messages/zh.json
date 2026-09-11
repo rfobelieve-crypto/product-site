@@ -20,7 +20,8 @@
     "liveSignal": "即時訊號",
     "signIn": "登入",
     "signOut": "登出",
-    "method": "方法"
+    "method": "方法",
+    "onchain": "鏈上量化"
   },
   "hero": {
     "eyebrow": "OKX 實盤運行中 · 雙模型訊號引擎",
@@ -469,7 +470,10 @@
       "settled": "已結案",
       "conjName": "交會事件",
       "conjDesc": "插針 × 強制流的交會——順勢持有 60 分鐘。研究關全過，前瞻驗證累積中",
-      "conjClock": "前瞻 {n}/{gate} · 累積中"
+      "conjClock": "前瞻 {n}/{gate} · 累積中",
+      "onchainName": "鏈上量化",
+      "onchainDesc": "永續 DEX 的逐地址部位、清算價與真實止損單——中心化交易所不公開，只能推估，而推估失敗過三次",
+      "onchainStat": "錄製中 · {markets} 市場 / {venues} 場 · 覆蓋 {cov}%"
     },
     "table": {
       "time": "時間（UTC）",

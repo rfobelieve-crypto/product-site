@@ -23,6 +23,7 @@ export function Nav() {
     { label: t('dashboard'), href: '/dashboard' },
     { label: t('charts'), href: '/charts' },
     { label: t('system'), href: '/system' },
+    { label: t('onchain'), href: '/onchain' },
     { label: t('method'), href: '/method' },
     { label: t('writeups'), href: '/writeups' },
   ];
