@@ -39,7 +39,8 @@ export function BacktestChart({
   const [sym, setSym] = useState('BTC');
   const t = useTranslations('chartsPage.backtest');
   const g = useTranslations(`chartsPage.backtest.${line}`);
-  const url = `${line === 'conj' ? conjSrc : sweepSrc}?symbol=${sym}`;
+  // Static archive: one pre-rendered page per symbol (2026-09-30).
+  const url = `${line === 'conj' ? conjSrc : sweepSrc}/${sym}.html`;
   const tab = (l: Line, label: string) => (
     <button
       key={l}

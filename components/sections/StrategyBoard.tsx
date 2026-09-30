@@ -1,15 +1,9 @@
 import { getTranslations } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { getSignalFeed } from '@/lib/signalFeed';
+import { getTrackRecord } from '@/lib/trackRecord';
 import { getSweepStatus, SWEEP_B_VERDICT, SWEEP_SETTLED } from '@/lib/sweepStatus';
 import { getPreregBoard } from '@/lib/prereg';
 import { getOnchainStatus } from '@/lib/onchain';
-
-const DIRECTION_LABEL: Record<string, string> = {
-  UP: '↑ UP',
-  DOWN: '↓ DOWN',
-  NEUTRAL: '· NEUTRAL',
-};
 
 const MODE_STYLE: Record<string, string> = {
   live: 'border-[#00ffa3]/40 text-[#00ffa3]',
@@ -61,17 +55,23 @@ function Card({
 // fed by its own null-safe fetch so one feed outage degrades one card.
 export async function StrategyBoard({ locale }: { locale: string }) {
   const t = await getTranslations({ locale, namespace: 'signals.board' });
-  const [feed, sweep, prereg] = await Promise.all([
-    getSignalFeed(),
+  const [tr, sweep, prereg] = await Promise.all([
+    getTrackRecord(),
     getSweepStatus(),
     getPreregBoard(),
   ]);
 
-  const v7Stat = feed?.direction
-    ? `${DIRECTION_LABEL[feed.direction] ?? feed.direction}${feed.tier ? ` · ${feed.tier}` : ''}${
-        feed.confidence != null ? ` · ${feed.confidence.toFixed(0)}` : ''
-      }`
-    : t('unavailable');
+  // 2026-09-30: V7 is closed (portfolio archive). The card used to show the
+  // latest live signal; that feed died with the MySQL, so it now shows the
+  // frozen track record instead (lib/trackRecord -> content/archive).
+  const v7Stat =
+    tr?.signal_layer?.win_rate_pct != null
+      ? t('v7Stat', {
+          wr: tr.signal_layer.win_rate_pct.toFixed(1),
+          n: tr.signal_layer.n,
+          trades: tr.trade_layer.n_closed,
+        })
+      : t('unavailable');
   // Same rule as SweepKpiRow: B is settled, so the frozen verdict numbers win
   // over the endpoint's in-image recount.
   const g = SWEEP_SETTLED.B === 'FAIL' ? SWEEP_B_VERDICT : sweep?.gate;
@@ -90,7 +90,7 @@ export async function StrategyBoard({ locale }: { locale: string }) {
   const conj = prereg?.open?.find((c) => c.id === '交會事件') ?? null;
   const conjStat =
     conj && conj.gate_n != null
-      ? t('conjClock', { n: conj.n ?? 0, gate: conj.gate_n })
+      ? t('conjClock', { n: conj.n ?? 0, gate: conj.gate_n })  // frozen value
       : t('unavailable');
 
   // 鏈上量化（2026-09-11）。數字來自 lib/onchain 的靜態狀態檔，而那一份是
@@ -109,8 +109,8 @@ export async function StrategyBoard({ locale }: { locale: string }) {
       </h2>
       <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-5">
         <Card
-          mode="live"
-          modeLabel={t('live')}
+          mode="research"
+          modeLabel={t('settled')}
           name={t('v7Name')}
           desc={t('v7Desc')}
           stat={v7Stat}
@@ -127,8 +127,8 @@ export async function StrategyBoard({ locale }: { locale: string }) {
           cta={t('viewChart')}
         />
         <Card
-          mode="shadow"
-          modeLabel={t('shadow')}
+          mode="research"
+          modeLabel={t('frozen')}
           name={t('conjName')}
           desc={t('conjDesc')}
           stat={conjStat}
@@ -146,10 +146,10 @@ export async function StrategyBoard({ locale }: { locale: string }) {
         />
         <Card
           mode="research"
-          modeLabel={t('research')}
+          modeLabel={t('settled')}
           name={t('cancelName')}
           desc={t('cancelDesc')}
-          stat="—"
+          stat={t('cancelStat')}
           href="/charts/cancel-flow"
           cta={t('viewChart')}
         />

@@ -1,3 +1,4 @@
+import ARCHIVE from '@/content/archive/sweep-status.json';
 export type SweepGate = {
   n_closed: number;
   n_open: number;
@@ -106,9 +107,9 @@ export type SweepStatus = {
   disclaimer: string;
 };
 
-const SWEEP_STATUS_URL =
-  process.env.SWEEP_STATUS_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/sweep-status';
+// 2026-09-30: agent-mcp (Railway) is retired; the site is a static portfolio.
+// No env var -> serve the frozen snapshot content/archive/sweep-status.json. Setting the env var restores the live fetch.
+const SWEEP_STATUS_URL = process.env.SWEEP_STATUS_URL;
 
 /**
  * Server-only fetch, same contract as lib/signalFeed.ts: null on any failure
@@ -117,6 +118,7 @@ const SWEEP_STATUS_URL =
  * own cache cadence (300s in indicator/agent/server.py).
  */
 export async function getSweepStatus(): Promise<SweepStatus | null> {
+  if (!SWEEP_STATUS_URL) return ARCHIVE as unknown as SweepStatus;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   try {

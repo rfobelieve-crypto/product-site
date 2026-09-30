@@ -1,3 +1,4 @@
+import ARCHIVE from '@/content/archive/prereg-clocks.json';
 // Pre-registration board (2026-08-26). The open hypotheses and their
 // progress lived only in TODO.md sections and one script per clock, so from
 // outside the site it looked like nothing was running while five clocks
@@ -40,15 +41,16 @@ export type PreregBoard = {
   disclaimer: string;
 };
 
-const PREREG_URL =
-  process.env.PREREG_CLOCKS_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/prereg-clocks';
+// 2026-09-30: agent-mcp (Railway) is retired; the site is a static portfolio.
+// No env var -> serve the frozen snapshot content/archive/prereg-clocks.json. Setting the env var restores the live fetch.
+const PREREG_URL = process.env.PREREG_CLOCKS_URL;
 
 /**
  * Same degrade contract as every /public consumer: an outage returns null,
  * the card renders nothing, the page never throws.
  */
 export async function getPreregBoard(): Promise<PreregBoard | null> {
+  if (!PREREG_URL) return ARCHIVE as unknown as PreregBoard;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   try {

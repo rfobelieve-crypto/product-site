@@ -1,0 +1,367 @@
+{
+ "gate": {
+  "n_closed": 2691,
+  "n_open": 37,
+  "floor": 1400,
+  "mean_r": 0.0148,
+  "ci_low": -0.0473,
+  "wr_pct": 55.6,
+  "status": "FAIL"
+ },
+ "recent": [
+  {
+   "symbol": "ICP",
+   "kind": "session",
+   "fill_utc": "2026-09-29 21:00",
+   "variant_b": false,
+   "net_r": 0.104
+  },
+  {
+   "symbol": "ADA",
+   "kind": "session",
+   "fill_utc": "2026-09-29 18:00",
+   "variant_b": false,
+   "net_r": 0.126
+  },
+  {
+   "symbol": "APT",
+   "kind": "pdh_pdl",
+   "fill_utc": "2026-09-29 18:00",
+   "variant_b": false,
+   "net_r": 0.051
+  },
+  {
+   "symbol": "APT",
+   "kind": "swing",
+   "fill_utc": "2026-09-29 18:00",
+   "variant_b": false,
+   "net_r": 0.051
+  },
+  {
+   "symbol": "AXS",
+   "kind": "session",
+   "fill_utc": "2026-09-29 18:00",
+   "variant_b": true,
+   "net_r": 0.319
+  },
+  {
+   "symbol": "LTC",
+   "kind": "session",
+   "fill_utc": "2026-09-29 18:00",
+   "variant_b": false,
+   "net_r": 0.027
+  }
+ ],
+ "asof_utc": "2026-09-30 06:09",
+ "v7_filters": {
+  "kept_wr": 53.8,
+  "veto_wr": 60.6,
+  "gap_pp": -6.8,
+  "n_kept": 78,
+  "n_veto": 33,
+  "strong_since_trigger": 85,
+  "trigger_target": 60,
+  "gap_threshold_pp": 8.0,
+  "clocks": {
+   "strong": {
+    "tier": "Strong",
+    "kept_wr": 53.8,
+    "veto_wr": 60.6,
+    "gap_pp": -6.8,
+    "n_kept": 78,
+    "n_veto": 33,
+    "since_trigger": 85,
+    "trigger_target": 60,
+    "gap_threshold_pp": 8.0,
+    "since_trigger_fired": 85
+   },
+   "moderate": {
+    "tier": "Moderate",
+    "kept_wr": 46.9,
+    "veto_wr": 41.3,
+    "gap_pp": 5.6,
+    "n_kept": 147,
+    "n_veto": 75,
+    "since_trigger": 127,
+    "trigger_target": 60,
+    "gap_threshold_pp": 8.0,
+    "since_trigger_fired": 127
+   }
+  },
+  "asof_utc": "2026-09-19 18:06"
+ },
+ "cohorts": [
+  {
+   "key": "A",
+   "label_zh": "A 全樣本（無濾網·對照組）",
+   "n_closed": 7214,
+   "n_open": 127,
+   "floor": 1400,
+   "mean_r": -0.0182,
+   "ci_low": -0.0837,
+   "wr_pct": 52.2,
+   "status": "FAIL",
+   "core9": {
+    "n_closed": 2205,
+    "n_open": 28,
+    "floor": 1400,
+    "mean_r": -0.0129,
+    "ci_low": -0.099,
+    "wr_pct": 53.9,
+    "status": "FAIL"
+   }
+  },
+  {
+   "key": "B",
+   "label_zh": "B 淺穿越（主 gate n/1400）",
+   "n_closed": 2691,
+   "n_open": 37,
+   "floor": 1400,
+   "mean_r": 0.0148,
+   "ci_low": -0.0473,
+   "wr_pct": 55.6,
+   "status": "FAIL",
+   "core9": {
+    "n_closed": 780,
+    "n_open": 7,
+    "floor": 1400,
+    "mean_r": 0.0232,
+    "ci_low": -0.0594,
+    "wr_pct": 56.9,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "C",
+   "label_zh": "C ＋收回（1m 縮回價位內）",
+   "n_closed": 2139,
+   "n_open": 33,
+   "floor": 1400,
+   "mean_r": 0.0517,
+   "ci_low": -0.0103,
+   "wr_pct": 57.9,
+   "status": "FAIL",
+   "core9": {
+    "n_closed": 637,
+    "n_open": 6,
+    "floor": 1400,
+    "mean_r": 0.0602,
+    "ci_low": -0.0222,
+    "wr_pct": 59.0,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "D",
+   "label_zh": "D ＋量能（訂單流組合）",
+   "n_closed": 946,
+   "n_open": 12,
+   "floor": 1400,
+   "mean_r": 0.0583,
+   "ci_low": -0.0208,
+   "wr_pct": 56.9,
+   "status": "accumulating",
+   "core9": {
+    "n_closed": 282,
+    "n_open": 1,
+    "floor": 1400,
+    "mean_r": 0.0774,
+    "ci_low": -0.0503,
+    "wr_pct": 55.7,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "E",
+   "label_zh": "E 三面板盤感（OI↓∧CVD順破∧清算高）",
+   "n_closed": 42,
+   "n_open": 1,
+   "floor": 1400,
+   "mean_r": 0.1071,
+   "ci_low": -0.1733,
+   "wr_pct": 73.8,
+   "status": "accumulating",
+   "core9": {
+    "n_closed": 42,
+    "n_open": 1,
+    "floor": 1400,
+    "mean_r": 0.1071,
+    "ci_low": -0.1733,
+    "wr_pct": 73.8,
+    "status": "accumulating"
+   }
+  }
+ ],
+ "combos": [
+  {
+   "key": "R∧V",
+   "label_zh": "放量刺、縮回來",
+   "n_closed": 1743,
+   "n_open": 29,
+   "floor": 1400,
+   "mean_r": 0.0279,
+   "ci_low": -0.0753,
+   "wr_pct": 54.8,
+   "status": "FAIL",
+   "core9": {
+    "n_closed": 589,
+    "n_open": 6,
+    "floor": 1400,
+    "mean_r": 0.0688,
+    "ci_low": -0.0834,
+    "wr_pct": 56.0,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "R∧Q",
+   "label_zh": "縮回＋確認掃止損",
+   "n_closed": 56,
+   "n_open": 1,
+   "floor": 1400,
+   "mean_r": 0.2751,
+   "ci_low": 0.0432,
+   "wr_pct": 75.0,
+   "status": "accumulating",
+   "core9": {
+    "n_closed": 56,
+    "n_open": 1,
+    "floor": 1400,
+    "mean_r": 0.2751,
+    "ci_low": 0.0432,
+    "wr_pct": 75.0,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "R∧V∧Q",
+   "label_zh": "三重確認（歷史最肥）",
+   "n_closed": 42,
+   "n_open": 0,
+   "floor": 1400,
+   "mean_r": 0.3018,
+   "ci_low": 0.0213,
+   "wr_pct": 76.2,
+   "status": "accumulating",
+   "core9": {
+    "n_closed": 42,
+    "n_open": 0,
+    "floor": 1400,
+    "mean_r": 0.3018,
+    "ci_low": 0.0213,
+    "wr_pct": 76.2,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "R∧快",
+   "label_zh": "五分鐘搶完就跑",
+   "n_closed": 2097,
+   "n_open": 26,
+   "floor": 1400,
+   "mean_r": 0.0642,
+   "ci_low": -0.01,
+   "wr_pct": 58.2,
+   "status": "FAIL",
+   "core9": {
+    "n_closed": 636,
+    "n_open": 3,
+    "floor": 1400,
+    "mean_r": 0.0954,
+    "ci_low": -0.0098,
+    "wr_pct": 60.5,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "R∧快∧Q",
+   "label_zh": "快閃＋止損確認",
+   "n_closed": 36,
+   "n_open": 1,
+   "floor": 1400,
+   "mean_r": 0.3183,
+   "ci_low": 0.0666,
+   "wr_pct": 72.2,
+   "status": "accumulating",
+   "core9": {
+    "n_closed": 36,
+    "n_open": 1,
+    "floor": 1400,
+    "mean_r": 0.3183,
+    "ci_low": 0.0666,
+    "wr_pct": 72.2,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "R",
+   "label_zh": "有縮回就算（最寬）",
+   "n_closed": 3622,
+   "n_open": 60,
+   "floor": 1400,
+   "mean_r": 0.0334,
+   "ci_low": -0.0353,
+   "wr_pct": 56.2,
+   "status": "FAIL",
+   "core9": {
+    "n_closed": 1150,
+    "n_open": 12,
+    "floor": 1400,
+    "mean_r": 0.055,
+    "ci_low": -0.0386,
+    "wr_pct": 58.3,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "PA",
+   "label_zh": "V7 也站這邊",
+   "n_closed": 99,
+   "n_open": 2,
+   "floor": 1400,
+   "mean_r": 0.0803,
+   "ci_low": -0.1482,
+   "wr_pct": 60.6,
+   "status": "accumulating",
+   "core9": {
+    "n_closed": 99,
+    "n_open": 2,
+    "floor": 1400,
+    "mean_r": 0.0803,
+    "ci_low": -0.1482,
+    "wr_pct": 60.6,
+    "status": "accumulating"
+   }
+  },
+  {
+   "key": "V∧LIQ",
+   "label_zh": "放量＋清算噴",
+   "n_closed": 68,
+   "n_open": 0,
+   "floor": 1400,
+   "mean_r": 0.0283,
+   "ci_low": -0.2153,
+   "wr_pct": 64.7,
+   "status": "accumulating",
+   "core9": {
+    "n_closed": 68,
+    "n_open": 0,
+    "floor": 1400,
+    "mean_r": 0.0283,
+    "ci_low": -0.2153,
+    "wr_pct": 64.7,
+    "status": "accumulating"
+   }
+  }
+ ],
+ "clocks": null,
+ "universes": {
+  "default": "all（core9 + added20）",
+  "core9": "跟單機器人實際交易的凍結籃子 —— 產品端要看的是這一組"
+ },
+ "watchlist_registered": "2026-08-02",
+ "mode": "shadow",
+ "disclaimer": "Forward shadow validation in progress — not a live strategy, not financial advice.",
+ "published_utc": "2026-09-30T10:01:46Z",
+ "_source": "archive"
+}

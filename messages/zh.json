@@ -1,7 +1,7 @@
 {
   "meta": {
     "siteTitle": "flowbot — 一個會自我監督的 BTC 系統",
-    "siteDescription": "雙模型訊號引擎、分階段風控框架，加上正在 OKX 實盤運行的執行層——全程公開建置與驗證。"
+    "siteDescription": "雙模型訊號引擎、分階段風控框架，以及曾在 OKX 實盤運行的執行層——全程公開建置與驗證，2026-09 起封存為作品集。"
   },
   "intro": {
     "title": "Trading is fantastic",
@@ -133,7 +133,7 @@
     }
   },
   "footer": {
-    "tagline": "全程公開建置，仍在驗證中。",
+    "tagline": "全程公開建置。2026-09 起封存為作品集。",
     "writeUps": "文章",
     "github": "GitHub",
     "contact": "聯絡",
@@ -229,7 +229,7 @@
           "雙關卡晉升制——先過統計優勢關，再過實盤執行驗證關",
           "滾動 IC 監控帶衰退警報，不是設完就不管"
         ],
-        "ctaLabel": "查看即時勝率與信賴區間"
+        "ctaLabel": "查看實盤勝率與信賴區間"
       },
       "risk": {
         "kicker": "04 — 風控與執行",
@@ -334,30 +334,30 @@
   "dashboardPage": {
     "meta": {
       "title": "交易儀表板 — flowbot",
-      "description": "三策略總覽——實盤 V7、shadow 流動性獵取、研究中撤單流的狀態、關鍵指標與圖表，一頁看完。"
+      "description": "五條策略線的封存總覽——V7 實盤紀錄、流動性獵取與 SDV 的回測、撤單流的判決，一頁看完。"
     },
     "eyebrow": "交易儀表板",
     "title": "一頁看完整個系統。",
-    "v7Section": "V7 訊號引擎 — 實盤",
-    "sweepSection": "流動性獵取 — Shadow 驗證",
-    "cancelSection": "撤單流 — 研究監測",
+    "v7Section": "V7 訊號引擎 — 實盤紀錄（已封存）",
+    "sweepSection": "流動性獵取 — 已結案",
+    "cancelSection": "撤單流 — 已結案",
     "detail": "完整圖表頁",
     "quickLinks": "更多紀錄",
     "trackRecord": "績效紀錄",
     "signalHistory": "訊號紀錄",
     "incidents": "事故紀錄",
     "overview": {
-      "cum": "LIVE 累計淨報酬（複利）",
-      "wr": "LIVE 勝率",
+      "cum": "V7 實盤累計淨報酬（複利）",
+      "wr": "V7 實盤勝率",
       "trades": "{n} 筆已平倉",
       "sweepProgress": "流動性獵取 forward",
-      "nextVerdict": "下一個判決",
-      "nextVerdictVal": "撤單流 · 2026-08-10"
+      "nextVerdict": "系統狀態",
+      "nextVerdictVal": "作品集封存 · 2026-09"
     },
     "livePanel": {
-      "title": "OKX 實盤執行",
+      "title": "OKX 實盤執行（2026-05～08，已封存）",
       "open": "當前持倉",
-      "flat": "空手——等待下一個 Strong 訊號",
+      "flat": "已停止——執行層於 2026-09 下線",
       "held": "已持有 {h} 小時",
       "entry": "進場價",
       "cum": "累計淨報酬",
@@ -412,7 +412,7 @@
   },
   "ledger": {
     "title": "研究帳本總覽",
-    "intro": "同一個每小時記錄器餵所有帳本——變體階梯與組合 watchlist 是對同一批訊號的兩套標籤。每筆數字全前瞻，歷史回測不在此列。",
+    "intro": "同一個每小時記錄器餵所有帳本——變體階梯與組合 watchlist 是對同一批訊號的兩套標籤。每筆數字全前瞻，歷史回測不在此列。記錄器於 2026-09 停止，數字停在最後一次計數。",
     "unavailable": "帳本資料暫時無法讀取。",
     "cols": {
       "ledger": "帳本",
@@ -422,7 +422,7 @@
       "ci": "CI下緣",
       "wr": "勝率",
       "state": "狀態",
-      "accumulating": "累積中",
+      "accumulating": "已凍結",
       "fail": "未通過",
       "voided": "作廢"
     },
@@ -459,21 +459,24 @@
       "shadow": "Shadow 驗證",
       "research": "研究監測",
       "v7Name": "V7 訊號引擎",
-      "v7Desc": "4 小時雙模型方向預測——BTC，實盤執行中",
+      "v7Desc": "4 小時雙模型方向預測——BTC。2026-05～08 在 OKX 實盤執行，2026-09 起封存為歷史紀錄",
       "sweepName": "流動性獵取",
       "sweepDesc": "掃單失敗反轉——2026-09-07 結案：訊號有效，但六種進場、48 種出場結構全部無法執行",
       "sweepGate": "Gate F {n}/{floor} · 跑完當歷史紀錄",
       "cancelName": "撤單流",
-      "cancelDesc": "訂單簿撤單微結構——監測中，2026-08-10 預登記判決",
+      "cancelDesc": "訂單簿撤單微結構——2026-08-10 預登記判決：三項方向性檢定全部未通過",
       "viewChart": "看圖表",
       "unavailable": "狀態讀取中斷",
       "settled": "已結案",
       "conjName": "交會事件",
-      "conjDesc": "插針 × 強制流的交會——順勢持有 60 分鐘。研究關全過，前瞻驗證累積中",
-      "conjClock": "前瞻 {n}/{gate} · 累積中",
+      "conjDesc": "插針 × 強制流的交會——順勢持有。研究關全過，前瞻驗證在 2026-09 停止，時鐘凍結在最後的數字",
+      "conjClock": "前瞻 {n}/{gate} · 已凍結",
       "onchainName": "鏈上量化",
       "onchainDesc": "永續 DEX 的逐地址部位、清算價與真實止損單——中心化交易所不公開，只能推估，而推估失敗過三次",
-      "onchainStat": "錄製中 · {markets} 市場 / {venues} 場 · 覆蓋 {cov}%"
+      "onchainStat": "錄製中 · {markets} 市場 / {venues} 場 · 覆蓋 {cov}%",
+      "frozen": "已凍結",
+      "v7Stat": "Strong 勝率 {wr}%（n={n}）· 實盤 {trades} 筆",
+      "cancelStat": "方向性判決 FAIL"
     },
     "table": {
       "time": "時間（UTC）",
@@ -485,7 +488,9 @@
       "pending": "判定中",
       "hit": "命中",
       "miss": "未命中"
-    }
+    },
+    "archivedBody": "每一筆訊號的明細（方向、分級、信心分數、市場狀態、實際結果）存在 2026-09 下線的資料庫裡，沒有保存下來。彙總的勝率、信賴區間與實盤紀錄仍在績效紀錄頁。",
+    "archivedCta": "看績效紀錄"
   },
   "system": {
     "meta": {
@@ -496,7 +501,7 @@
   "trackRecordPage": {
     "meta": {
       "title": "績效紀錄 — flowbot",
-      "description": "即時訊號與交易勝率（附 Wilson 信賴區間），以及已平倉交易複利報酬算出的最大回撤。"
+      "description": "V7 訊號與實盤交易勝率（附 Wilson 信賴區間），以及已平倉交易複利報酬算出的最大回撤。2026-09 封存。"
     }
   },
   "incidentsPage": {
@@ -508,14 +513,14 @@
   "chartsPage": {
     "meta": {
       "title": "策略 — flowbot",
-      "description": "V7 訊號引擎與撤單流指標的即時圖表輸出，直接來自跑正式系統的同一組 Railway 服務。"
+      "description": "V7 訊號引擎、流動性獵取、SDV 與撤單流的互動圖表——研究機上產生的最後一版，封存於 2026-09。"
     },
     "enter": "由此進入",
     "backToCharts": "策略",
     "v7": {
       "label": "V7 訊號引擎",
       "title": "4 小時預測圖",
-      "body": "模型自己在跑的同一張互動圖——信心熱力圖、regime 條帶、帶 Strong/Moderate 方向三角形的 K 線，以及幅度面板。可以縮放、拖拉、滑鼠十字準線互動，跟真正的即時圖一樣操作。",
+      "body": "模型自己畫的同一張互動圖——信心熱力圖、regime 條帶、帶 Strong/Moderate 方向三角形的 K 線，以及幅度面板，可以縮放、拖拉、滑鼠十字準線互動。這是 2026-05 的歷史快照。",
       "kpi": {
         "direction": "最新訊號",
         "confidence": "信心度",
@@ -536,8 +541,8 @@
       "expertNote": "專家模式——價格、撤單不對稱、撤單強度合成一張互動圖，縮放/拖拉/十字準線三個面板同步連動。",
       "kpi": {
         "title": "多幣種撤單流監控",
-        "body": "每個幣種最近 2 小時的原始訂單簿加/撤單活動——不是交易訊號，撤單流的 edge 仍待 2026-08-10 預先登記的檢驗判決。",
-        "accumulating": "累積中（{n} 分鐘）",
+        "body": "撤單流在 2026-08-10 的預登記判決中，三項方向性檢定全部未通過。原始訂單簿資料隨資料庫在 2026-09 下線，這裡不再顯示即時數字。",
+        "accumulating": "已凍結（{n} 分鐘）",
         "unavailable": "統計資料暫時無法讀取。",
         "askDominant": "賣方撤單較多（{pct}%）",
         "bidDominant": "買方撤單較多（{pct}%）"
@@ -559,7 +564,7 @@
         "wr": "勝率",
         "open": "持倉中訊號",
         "status": "狀態",
-        "accumulating": "累積中",
+        "accumulating": "已凍結",
         "pass": "通過",
         "unavailable": "狀態暫時無法讀取",
         "fail": "未通過",
@@ -603,7 +608,7 @@
       },
       "sweep": {
         "title": "掃單失敗 — 歷史回測檢視",
-        "note": "狀態：歷史回測（規則凍結於 2026-07-28）。前瞻驗證尚未判定——Gate F 正式軌道 A 累積中，日聚類 CI 仍含零。本頁只呈現回測，不是訊號來源，也不代表未來績效。",
+        "note": "狀態：歷史回測（規則凍結於 2026-07-28）。前瞻驗證沒有判定——Gate F 正式軌道 A 在 2026-09 停在最後的計數，日聚類 CI 仍含零。本頁只呈現回測，不是訊號來源，也不代表未來績效。",
         "guideTitle": "怎麼看這張圖",
         "guideMarks": "虛線＝被掃的價位，從造出它的那根樞紐影線尖端畫到掃單那一根｜箭頭＝掃單（價格穿過價位）｜圓點＝回踩成交（畫在含逆向滑價的成交價）｜方塊＝出場（畫在由該筆 R 反解出來的價格，後面帶「!」代表觸及災難停損）。黃色是買側流動性（掃它做空），紫色是賣側（掃它做多）。",
         "guideTable": "下方交易表每一列都可以點——圖表會跳到那一筆，並畫出價位／進場／停損／出場四條水平線，上方文字用白話把整筆從樞紐到出場講一遍。「等」是掃單到成交的小時數（上限 8），「持」是成交到出場的小時數（上限 8）。",

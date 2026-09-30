@@ -1,0 +1,632 @@
+{
+ "asof_utc": "2026-09-30 06:14",
+ "gate_days": 7,
+ "pairs": [
+  {
+   "pair": "SNDK",
+   "legs": "Entropy io:SNDK vs lighter-rh SNDK",
+   "note": "stock perp (original)",
+   "status": "verdict",
+   "minutes": 33942,
+   "days": 32.82,
+   "gate_days": 7,
+   "start_utc": "2026-08-28 10:28",
+   "is_control": false,
+   "zero_fee": false,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**過閘（僅在零費率假設下）** —— 帶過了 2026-08-28 凍結的 1.0 bps 門檻，但按費率表這個配對需要 24.7 bps（只看費率表 29.2 bps），所以扣掉實際費率之後每筆是負的。凍結門檻寫的是「扣費後」，而它當時把費用當成 0+0——**判準沒被改，是它的前提被推翻了**。要救這條線只有兩條路：查證返佣，或改掛單執行。"
+  },
+  {
+   "pair": "ANTH",
+   "legs": "Entropy io:ANTH vs lighter-rh ANTHROPIC",
+   "note": "private-co perp, no spot anchor",
+   "status": "verdict",
+   "minutes": 30819,
+   "days": 30.65,
+   "gate_days": 7,
+   "start_utc": "2026-08-30 14:36",
+   "is_control": false,
+   "zero_fee": false,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**關線** —— 扣費後的可成交空間撐不起門檻；一週結案，成本≈零。"
+  },
+  {
+   "pair": "ZEC",
+   "legs": "HL ZEC vs lighter-rh ZEC",
+   "note": "thin crypto",
+   "status": "verdict",
+   "minutes": 30817,
+   "days": 30.65,
+   "gate_days": 7,
+   "start_utc": "2026-08-30 14:36",
+   "is_control": false,
+   "zero_fee": false,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**過閘（僅在零費率假設下）** —— 帶過了 2026-08-28 凍結的 1.0 bps 門檻，但按費率表這個配對需要 29.2 bps（只看費率表 29.2 bps），所以扣掉實際費率之後每筆是負的。凍結門檻寫的是「扣費後」，而它當時把費用當成 0+0——**判準沒被改，是它的前提被推翻了**。要救這條線只有兩條路：查證返佣，或改掛單執行。"
+  },
+  {
+   "pair": "BTC",
+   "legs": "HL BTC vs lighter-rh BTC",
+   "note": "CONTROL - band expected ~0",
+   "status": "verdict",
+   "minutes": 30816,
+   "days": 30.65,
+   "gate_days": 7,
+   "start_utc": "2026-08-30 14:36",
+   "is_control": true,
+   "zero_fee": false,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**對照組亮了** —— BTC 兩個深簿之間不該有帶；先查儀器，不是查市場。（本句原文寫「兩邊零費率」，2026-09-03 費率查證後改正：Lighter 是 0，HL 不是，這個配對需要帶 29.2 bps。）"
+  },
+  {
+   "pair": "NEAR",
+   "legs": "HL NEAR vs lighter-rh NEAR",
+   "note": "thin crypto",
+   "status": "verdict",
+   "minutes": 30814,
+   "days": 30.65,
+   "gate_days": 7,
+   "start_utc": "2026-08-30 14:36",
+   "is_control": false,
+   "zero_fee": false,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**過閘（僅在零費率假設下）** —— 帶過了 2026-08-28 凍結的 1.0 bps 門檻，但按費率表這個配對需要 29.2 bps（只看費率表 29.2 bps），所以扣掉實際費率之後每筆是負的。凍結門檻寫的是「扣費後」，而它當時把費用當成 0+0——**判準沒被改，是它的前提被推翻了**。要救這條線只有兩條路：查證返佣，或改掛單執行。"
+  },
+  {
+   "pair": "HYPE",
+   "legs": "HL HYPE vs lighter-rh HYPE",
+   "note": "thin crypto; largest funding gap on 09-01",
+   "status": "verdict",
+   "minutes": 27909,
+   "days": 28.63,
+   "gate_days": 7,
+   "start_utc": "2026-09-01 15:04",
+   "is_control": false,
+   "zero_fee": false,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**過閘（僅在零費率假設下）** —— 帶過了 2026-08-28 凍結的 1.0 bps 門檻，但按費率表這個配對需要 29.2 bps（只看費率表 29.2 bps），所以扣掉實際費率之後每筆是負的。凍結門檻寫的是「扣費後」，而它當時把費用當成 0+0——**判準沒被改，是它的前提被推翻了**。要救這條線只有兩條路：查證返佣，或改掛單執行。"
+  },
+  {
+   "pair": "NBIS",
+   "legs": "Entropy io:NBIS vs lighter NBIS",
+   "note": "stock perp",
+   "status": "verdict",
+   "minutes": 27402,
+   "days": 30.65,
+   "gate_days": 7,
+   "start_utc": "2026-08-30 14:36",
+   "is_control": false,
+   "zero_fee": false,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**過閘** —— 進工程閘門討論（審計下單路徑、統一風控、資金拆分）。注意這只證明溢價存在，不證明抓得到它；看可捕獲美元再決定值不值得。帶也撐得過實際費率（需要 24.7 bps）。"
+  },
+  {
+   "pair": "GOLD_LL",
+   "legs": "lighter XAU vs lighter-rh XAU",
+   "note": "zero-fee both legs; gold index (not PAXG)",
+   "status": "verdict",
+   "minutes": 24944,
+   "days": 26.56,
+   "gate_days": 7,
+   "start_utc": "2026-09-03 16:51",
+   "is_control": false,
+   "zero_fee": true,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**過閘（僅在零費率假設下）** —— 帶過了 2026-08-28 凍結的 1.0 bps 門檻，但按費率表這個配對需要 22.4 bps（只看費率表 22.4 bps），所以扣掉實際費率之後每筆是負的。凍結門檻寫的是「扣費後」，而它當時把費用當成 0+0——**判準沒被改，是它的前提被推翻了**。要救這條線只有兩條路：查證返佣，或改掛單執行。"
+  },
+  {
+   "pair": "NVDA_LL",
+   "legs": "lighter NVDA vs lighter-rh NVDA",
+   "note": "zero-fee both legs; stock perp",
+   "status": "verdict",
+   "minutes": 24943,
+   "days": 26.56,
+   "gate_days": 7,
+   "start_utc": "2026-09-03 16:51",
+   "is_control": false,
+   "zero_fee": true,
+   "sell": null,
+   "buy": null,
+   "carry": null,
+   "verdict": "**過閘（僅在零費率假設下）** —— 帶過了 2026-08-28 凍結的 1.0 bps 門檻，但按費率表這個配對需要 22.4 bps（只看費率表 22.4 bps），所以扣掉實際費率之後每筆是負的。凍結門檻寫的是「扣費後」，而它當時把費用當成 0+0——**判準沒被改，是它的前提被推翻了**。要救這條線只有兩條路：查證返佣，或改掛單執行。"
+  }
+ ],
+ "scan": {
+  "asof_utc": "2026-09-30 06:15",
+  "span_days": 10.58,
+  "quotes": 7392554,
+  "pairs": 3140,
+  "gate_ok": true,
+  "control_band_bps": 9.024,
+  "pending_pairs": 24,
+  "rows": [
+   {
+    "pair": "BTC@HL-okx",
+    "asset_class": "加密",
+    "band_bps": 7.777,
+    "required_band_bps": 29.0,
+    "net_per_trade_bps": -10.61,
+    "fee_ok": false,
+    "fee_unverified": [],
+    "band_vs_control": 0.86,
+    "fires_per_day": 13.7,
+    "depth_tier": "deep",
+    "samples": 2431,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "BTC@HL-binance",
+    "asset_class": "加密",
+    "band_bps": 8.745,
+    "required_band_bps": 38.0,
+    "net_per_trade_bps": -14.63,
+    "fee_ok": false,
+    "fee_unverified": [
+     "binance"
+    ],
+    "band_vs_control": 0.97,
+    "fires_per_day": 14.0,
+    "depth_tier": "deep",
+    "samples": 2417,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "ETH@HL-binance",
+    "asset_class": "加密",
+    "band_bps": 8.708,
+    "required_band_bps": 38.0,
+    "net_per_trade_bps": -14.65,
+    "fee_ok": false,
+    "fee_unverified": [
+     "binance"
+    ],
+    "band_vs_control": 0.96,
+    "fires_per_day": 16.2,
+    "depth_tier": "deep",
+    "samples": 2424,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "ETH@HL-okx",
+    "asset_class": "加密",
+    "band_bps": 9.094,
+    "required_band_bps": 29.0,
+    "net_per_trade_bps": -9.95,
+    "fee_ok": false,
+    "fee_unverified": [],
+    "band_vs_control": 1.01,
+    "fires_per_day": 15.2,
+    "depth_tier": "deep",
+    "samples": 2435,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "BTC@HL-bitget",
+    "asset_class": "加密",
+    "band_bps": 8.916,
+    "required_band_bps": 30.0,
+    "net_per_trade_bps": -10.54,
+    "fee_ok": false,
+    "fee_unverified": [],
+    "band_vs_control": 0.99,
+    "fires_per_day": 13.3,
+    "depth_tier": "deep",
+    "samples": 2431,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "ETH@HL-bitget",
+    "asset_class": "加密",
+    "band_bps": 9.375,
+    "required_band_bps": 30.0,
+    "net_per_trade_bps": -10.31,
+    "fee_ok": false,
+    "fee_unverified": [],
+    "band_vs_control": 1.04,
+    "fires_per_day": 14.8,
+    "depth_tier": "deep",
+    "samples": 2437,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "BTC@okx-binance",
+    "asset_class": "加密",
+    "band_bps": 1.462,
+    "required_band_bps": 31.0,
+    "net_per_trade_bps": -14.77,
+    "fee_ok": false,
+    "fee_unverified": [
+     "binance"
+    ],
+    "band_vs_control": 0.16,
+    "fires_per_day": 13.1,
+    "depth_tier": "deep",
+    "samples": 2500,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "CIEN@para-bitget",
+    "asset_class": "股票",
+    "band_bps": 75.302,
+    "required_band_bps": 30.0,
+    "net_per_trade_bps": 22.65,
+    "fee_ok": true,
+    "fee_unverified": [],
+    "band_vs_control": 8.34,
+    "fires_per_day": 5.9,
+    "depth_tier": "deep",
+    "samples": 2292,
+    "stage": "升格候選"
+   },
+   {
+    "pair": "ETH@okx-binance",
+    "asset_class": "加密",
+    "band_bps": 1.433,
+    "required_band_bps": 31.0,
+    "net_per_trade_bps": -14.78,
+    "fee_ok": false,
+    "fee_unverified": [
+     "binance"
+    ],
+    "band_vs_control": 0.16,
+    "fires_per_day": 12.9,
+    "depth_tier": "deep",
+    "samples": 2499,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "SOL@HL-binance",
+    "asset_class": "加密",
+    "band_bps": 7.292,
+    "required_band_bps": 38.0,
+    "net_per_trade_bps": -15.35,
+    "fee_ok": false,
+    "fee_unverified": [
+     "binance"
+    ],
+    "band_vs_control": 0.81,
+    "fires_per_day": 9.9,
+    "depth_tier": "deep",
+    "samples": 2441,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "BTC@bitget-binance",
+    "asset_class": "加密",
+    "band_bps": 1.218,
+    "required_band_bps": 32.0,
+    "net_per_trade_bps": -15.39,
+    "fee_ok": false,
+    "fee_unverified": [
+     "binance"
+    ],
+    "band_vs_control": 0.13,
+    "fires_per_day": 12.7,
+    "depth_tier": "deep",
+    "samples": 2500,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "OAI@IO-binance",
+    "asset_class": "股票",
+    "band_bps": 967.039,
+    "required_band_bps": 33.5,
+    "net_per_trade_bps": 466.77,
+    "fee_ok": true,
+    "fee_unverified": [
+     "binance"
+    ],
+    "band_vs_control": 107.16,
+    "fires_per_day": 21.8,
+    "depth_tier": "thin",
+    "samples": 2306,
+    "stage": "升格候選"
+   },
+   {
+    "pair": "LRCX@para-bitget",
+    "asset_class": "股票",
+    "band_bps": 66.791,
+    "required_band_bps": 30.0,
+    "net_per_trade_bps": 18.4,
+    "fee_ok": true,
+    "fee_unverified": [],
+    "band_vs_control": 7.4,
+    "fires_per_day": 3.4,
+    "depth_tier": "deep",
+    "samples": 2318,
+    "stage": "升格候選"
+   },
+   {
+    "pair": "BTC@okx-bitget",
+    "asset_class": "加密",
+    "band_bps": 1.579,
+    "required_band_bps": 23.0,
+    "net_per_trade_bps": -10.71,
+    "fee_ok": false,
+    "fee_unverified": [],
+    "band_vs_control": 0.17,
+    "fires_per_day": 12.1,
+    "depth_tier": "deep",
+    "samples": 2514,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "OAI@IO-bitget",
+    "asset_class": "股票",
+    "band_bps": 977.559,
+    "required_band_bps": 25.5,
+    "net_per_trade_bps": 476.03,
+    "fee_ok": true,
+    "fee_unverified": [],
+    "band_vs_control": 108.33,
+    "fires_per_day": 21.9,
+    "depth_tier": "thin",
+    "samples": 2315,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "OAI@lighter-rh-binance",
+    "asset_class": "加密",
+    "band_bps": 774.371,
+    "required_band_bps": 31.2,
+    "net_per_trade_bps": 371.59,
+    "fee_ok": true,
+    "fee_unverified": [
+     "lighter-rh",
+     "binance"
+    ],
+    "band_vs_control": 85.81,
+    "fires_per_day": 23.7,
+    "depth_tier": "thin",
+    "samples": 2505,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "SKHY@lighter-rh-binance",
+    "asset_class": "加密",
+    "band_bps": 21.373,
+    "required_band_bps": 31.2,
+    "net_per_trade_bps": -4.91,
+    "fee_ok": false,
+    "fee_unverified": [
+     "lighter-rh",
+     "binance"
+    ],
+    "band_vs_control": 2.37,
+    "fires_per_day": 21.7,
+    "depth_tier": "deep",
+    "samples": 2505,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "OAI@lighter-rh-bitget",
+    "asset_class": "加密",
+    "band_bps": 779.465,
+    "required_band_bps": 23.2,
+    "net_per_trade_bps": 378.13,
+    "fee_ok": true,
+    "fee_unverified": [
+     "lighter-rh"
+    ],
+    "band_vs_control": 86.38,
+    "fires_per_day": 23.8,
+    "depth_tier": "thin",
+    "samples": 2514,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "SOL@HL-okx",
+    "asset_class": "加密",
+    "band_bps": 7.236,
+    "required_band_bps": 29.0,
+    "net_per_trade_bps": -10.88,
+    "fee_ok": false,
+    "fee_unverified": [],
+    "band_vs_control": 0.8,
+    "fires_per_day": 12.0,
+    "depth_tier": "deep",
+    "samples": 2454,
+    "stage": "掃描中"
+   },
+   {
+    "pair": "QNT@xyz-binance",
+    "asset_class": "股票",
+    "band_bps": 3212.95,
+    "required_band_bps": 38.0,
+    "net_per_trade_bps": 1587.47,
+    "fee_ok": true,
+    "fee_unverified": [
+     "binance"
+    ],
+    "band_vs_control": 356.04,
+    "fires_per_day": 22.2,
+    "depth_tier": "thin",
+    "samples": 2343,
+    "stage": "掃描中"
+   }
+  ],
+  "fees": [
+   {
+    "venue": "HL",
+    "taker_bps": 4.5,
+    "rebate_pct": 0,
+    "effective_bps": 4.5,
+    "maker_bps": 1.5,
+    "effective_maker_bps": 1.5,
+    "verified": true,
+    "note": "Hyperliquid docs, base tier 0.045%. Volume tiers need $5M+/14d; HYPE staking discounts reach 40% only at 500,000 HYPE."
+   },
+   {
+    "venue": "IO",
+    "taker_bps": 4.5,
+    "rebate_pct": 25,
+    "effective_bps": 3.38,
+    "maker_bps": 1.5,
+    "effective_maker_bps": 1.12,
+    "verified": true,
+    "note": "Operator's own Entropy referral page 2026-09-04 (referred by yourquantguy, TIER 1): Benefit 25% = the fee discount on one's OWN trades. The '100%' quoted from the upstream README was the REFERRER's share of referees' fees (income), never a trading discount -- two different numbers with one name. Rebate 60% on that page is what the operator would earn from people he refers; it does not touch his own cost."
+   },
+   {
+    "venue": "xyz",
+    "taker_bps": 4.5,
+    "rebate_pct": 0,
+    "effective_bps": 4.5,
+    "maker_bps": 1.5,
+    "effective_maker_bps": 1.5,
+    "verified": true,
+    "note": "deployerFeeScale 1.0 + growth mode -> HL schedule."
+   },
+   {
+    "venue": "para",
+    "taker_bps": 4.5,
+    "rebate_pct": 0,
+    "effective_bps": 4.5,
+    "maker_bps": 1.5,
+    "effective_maker_bps": 1.5,
+    "verified": true,
+    "note": "deployerFeeScale 1.0 + growth mode -> HL schedule."
+   },
+   {
+    "venue": "mkts",
+    "taker_bps": 4.5,
+    "rebate_pct": 0,
+    "effective_bps": 4.5,
+    "maker_bps": 1.5,
+    "effective_maker_bps": 1.5,
+    "verified": true,
+    "note": "deployerFeeScale 1.0 + growth mode -> HL schedule."
+   },
+   {
+    "venue": "hyna",
+    "taker_bps": 4.5,
+    "rebate_pct": 0,
+    "effective_bps": 4.5,
+    "maker_bps": 1.5,
+    "effective_maker_bps": 1.5,
+    "verified": true,
+    "note": "deployerFeeScale 1.0 + growth mode -> HL schedule."
+   },
+   {
+    "venue": "lighter",
+    "taker_bps": 2.8,
+    "rebate_pct": 0,
+    "effective_bps": 2.8,
+    "maker_bps": 0.4,
+    "effective_maker_bps": 0.4,
+    "verified": true,
+    "note": "PREMIUM tier, zero staked LIT (docs 2026-09-12 + PREMIUM badge on our portfolio page + order panel on BTC and LIT). Standard tier would be 0/0 but adds a venue-imposed 300ms cancel latency. NOT a per-market fee -- /api/v1/orderBooks' 0.0000 is the protocol parameter, not the account's cost. **2026-09-16: verified on OUR OWN fills.** Filtered the public tape by ask_acct/bid_acct == our account index: 55 fills, and the rate field is CONSTANT regardless of notional -- 40 on every maker fill, 280 on every taker fill, i.e. units of 0.01 bps => 0.40 / 2.80 exactly. So this line is no longer 'docs + a badge', it is our own bill (CLAUDE.md 5). Counterparties often show 28/196 (= 0.28/1.96), so a ~30% cheaper tier exists and we are not on it -- worth knowing before assuming our cost floor is the venue's floor."
+   },
+   {
+    "venue": "lighter-rh",
+    "taker_bps": 2.8,
+    "rebate_pct": 0,
+    "effective_bps": 2.8,
+    "maker_bps": 0.4,
+    "effective_maker_bps": 0.4,
+    "verified": false,
+    "note": "ASSUMED = same schedule as mainnet Lighter. The tier is per ACCOUNT and we hold no Robinhood-side account, so this has never been checked -- the Premium numbers are used because erring high is the safe direction for a gate. Quotes in USDG, so part of any premium is the stablecoin basis."
+   },
+   {
+    "venue": "lighter-std",
+    "taker_bps": 0.0,
+    "rebate_pct": 0,
+    "effective_bps": 0.0,
+    "maker_bps": 0.0,
+    "effective_maker_bps": 0.0,
+    "verified": true,
+    "note": "Lighter STANDARD tier: 0 maker / 0 taker, receipt-verified from the tape (74.9% of taker notional pays nothing). Costs 300ms cancel latency + ~60 req/min -- fine for slow strategies, impossible for market making."
+   },
+   {
+    "venue": "lighter-rh-std",
+    "taker_bps": 0.0,
+    "rebate_pct": 0,
+    "effective_bps": 0.0,
+    "maker_bps": 0.0,
+    "effective_maker_bps": 0.0,
+    "verified": false,
+    "note": "ASSUMED same tier structure as mainnet Lighter. We hold no Robinhood-chain account, so this has never been checked."
+   },
+   {
+    "venue": "bitget",
+    "taker_bps": 6.0,
+    "rebate_pct": 50,
+    "effective_bps": 3.0,
+    "maker_bps": 2.0,
+    "effective_maker_bps": 1.0,
+    "verified": true,
+    "note": "Bitget publishes takerFeeRate per contract (0.0006 = 6 bps). Rebate 50% stated by the operator 2026-09-03, and REAFFIRMED as permanent by the operator 2026-09-13 when asked whether it could lapse. So it is a BASELINE, not a promotion: flow_system TODO 1.40 measured that 4 of its 9 live spread-arb candidates exist only because of it (9/9 with rebate, 5/9 without), and the operator has taken that dependency."
+   },
+   {
+    "venue": "binance",
+    "taker_bps": 5.0,
+    "rebate_pct": 0,
+    "effective_bps": 5.0,
+    "maker_bps": 2.0,
+    "effective_maker_bps": 2.0,
+    "verified": false,
+    "note": "Binance USDT-M standard tier 0.05%/0.02% (public schedule). No rebate stated by the operator. Lists equity perps as contractType TRADIFI_PERPETUAL (2026-09-04)."
+   },
+   {
+    "venue": "okx",
+    "taker_bps": 5.0,
+    "rebate_pct": 45,
+    "effective_bps": 2.75,
+    "maker_bps": 2.0,
+    "effective_maker_bps": 1.1,
+    "verified": true,
+    "note": "0.05%/0.02% is OKX's published standard-tier perp schedule. Rebate 45% CONFIRMED by the operator 2026-09-04 (account terms, not a promotion)."
+   }
+  ],
+  "fee_rule": "一筆抓半個帶，進出各跨兩腿 → 需要的帶 = 4 ×（兩腿費率）。Lighter 兩條鏈是排程寫死的 0；Hyperliquid 系（含所有 builder dex）是 4.5 bps；CEX 扣掉返佣後 2.75–3.0 bps。",
+  "ladder": [
+   {
+    "step": "掃描",
+    "state": "本板",
+    "means": "兩個場館的報價差得夠開、夠常發生"
+   },
+   {
+    "step": "錄製 7 天",
+    "state": "下一步",
+    "means": "升格後從自己的第一分鐘起算，掃描期資料不進判決"
+   },
+   {
+    "step": "收斂關",
+    "state": "未做",
+    "means": "偏離後要回得來；持續偏移看起來最肥卻永遠拿不到"
+   },
+   {
+    "step": "費率查證",
+    "state": "已查",
+    "means": "Hyperliquid 系 4.5 bps（builder dex 不是零費）、Lighter 兩鏈排程 0、Bitget 6 bps 返佣 50%、OKX 5 bps 返佣 45%（已確認）。Entropy 推薦頁 2026-09-04：自己交易的折扣是 25%，不是上游 README 寫的 100%——那是推薦人分成，不是折扣。剩一件：一筆真實成交讀回執，確認帳單上的數字"
+   },
+   {
+    "step": "小額實盤",
+    "state": "未做",
+    "means": "回測與錄製都過了也只是紙上；斷腿與真實成交才算數"
+   }
+  ],
+  "caveat": "本板只列樣本數已達門檻的配對；剛加進來的場館要累積約 3 天才會出現（帶寬是分位數，十幾筆報價算出來的帶是雜訊）。本板是「找戰場」，不是「已賺到」。帶寬與次數是掃描期的觀察，深度只給分級；排序用的可捕獲金額不出現在公開頁。任何一列都還沒過收斂關、沒查費率、沒有實盤成交。"
+ },
+ "principle": "判準 2026-08-28 凍結：扣費後 ≥1bps 的帶、日均 ≥10 次、兩半皆成立、且偏離後要收斂。家族同判準、全部報告、不挑好看的。BTC 是對照組——它若過閘代表儀器壞了。",
+ "carry_note": "資金費率是第二條收益軸（持有就付，不需要收斂），報告用、不進判準：凍結的四關是關於價差的，不因為出現第二種收益就事後擴充。",
+ "fee_note": "「扣費後」欄：凍結判準當時把費用當成 0+0，2026-09-03 費率查證推翻了這個前提（Entropy 腿的零是推薦促銷，09-04 帳戶頁顯示折扣是 25%）。判準一字未動；每個配對旁邊直接算「以你的費率、四次吃單，每筆剩多少」。負數＝帶過了門檻但扣費後是負的，只剩掛單一條路。零費對照＝兩腿費率表都是 0 的配對，能殺它的只剩收斂與深度。",
+ "disclaimer": "Research recording only — not a live strategy, not financial advice.",
+ "published_utc": "2026-09-30T10:00:49Z",
+ "_source": "archive"
+}

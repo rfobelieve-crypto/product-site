@@ -9,9 +9,7 @@ import type { SignalFeed } from '@/lib/signalFeed';
 import { Nav } from './sections/Nav';
 import { Hero } from './sections/Hero';
 import { Explore } from './sections/Explore';
-import { LiveSignal } from './sections/LiveSignal';
 import { FAQ } from './sections/FAQ';
-import { Waitlist } from './sections/Waitlist';
 import { Footer } from './sections/Footer';
 
 // UP/DOWN + confidence → -1..1 lean for the candle field's random walk
@@ -38,12 +36,8 @@ export function HomeExperience({ feed }: { feed: SignalFeed | null }) {
       <SceneWrapper scrollProgress={progress} signalBias={signalToBias(feed)} />
       <div className="content-layer">
         <Hero />
-        <div id="live-signal" className="mx-auto max-w-md px-6 pb-20 pt-32 sm:px-16">
-          <LiveSignal feed={feed} />
-        </div>
         <Explore />
         <FAQ />
-        <Waitlist />
         <Footer />
       </div>
     </div>

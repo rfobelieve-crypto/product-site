@@ -8,9 +8,9 @@ export type SignalFeed = {
   disclaimer: string | null;
 };
 
-const FEED_URL =
-  process.env.SIGNAL_FEED_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/signal-feed';
+// 2026-09-30: agent-mcp (Railway) is retired; the site is a static portfolio.
+// No env var -> null (its source table died with the MySQL; the UI hides the panel). Setting the env var restores the live fetch.
+const FEED_URL = process.env.SIGNAL_FEED_URL;
 
 /**
  * Server-only fetch — called from a Server Component (app/page.tsx), never
@@ -22,6 +22,7 @@ const FEED_URL =
  * with it.
  */
 export async function getSignalFeed(): Promise<SignalFeed | null> {
+  if (!FEED_URL) return null;
   // A slow/unreachable agent service must never hold up the page render —
   // hard-cap the wait regardless of what's causing the slowness.
   const controller = new AbortController();

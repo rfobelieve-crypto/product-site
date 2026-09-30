@@ -1,7 +1,7 @@
 {
   "meta": {
     "siteTitle": "flowbot — a BTC system that watches itself",
-    "siteDescription": "Dual-model signal engine, staged risk framework, and a live OKX execution layer — built and validated in the open."
+    "siteDescription": "Dual-model signal engine, staged risk framework, and an execution layer that traded live on OKX — built and validated in the open, archived as a portfolio since 2026-09."
   },
   "intro": {
     "title": "Trading is fantastic",
@@ -133,7 +133,7 @@
     }
   },
   "footer": {
-    "tagline": "Built in the open. Still being proven.",
+    "tagline": "Built in the open. Archived as a portfolio since 2026-09.",
     "writeUps": "Write-ups",
     "github": "GitHub",
     "contact": "Contact",
@@ -229,7 +229,7 @@
           "Two-gate promotion — statistical edge, then live execution proof",
           "Rolling IC monitoring with a decay alert, not set-and-forget"
         ],
-        "ctaLabel": "See the live win rate + confidence intervals"
+        "ctaLabel": "See the live-trading win rate + confidence intervals"
       },
       "risk": {
         "kicker": "04 — Risk & execution",
@@ -334,30 +334,30 @@
   "dashboardPage": {
     "meta": {
       "title": "Trading dashboard — flowbot",
-      "description": "The whole system on one page — live V7, shadow liquidity raids, cancel-flow research: status, key metrics and charts."
+      "description": "An archived overview of five strategy lines — the V7 live record, liquidity-raid and SDV backtests, and the cancel-flow verdict, on one page."
     },
     "eyebrow": "Trading dashboard",
     "title": "The whole system, one page.",
-    "v7Section": "V7 signal engine — LIVE",
-    "sweepSection": "Liquidity raids — SHADOW",
-    "cancelSection": "Cancel flow — RESEARCH",
+    "v7Section": "V7 signal engine — live record (archived)",
+    "sweepSection": "Liquidity raids — settled",
+    "cancelSection": "Cancel flow — settled",
     "detail": "Full chart page",
     "quickLinks": "More records",
     "trackRecord": "Track record",
     "signalHistory": "Signal history",
     "incidents": "Incidents",
     "overview": {
-      "cum": "LIVE cum. net return",
-      "wr": "LIVE win rate",
+      "cum": "V7 live cum. net return",
+      "wr": "V7 live win rate",
       "trades": "{n} closed trades",
       "sweepProgress": "Liquidity-raid forward",
-      "nextVerdict": "Next verdict",
-      "nextVerdictVal": "Cancel flow · 2026-08-10"
+      "nextVerdict": "System status",
+      "nextVerdictVal": "Portfolio archive · 2026-09"
     },
     "livePanel": {
-      "title": "OKX live execution",
+      "title": "OKX live execution (2026-05 to 08, archived)",
       "open": "Open position",
-      "flat": "Flat — waiting for the next Strong signal",
+      "flat": "Stopped — execution layer retired in 2026-09",
       "held": "held {h}h",
       "entry": "entry",
       "cum": "Cum. net return",
@@ -412,7 +412,7 @@
   },
   "ledger": {
     "title": "Research ledger board",
-    "intro": "One hourly recorder feeds every ledger — the variant ladder and the combo watchlist are two labelings of the same signals. All numbers are forward-only; no backtest rows here.",
+    "intro": "One hourly recorder fed every ledger — the variant ladder and the combo watchlist are two labelings of the same signals. All numbers are forward-only; no backtest rows here. The recorder stopped in 2026-09; the numbers are its last count.",
     "unavailable": "Ledger feed temporarily unavailable.",
     "cols": {
       "ledger": "Ledger",
@@ -422,7 +422,7 @@
       "ci": "CI low",
       "wr": "WR",
       "state": "State",
-      "accumulating": "accumulating",
+      "accumulating": "frozen",
       "fail": "FAIL",
       "voided": "void"
     },
@@ -459,21 +459,24 @@
       "shadow": "SHADOW",
       "research": "RESEARCH",
       "v7Name": "V7 signal engine",
-      "v7Desc": "4h dual-model direction forecast — BTC, executing live",
+      "v7Desc": "4h dual-model direction forecast — BTC. Traded live on OKX 2026-05 to 08; archived as a record since 2026-09",
       "sweepName": "Liquidity raids",
       "sweepDesc": "Sweep-failure reversal — closed 2026-09-07: the signal is real, but six entry designs and 48 exit structures were all unexecutable",
       "sweepGate": "Gate F {n}/{floor} · running out as historical record",
       "cancelName": "Cancel flow",
-      "cancelDesc": "Order-book cancellation microstructure — monitoring, pre-registered verdict 2026-08-10",
+      "cancelDesc": "Order-book cancellation microstructure — pre-registered verdict 2026-08-10: all three directional tests failed",
       "viewChart": "View chart",
       "unavailable": "status feed interrupted",
       "settled": "Settled",
       "conjName": "Conjunction events",
-      "conjDesc": "Sweep x forced flow, held 60 min with the move. All research gates passed; forward validation accumulating",
-      "conjClock": "Forward {n}/{gate} · accumulating",
+      "conjDesc": "Sweep × forced flow, held with the move. All research gates passed; forward validation stopped in 2026-09 and the clock is frozen at its last count",
+      "conjClock": "Forward {n}/{gate} · frozen",
       "onchainName": "On-chain quant",
       "onchainDesc": "Per-address positions, liquidation prices and real stop orders on perp DEXs — not published by centralised venues, and proxying them failed three times",
-      "onchainStat": "Recording · {markets} markets / {venues} venues · {cov}% covered"
+      "onchainStat": "Recording · {markets} markets / {venues} venues · {cov}% covered",
+      "frozen": "Frozen",
+      "v7Stat": "Strong win rate {wr}% (n={n}) · {trades} live trades",
+      "cancelStat": "Directional verdict: FAIL"
     },
     "table": {
       "time": "Time (UTC)",
@@ -485,7 +488,9 @@
       "pending": "pending",
       "hit": "hit",
       "miss": "miss"
-    }
+    },
+    "archivedBody": "The per-signal detail (direction, tier, confidence, regime, outcome) lived in a database retired in 2026-09 and was not preserved. The aggregate win rates, confidence intervals and live record remain on the track-record page.",
+    "archivedCta": "View track record"
   },
   "system": {
     "meta": {
@@ -496,7 +501,7 @@
   "trackRecordPage": {
     "meta": {
       "title": "Track record — flowbot",
-      "description": "Live signal and trade win rates with Wilson confidence intervals, and max drawdown from compounded closed-trade returns."
+      "description": "V7 signal and live-trade win rates with Wilson confidence intervals, and max drawdown from compounded closed-trade returns. Archived 2026-09."
     }
   },
   "incidentsPage": {
@@ -508,14 +513,14 @@
   "chartsPage": {
     "meta": {
       "title": "Strategies — flowbot",
-      "description": "Live chart output from the V7 signal engine and the cancel-flow indicator, straight off the same Railway services that run the real system."
+      "description": "Interactive charts for the V7 signal engine, liquidity raids, SDV and cancel flow — the last versions rendered on the research machine, archived 2026-09."
     },
     "enter": "Enter",
     "backToCharts": "Strategies",
     "v7": {
       "label": "V7 signal engine",
       "title": "4h prediction chart",
-      "body": "The same interactive chart the model renders for itself — confidence heatmap, regime strip, candles with Strong/Moderate direction triangles, and the magnitude panel. Zoom, pan, and hover the crosshair like any live chart.",
+      "body": "The same interactive chart the model renders for itself — confidence heatmap, regime strip, candles with Strong/Moderate direction triangles, and the magnitude panel, with zoom, pan and crosshair. This is a 2026-05 snapshot.",
       "kpi": {
         "direction": "Latest signal",
         "confidence": "Confidence",
@@ -536,8 +541,8 @@
       "expertNote": "Expert mode — price, cancellation asymmetry, and cancellation intensity as one interactive chart with synced zoom, pan, and crosshair.",
       "kpi": {
         "title": "Multicoin cancel-flow monitor",
-        "body": "Raw order-book add/cancel activity per coin, last 2h window — not a trading signal, edge is unverified pending the 2026-08-10 pre-registered test.",
-        "accumulating": "accumulating ({n} min)",
+        "body": "Cancel flow failed all three directional tests in its pre-registered 2026-08-10 verdict. The raw order-book data went offline with the database in 2026-09, so no live numbers are shown here.",
+        "accumulating": "frozen ({n} min)",
         "unavailable": "Stats temporarily unavailable.",
         "askDominant": "more sell-side cancels ({pct}%)",
         "bidDominant": "more buy-side cancels ({pct}%)"
@@ -559,7 +564,7 @@
         "wr": "Win rate",
         "open": "Open signals",
         "status": "Status",
-        "accumulating": "accumulating",
+        "accumulating": "frozen",
         "pass": "PASS",
         "unavailable": "Status temporarily unavailable",
         "fail": "FAIL",
@@ -603,7 +608,7 @@
       },
       "sweep": {
         "title": "Sweep failure — historical backtest viewer",
-        "note": "Status: historical backtest (rules frozen 2026-07-28). Forward validation is undecided — Gate F track A is still accumulating and its day-clustered CI still contains zero. This page shows backtest only. It is not a signal source and not a prediction of future results.",
+        "note": "Status: historical backtest (rules frozen 2026-07-28). Forward validation was never decided — Gate F track A stopped at its last count in 2026-09 and its day-clustered CI still contains zero. This page shows backtest only. It is not a signal source and not a prediction of future results.",
         "guideTitle": "How to read this chart",
         "guideMarks": "Dashed line = the swept level, drawn from the wick tip that created it to the sweep bar | arrow = the sweep | dot = the retest fill, drawn at the price including adverse slippage | square = the exit, drawn at the price implied by that trade's scored R (a trailing \"!\" means the disaster stop was hit). Yellow is buy-side liquidity (raid it, go short); violet is sell-side.",
         "guideTable": "Every row in the table is clickable — the chart jumps to that trade and draws the level, entry, stop and exit as four price lines, with a plain-language walkthrough above. \"Wait\" is hours from sweep to fill (capped at 8); \"held\" is hours from fill to exit (capped at 8).",

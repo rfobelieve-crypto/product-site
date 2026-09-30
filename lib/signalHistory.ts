@@ -12,13 +12,14 @@ export type SignalHistory = {
   disclaimer: string;
 };
 
-const HISTORY_URL =
-  process.env.SIGNAL_HISTORY_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/signal-history';
+// 2026-09-30: agent-mcp (Railway) is retired; the site is a static portfolio.
+// No env var -> null (its source table died with the MySQL; the UI hides the panel). Setting the env var restores the live fetch.
+const HISTORY_URL = process.env.SIGNAL_HISTORY_URL;
 
 /** Same discipline as lib/signalFeed.ts / lib/trackRecord.ts: server-only,
  * hard timeout, null on any failure. */
 export async function getSignalHistory(): Promise<SignalHistory | null> {
+  if (!HISTORY_URL) return null;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   try {

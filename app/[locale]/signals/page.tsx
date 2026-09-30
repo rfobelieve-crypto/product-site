@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
 import { Link } from '@/i18n/navigation';
-import { auth, signOut } from '@/auth';
 import { Nav } from '@/components/sections/Nav';
 import { Footer } from '@/components/sections/Footer';
 import { StrategyBoard } from '@/components/sections/StrategyBoard';
@@ -40,7 +39,6 @@ export default async function SignalsPage({
   const { locale } = await params;
   setRequestLocale(locale);
   const t = await getTranslations('signals');
-  const session = await auth().catch(() => null);
 
   return (
     <div className="relative min-h-screen">
@@ -59,36 +57,18 @@ export default async function SignalsPage({
               agent routes the charts use, so nothing gated leaks here. */}
           <StrategyBoard locale={locale} />
 
-          {!session ? (
-            <div className="glass-panel mt-10 max-w-md rounded-2xl border border-white/10 bg-ink/60 p-8 backdrop-blur-xl">
-              <p className="font-body text-sm leading-relaxed text-mist/60">{t('gatedBody')}</p>
-              <Link
-                href="/login"
-                className="mt-6 inline-block rounded-full bg-mist px-6 py-2.5 font-body text-sm font-medium text-void transition-opacity hover:opacity-85"
-              >
-                {t('signIn')}
-              </Link>
-            </div>
-          ) : (
-            <>
-              <div className="mt-6 flex items-center gap-3 font-body text-xs text-mist/50">
-                <span>
-                  {t('signedInAs', { email: session.user?.email ?? session.user?.name ?? '' })}
-                </span>
-                <form
-                  action={async () => {
-                    'use server';
-                    await signOut({ redirectTo: '/signals' });
-                  }}
-                >
-                  <button type="submit" className="text-iris-cyan/80 hover:text-iris-cyan">
-                    {t('signOut')}
-                  </button>
-                </form>
-              </div>
-              <SignalTable />
-            </>
-          )}
+          {/* 2026-09-30: the per-signal table was served (behind sign-in) from
+              the MySQL that was retired with Railway; it was not recoverable.
+              The aggregate numbers survive on /track-record. */}
+          <div className="glass-panel mt-10 max-w-md rounded-2xl border border-white/10 bg-ink/60 p-8 backdrop-blur-xl">
+            <p className="font-body text-sm leading-relaxed text-mist/60">{t('archivedBody')}</p>
+            <Link
+              href="/track-record"
+              className="mt-6 inline-block rounded-full bg-mist px-6 py-2.5 font-body text-sm font-medium text-void transition-opacity hover:opacity-85"
+            >
+              {t('archivedCta')}
+            </Link>
+          </div>
         </section>
       </main>
       <Footer />

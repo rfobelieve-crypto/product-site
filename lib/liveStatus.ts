@@ -1,3 +1,4 @@
+import ARCHIVE from '@/content/archive/live-status.json';
 export type LiveStatus = {
   open_position: {
     direction: string | null;
@@ -19,12 +20,13 @@ export type LiveStatus = {
   disclaimer: string;
 };
 
-const LIVE_STATUS_URL =
-  process.env.LIVE_STATUS_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/live-status';
+// 2026-09-30: agent-mcp (Railway) is retired; the site is a static portfolio.
+// No env var -> serve the frozen snapshot content/archive/live-status.json. Setting the env var restores the live fetch.
+const LIVE_STATUS_URL = process.env.LIVE_STATUS_URL;
 
 /** Server-only, null on any failure — same contract as lib/signalFeed.ts. */
 export async function getLiveStatus(): Promise<LiveStatus | null> {
+  if (!LIVE_STATUS_URL) return ARCHIVE as unknown as LiveStatus;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   try {

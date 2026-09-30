@@ -1,3 +1,4 @@
+import ARCHIVE from '@/content/archive/weather-station.json';
 export type WeatherGauge = {
   id: string;
   label_zh: string;
@@ -50,9 +51,9 @@ export type WeatherStation = {
   disclaimer: string;
 };
 
-const WEATHER_STATION_URL =
-  process.env.WEATHER_STATION_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/weather-station';
+// 2026-09-30: agent-mcp (Railway) is retired; the site is a static portfolio.
+// No env var -> serve the frozen snapshot content/archive/weather-station.json. Setting the env var restores the live fetch.
+const WEATHER_STATION_URL = process.env.WEATHER_STATION_URL;
 
 /**
  * Crowd-strategy weather station (survival layer, 2026-08-17). Which
@@ -62,6 +63,7 @@ const WEATHER_STATION_URL =
  * outage returns null, the card renders dashes, the page never throws.
  */
 export async function getWeatherStation(): Promise<WeatherStation | null> {
+  if (!WEATHER_STATION_URL) return ARCHIVE as unknown as WeatherStation;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   try {

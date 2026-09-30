@@ -3,13 +3,11 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useLocale, useTranslations } from 'next-intl';
-import { useSession, signOut } from 'next-auth/react';
 import { Link, usePathname } from '@/i18n/navigation';
 import { Logo } from './Logo';
 
 export function Nav() {
   const [open, setOpen] = useState(false);
-  const { data: session, status } = useSession();
   const t = useTranslations('nav');
   const locale = useLocale();
   const pathname = usePathname();
@@ -126,21 +124,7 @@ export function Nav() {
             {locale === 'en' ? '中' : 'EN'}
           </Link>
 
-          {status === 'authenticated' ? (
-            <button
-              onClick={() => signOut()}
-              className="flex-shrink-0 whitespace-nowrap rounded-full border border-white/15 px-4 py-2.5 font-body text-[13px] text-mist/80 transition-colors hover:border-white/30 hover:text-mist"
-            >
-              {session.user?.email?.split('@')[0] ?? 'Account'} · {t('signOut')}
-            </button>
-          ) : (
-            <Link
-              href="/login"
-              className="flex-shrink-0 whitespace-nowrap rounded-full bg-mist px-4 py-2.5 font-body text-[13px] font-medium text-void transition-opacity hover:opacity-85 sm:px-5"
-            >
-              {t('signIn')}
-            </Link>
-          )}
+          {/* 2026-09-30: sign-in removed — accounts lived in the retired MySQL. */}
         </motion.div>
       </div>
     </>

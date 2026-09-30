@@ -1,0 +1,26 @@
+{
+ "signal_layer": {
+  "n": 834,
+  "win_rate_pct": 59.1,
+  "ci95": [
+   55.7,
+   62.4
+  ],
+  "note": "Strong-tier tracked signals, 4h outcome"
+ },
+ "trade_layer": {
+  "n_closed": 21,
+  "win_rate_pct": 38.1,
+  "ci95": [
+   20.8,
+   59.1
+  ],
+  "note": "closed live OKX trades, net of costs"
+ },
+ "mdd_pct": -5.9,
+ "caveat": "signal accuracy != trading profit after costs/stops",
+ "disclaimer": "Informational and analytical output only. Not financial advice. Past performance does not guarantee future results.",
+ "_source": "archive",
+ "asof_utc": "2026-09-12",
+ "provenance": "Recovered 2026-09-30 from the Vercel ISR cache of a 2026-09-12 deployment; the source MySQL was retired."
+}

@@ -1,3 +1,4 @@
+import ARCHIVE from '@/content/archive/ops-board.json';
 // Operations board (2026-09-02). The schedule lived in four disconnected
 // places — Windows Task Scheduler, a .bat with a dozen publishers inside,
 // the freshness board, and a folder of monthly reports — so "is everything
@@ -50,13 +51,14 @@ export type OpsBoard = {
   disclaimer: string;
 };
 
-const OPS_URL =
-  process.env.OPS_BOARD_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/ops-board';
+// 2026-09-30: agent-mcp (Railway) is retired; the site is a static portfolio.
+// No env var -> serve the frozen snapshot content/archive/ops-board.json. Setting the env var restores the live fetch.
+const OPS_URL = process.env.OPS_BOARD_URL;
 
 /** Same degrade contract as every /public consumer: an outage returns null,
  *  the section renders nothing, the page never throws. */
 export async function getOpsBoard(): Promise<OpsBoard | null> {
+  if (!OPS_URL) return ARCHIVE as unknown as OpsBoard;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   try {

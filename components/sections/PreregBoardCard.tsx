@@ -24,8 +24,8 @@ import { getPreregBoard, preregProgress, type PreregOpen, type PreregSettled } f
 const L = {
   zh: {
     title: '研究進度看板',
-    subtitle: '每一條還沒判決的假設，以及它的時鐘走到哪',
-    open: '累積中',
+    subtitle: '每一條沒有判決的假設，以及它的時鐘在 2026-09 停下時走到哪',
+    open: '已凍結',
     settled: '已判決',
     unavailable: '資料暫不可用',
     updated: '更新',
@@ -37,8 +37,8 @@ const L = {
   },
   en: {
     title: 'Research Progress',
-    subtitle: 'Every undecided hypothesis and how far its clock has run',
-    open: 'accumulating',
+    subtitle: 'Every undecided hypothesis and how far its clock had run when it stopped in 2026-09',
+    open: 'frozen',
     settled: 'settled',
     unavailable: 'temporarily unavailable',
     updated: 'updated',

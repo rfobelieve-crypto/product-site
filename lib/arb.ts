@@ -1,3 +1,4 @@
+import ARCHIVE from '@/content/archive/arb-status.json';
 // §0.75 arbitrage family (2026-09-01). Line 4's public face used to be a
 // single progress bar for one pair, while seven recorders were running —
 // from outside the site the other six did not exist.
@@ -118,13 +119,14 @@ export type ArbStatus = {
   disclaimer: string;
 };
 
-const ARB_URL =
-  process.env.ARB_STATUS_URL ??
-  'https://agent-mcp-production-46d7.up.railway.app/public/arb-status';
+// 2026-09-30: agent-mcp (Railway) is retired; the site is a static portfolio.
+// No env var -> serve the frozen snapshot content/archive/arb-status.json. Setting the env var restores the live fetch.
+const ARB_URL = process.env.ARB_STATUS_URL;
 
 /** Same degrade contract as every /public consumer: an outage returns null,
  *  the section renders nothing, the page never throws. */
 export async function getArbStatus(): Promise<ArbStatus | null> {
+  if (!ARB_URL) return ARCHIVE as unknown as ArbStatus;
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), 4000);
   try {

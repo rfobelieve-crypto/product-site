@@ -1,0 +1,554 @@
+{
+ "asof_utc": "2026-09-30 10:00",
+ "jobs": [
+  {
+   "id": "shadow-train",
+   "name": "每小時班車",
+   "cadence": "每小時",
+   "what": "獵取記帳、天氣站、各看板 publisher、V7 veto 時鐘、套利判決與發布、訊號雜湊鏈",
+   "artifact": "sweep shadow log",
+   "cost": "停掉 = 所有前瞻記帳與看板同時凍結（2026-08-19 曾靜默 29 小時）",
+   "healthy": true,
+   "artifact_age_h": 0.2,
+   "artifacts_watched": 1
+  },
+  {
+   "id": "daily-collect",
+   "name": "每日資料收集",
+   "cadence": "每天 04:00",
+   "what": "Coinglass 生產線與研究線 parquet",
+   "artifact": "daily collect log",
+   "cost": "停掉 = 研究資料安靜腐爛（2026-07-05 曾指向已刪路徑 96 天）",
+   "healthy": true,
+   "artifact_age_h": 15.3,
+   "artifacts_watched": 1
+  },
+  {
+   "id": "freshness",
+   "name": "產物新鮮度看板",
+   "cadence": "每 6 小時",
+   "what": "26 條產物的年齡巡檢，紅燈推 Telegram",
+   "artifact": "freshness board",
+   "cost": "它是其他所有排程的守門員",
+   "healthy": true,
+   "artifact_age_h": 6.0,
+   "artifacts_watched": 1
+  },
+  {
+   "id": "portfolio-clocks",
+   "name": "組合時鐘週報",
+   "cadence": "每週一 09:30",
+   "what": "Gate B／Gate F／扳機／縮帆線／相關性預算",
+   "artifact": "portfolio clocks",
+   "cost": "停掉 = 判決日到了沒人知道",
+   "healthy": true,
+   "artifact_age_h": 9.7,
+   "artifacts_watched": 1
+  },
+  {
+   "id": "monthly-reval",
+   "name": "模型月度復驗",
+   "cadence": "每月 5 號 09:00",
+   "what": "AUC/IC 天花板、SNR 與洗牌 null、生產輸出水平漂移、regime 拆解、Strong 勝率",
+   "artifact": "revalidation report",
+   "cost": "模型刻度歪掉的唯一定期檢查（2026-08-08 漂了 3 個月）",
+   "healthy": true,
+   "artifact_age_h": 394.3,
+   "artifacts_watched": 1
+  },
+  {
+   "id": "arb-recorders",
+   "name": "套利錄價（七配對）",
+   "cadence": "連續",
+   "what": "兩場館逐分鐘盤口與資金費率",
+   "artifact": "arb recorder",
+   "cost": "靜默斷錄 = 整週資料白等",
+   "healthy": true,
+   "artifact_age_h": 0.0,
+   "artifacts_watched": 9
+  }
+ ],
+ "freshness": {
+  "asof_utc": "2026-09-21 11:20",
+  "rows": [
+   {
+    "name": "bat-train heartbeat",
+    "age_h": 0.2,
+    "max_h": 2.5,
+    "ok": true,
+    "note": "hourly train ran at all (29h outage family)"
+   },
+   {
+    "name": "sweep shadow log",
+    "age_h": 0.2,
+    "max_h": 2.5,
+    "ok": true,
+    "note": "frozen shadow accounting"
+   },
+   {
+    "name": "kline caches",
+    "age_h": 0.3,
+    "max_h": 3.5,
+    "ok": true,
+    "note": "stalest coin of the 29; feeds every regime instrument"
+   },
+   {
+    "name": "weather station row",
+    "age_h": null,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "site survival card upstream"
+   },
+   {
+    "name": "raid signals row (retired 09-20)",
+    "age_h": null,
+    "max_h": 87600,
+    "ok": false,
+    "note": "follow-bot signal surface；獵取舊線 09-07 結案，publisher 09-20 停用"
+   },
+   {
+    "name": "v7 veto clock row (retired 09-20)",
+    "age_h": null,
+    "max_h": 87600,
+    "ok": false,
+    "note": "site trigger countdown；地形扳機 09-04 結案（無效判決），publisher 09-20 停用"
+   },
+   {
+    "name": "raid outcomes row (retired 09-20)",
+    "age_h": null,
+    "max_h": 87600,
+    "ok": false,
+    "note": "skip-vs-taken scoring surface；與 raid signals 同一條死線，09-20 停用"
+   },
+   {
+    "name": "basis obs (§0.91)",
+    "age_h": null,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "Bitget in-venue basis recorder (hourly, on shadow_engine.bat)"
+   },
+   {
+    "name": "gex snapshots (§0.88d)",
+    "age_h": null,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "Deribit option OI+IV -> dealer gamma, hourly on shadow_engine.bat"
+   },
+   {
+    "name": "gex recorder flag (§0.88d)",
+    "age_h": 1.2,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "recorder self-report {ok, reason}; red = Deribit call or DB write failed"
+   },
+   {
+    "name": "v7 Q2 clock json (§0.60)",
+    "age_h": 41.2,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "每小時 shadow_engine.bat 的 v7_regime_q2_clock.py；紅 = 計分器停了"
+   },
+   {
+    "name": "sweep_forward gate json (Gate F)",
+    "age_h": 219.6,
+    "max_h": 864,
+    "ok": true,
+    "note": "每月 5 號 run_monthly_revalidation.cmd 的 sweep_forward.py；紅 = 月度沒跑"
+   },
+   {
+    "name": "conj clock flag (交會前瞻)",
+    "age_h": 13.8,
+    "max_h": 30.0,
+    "ok": false,
+    "note": "research/poc/conj_update.py 自報;紅 = 沒跑、抓取失敗、或資料 STALE"
+   },
+   {
+    "name": "conj watch flag (交會 shadow)",
+    "age_h": 0.0,
+    "max_h": 0.5,
+    "ok": false,
+    "note": "conj_watch.py 每分鐘自報;紅 = 排程沒跑、Binance 抓取失敗、或 DB 寫入失敗"
+   },
+   {
+    "name": "累積快照 (accum)",
+    "age_h": 42.2,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "accum_snapshot.py 每小時自報；紅 = 本支沒跑、或掃不到任何資料集。注意 ok 的語意是「儀器自己健康」不是「沒有洞」——洞在 hours_missing，那是被監測對象的事"
+   },
+   {
+    "name": "告警管道 (alert)",
+    "age_h": 6.0,
+    "max_h": 26.0,
+    "ok": true,
+    "note": "notify.py 每次投遞後自報；紅 = 沒有設定任何管道、或投遞失敗。管道是 Discord（主）與 Telegram（備），設定走 env 或 .env"
+   },
+   {
+    "name": "HMM 告警管道 (arb)",
+    "age_h": 4.9,
+    "max_h": 720.0,
+    "ok": true,
+    "note": "arb/ops/alert.py 每次投遞後自報；紅 = ARB_DISCORD_WEBHOOK_URL 沒設定、或最近一次沒送達 Discord（只靠 arb 的 Telegram 備援送達也算紅）"
+   },
+   {
+    "name": "HMM 看護存活 (arb)",
+    "age_h": 22.4,
+    "max_h": 0.5,
+    "ok": false,
+    "note": "arb/ops/hmm_watch.py 由排程 Arb_HmmWatch 每 5 分鐘跑一次並寫這個檔。紅 = 排程沒在跑。HMM 本身的告警（HALT、帳戶額度、裸曝險）由它自己送，本看板不重複報（2026-09-15 使用者：flowsystem 報 v7，arb 報 HMM）"
+   },
+   {
+    "name": "hl 單位驗證",
+    "age_h": 8.6,
+    "max_h": 26.0,
+    "ok": true,
+    "note": "hl_verify.py 每日自報十關；紅 = 名目與 |數量|x價格 不符、szDecimals 違反、成交量對不上交易所公布值、時間戳單位錯、現貨混進永續、或止損方向反了"
+   },
+   {
+    "name": "hl onchain recorder (moved to arb 09-21)",
+    "age_h": 41.8,
+    "max_h": 87600,
+    "ok": true,
+    "note": "hl_fuel_recorder.py 每小時自報；紅 = 覆蓋率掉到 1% 以下、清算價少於 100 筆、或幾何違反不為 0（多單清算價必在現價之下）。**2026-09-15 起錄製器在 Railway**（服務 hl-record），這個檔是拉回來的，而拉取保留遠端 mtime —— 所以雲端錄製器停了這一列照樣會紅，不會被「拉取還在跑」蓋住"
+   },
+   {
+    "name": "hl onchain 拉取 (moved to arb 09-21)",
+    "age_h": 8.6,
+    "max_h": 87600,
+    "ok": false,
+    "note": "hl_record_pull.py 每小時 :45 自報；紅 = 連不到 hl-record、token 錯、或有檔案拉取失敗。搬上雲的理由：本機錄製器跟 HMM 引擎的 HL 腿共用 IP 限流。**2026-09-20 起紅是因為服務被移除**"
+   },
+   {
+    "name": "hl mid/queue",
+    "age_h": 0.0,
+    "max_h": 0.6,
+    "ok": true,
+    "note": "hl_mid.py 常駐自報；紅 = 行程死了或 WS 卡住。宇宙是量能前 40 名（98.3% 的日成交額）。2026-09-15 起錄製器在 arb/recorders/，重啟由 arb/ops/recorder_watchdog.ps1 負責"
+   },
+   {
+    "name": "hl trade tape",
+    "age_h": 0.1,
+    "max_h": 0.6,
+    "ok": true,
+    "note": "hl_tape.py 常駐自報；紅 = 行程死了或卡在 WS 讀取上。2026-09-15 起在 arb/recorders/，重啟由 arb/ops/recorder_watchdog.ps1 負責（每 5 分鐘，60 分鐘內最多 3 次），所以這一列紅超過一輪代表**重啟也失敗**，不只是剛好死掉"
+   },
+   {
+    "name": "lighter trade tape",
+    "age_h": 0.0,
+    "max_h": 0.6,
+    "ok": true,
+    "note": "lighter_tape.py 常駐自報；紅 = 行程死了或卡在 WS 讀取上。宇宙是永續日成交額前 80 名（99.7% 的成交額，量測出來的）；2026-09-15 起在 arb/recorders/，重啟由 arb/ops/recorder_watchdog.ps1 負責"
+   },
+   {
+    "name": "lighter mid/depth",
+    "age_h": 0.0,
+    "max_h": 0.6,
+    "ok": true,
+    "note": "lighter_mid.py 常駐自報；紅 = 行程死了、WS 卡住、或所有市場都沒簿口。宇宙與 lighter_tape 同一組（永續前 80，刻意相同才 join 得起來）。2026-09-15 起在 arb/recorders/"
+   },
+   {
+    "name": "product live fills",
+    "age_h": 63.3,
+    "max_h": 26.0,
+    "ok": false,
+    "note": "check_product_fills.py 每日自報；量的是**宣告與實際的落差**：宣告在跑卻沉默 >72h -> 紅；宣告停用卻有成交 -> 紅。宣告在 research/product_expected.json（進版控，可稽核）"
+   },
+   {
+    "name": "research data manifest",
+    "age_h": 15.3,
+    "max_h": 26.0,
+    "ok": true,
+    "note": "data_manifest.py 每日自報；紅 = 凍結資料被動過、或 append 資料的頭部被吃掉"
+   },
+   {
+    "name": "scheduled task refs",
+    "age_h": 15.3,
+    "max_h": 26.0,
+    "ok": true,
+    "note": "check_schedules.py 每日自報；紅 = 排程引用的檔案不見了，或在 repo 內卻沒被追蹤"
+   },
+   {
+    "name": "research guards (回歸測試)",
+    "age_h": 15.3,
+    "max_h": 26.0,
+    "ok": true,
+    "note": "research/run_guards.py 每日自報；紅 = 回歸測試有失敗、或一個都沒跑起來"
+   },
+   {
+    "name": "liq recorder flag (路徑C)",
+    "age_h": 41.1,
+    "max_h": 1.0,
+    "ok": false,
+    "note": "OKX+Bybit 強平推送錄製器自報；紅 = WS 斷或 DB 寫入失敗"
+   },
+   {
+    "name": "lighter recorder flag (路徑A, retired 09-21)",
+    "age_h": 8.3,
+    "max_h": 87600,
+    "ok": true,
+    "note": "路徑 A 前提已推翻，錄製器 09-21 停用；復活要同時還原 watchdog $Jobs 那行與本列門檻 1.0"
+   },
+   {
+    "name": "v7 export pipe (§0.81)",
+    "age_h": 1.2,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "product-side /export/v7 reachable AND configured (not: has rows)"
+   },
+   {
+    "name": "ops board row",
+    "age_h": null,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "operations surface (schedule + revalidation history) for the site"
+   },
+   {
+    "name": "arb status row",
+    "age_h": null,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "§0.75 family surface for the site (off-cloud recorder -> DB -> agent)"
+   },
+   {
+    "name": "prereg board row",
+    "age_h": null,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "site research-progress board; a frozen board reads as 'no progress'"
+   },
+   {
+    "name": "degradation guard",
+    "age_h": null,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "§0.85 guard ran this cycle (not just: state last changed)"
+   },
+   {
+    "name": "indicator bars",
+    "age_h": null,
+    "max_h": 2.5,
+    "ok": false,
+    "note": "V7 inference alive (the honest liveness witness)"
+   },
+   {
+    "name": "okx balance snapshots (retired 09-06)",
+    "age_h": null,
+    "max_h": 87600,
+    "ok": false,
+    "note": "OKX 帳戶 08-18 起 $0、executor 09-05 DEMOTED；入金重啟後把門檻改回 1.5h"
+   },
+   {
+    "name": "cloud train parity (retired 09-20)",
+    "age_h": null,
+    "max_h": 87600,
+    "ok": false,
+    "note": "cloud_train 服務退役；本機 shadow_engine 才是 authority，對照已無對象"
+   },
+   {
+    "name": "arb universe recorder (§1.25)",
+    "age_h": 0.0,
+    "max_h": 0.6,
+    "ok": true,
+    "note": "record_universe.py 常駐自報（150 個配對、264 個訂閱、三條 WS）。ok 的語意是「連得上且設定對」不是「有資料」——啟動那一瞬間就寫 ok=True，否則看門狗會殺掉剛起來的行程（mistake.md 2026-09-11）。重啟由 ../arb/ops/arb_watchdog.ps1 負責"
+   },
+   {
+    "name": "arb recorder (§0.75)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "two-venue premium recording; silence = the week of data quietly stops"
+   },
+   {
+    "name": "arb recorder NBIS (§0.75)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "§0.75 family 2026-08-30: io:NBIS vs lighter"
+   },
+   {
+    "name": "arb recorder ANTH (§0.75)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "§0.75 family 2026-08-30: io:ANTH vs lighter-rh ANTHROPIC"
+   },
+   {
+    "name": "arb recorder BTC (§0.75)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "§0.75 family 2026-08-30: CONTROL pair — band must stay ~0"
+   },
+   {
+    "name": "arb recorder ZEC (§0.75)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "§0.75 family 2026-08-30: HL vs lighter-rh, thin"
+   },
+   {
+    "name": "arb recorder NEAR (§0.75)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "§0.75 family 2026-08-30: HL vs lighter-rh, thin"
+   },
+   {
+    "name": "arb recorder HYPE (§0.75)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "§0.75 family 2026-09-01: largest funding gap in the snapshot"
+   },
+   {
+    "name": "arb recorder GOLD_LL (§1.02)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "zero-fee control: lighter XAU vs lighter-rh XAU"
+   },
+   {
+    "name": "arb recorder NVDA_LL (§1.02)",
+    "age_h": 0.0,
+    "max_h": 1.0,
+    "ok": true,
+    "note": "zero-fee control: lighter NVDA vs lighter-rh NVDA"
+   },
+   {
+    "name": "arb scanner (§0.75b)",
+    "age_h": 0.1,
+    "max_h": 0.5,
+    "ok": true,
+    "note": "跨場館 REST 掃描器。**2026-09-13 起它跑在 Railway 上**，本機這些檔是拉回來的（檔名帶 _rw，見 ../arb/tools/scan_pull.py）。搬家的理由是per-IP 的 WAF 預算：掃描器一支 65 次/分，是十支引擎合計的十六倍，而被擋住的是**引擎的重連**，那時引擎手上有部位（docs/DEPLOY.md §6）。節奏同時從 180 秒放寬到 600 秒 —— §1.39 量到這支掃描器自己的腿差就有53 秒，所以 180 秒的格本來就比它能分辨的細。**這一列答的是「本機有沒有收到新資料」**，斷掉的原因看下一列"
+   },
+   {
+    "name": "arb 掃描器拉取 (Railway)",
+    "age_h": 0.0,
+    "max_h": 0.3,
+    "ok": true,
+    "note": "每 5 分鐘由 arb_watchdog.ps1 拉一次 Railway 掃描器的產物。**判準是本機的位元組有沒有在長，不是遠端有沒有回 200** —— Railway 活著而拉取斷了的話，本機資料會靜靜地停在昨天，而十個消費者一個都不會報錯（mistake.md 2026-08-29：計數類的下游對這種病的反應不是壞掉，是從零重數）。旗標每一輪都寫，所以 mtime 變舊本身就是拉取沒在跑。reason 會說拉了幾個位元組、或遠端讀不到"
+   },
+   {
+    "name": "coinglass parquet CONTENT",
+    "age_h": 31.4,
+    "max_h": 48.0,
+    "ok": true,
+    "note": "last DATA row age of the stalest CG parquet — mtime lies in an outage"
+   },
+   {
+    "name": "coinglass parquets",
+    "age_h": 15.3,
+    "max_h": 48.0,
+    "ok": true,
+    "note": "STALE-DATA guard threshold; stalest file reported"
+   },
+   {
+    "name": "daily collect log",
+    "age_h": 15.3,
+    "max_h": 30.0,
+    "ok": true,
+    "note": "04:00 daily task heartbeat"
+   },
+   {
+    "name": "freshness board self",
+    "age_h": 6.0,
+    "max_h": 7.0,
+    "ok": true,
+    "note": "the board's own 6-hourly run — nothing else watches the watchman"
+   },
+   {
+    "name": "revalidation report",
+    "age_h": 394.3,
+    "max_h": 840.0,
+    "ok": true,
+    "note": "monthly model revalidation actually produced a report"
+   },
+   {
+    "name": "portfolio clocks",
+    "age_h": 9.7,
+    "max_h": 195.0,
+    "ok": true,
+    "note": "Monday 09:30 weekly report ran (8d + slack)"
+   },
+   {
+    "name": "tracked signals",
+    "age_h": null,
+    "max_h": 336.0,
+    "ok": false,
+    "note": ">=14d without ANY signal = decode locked again (TODO rule 7)"
+   }
+  ],
+  "reds": [
+   "weather station row",
+   "raid signals row (retired 09-20)",
+   "v7 veto clock row (retired 09-20)",
+   "raid outcomes row (retired 09-20)",
+   "basis obs (§0.91)",
+   "gex snapshots (§0.88d)",
+   "gex recorder flag (§0.88d)",
+   "v7 Q2 clock json (§0.60)",
+   "conj clock flag (交會前瞻)",
+   "conj watch flag (交會 shadow)",
+   "累積快照 (accum)",
+   "HMM 看護存活 (arb)",
+   "hl onchain 拉取 (moved to arb 09-21)",
+   "product live fills",
+   "liq recorder flag (路徑C)",
+   "v7 export pipe (§0.81)",
+   "ops board row",
+   "arb status row",
+   "prereg board row",
+   "degradation guard",
+   "indicator bars",
+   "okx balance snapshots (retired 09-06)",
+   "cloud train parity (retired 09-20)",
+   "tracked signals"
+  ]
+ },
+ "revalidations": [
+  {
+   "date": "2026-09-05",
+   "verdict": "PASS",
+   "summary": "edge is where it was; no structural drift detected. Keep running; re-check next quarter.",
+   "auc": 0.5866,
+   "ic": 0.1395,
+   "snr_spearman_pct": null,
+   "stale_guard_hit": false,
+   "push_failed": false
+  },
+  {
+   "date": "2026-08-05",
+   "verdict": "PASS",
+   "summary": "edge is where it was; no structural drift detected. Keep running; re-check next quarter.",
+   "auc": 0.5848,
+   "ic": 0.1377,
+   "snr_spearman_pct": null,
+   "stale_guard_hit": false,
+   "push_failed": false
+  },
+  {
+   "date": "2026-07-05",
+   "verdict": "PASS",
+   "summary": "edge is where it was; no structural drift detected. Keep running; re-check next quarter.",
+   "auc": 0.5988,
+   "ic": 0.1769,
+   "snr_spearman_pct": null,
+   "stale_guard_hit": false,
+   "push_failed": false
+  },
+  {
+   "date": "2026-06-09",
+   "verdict": "PASS",
+   "summary": "edge is where it was; no structural drift detected. Keep running; re-check next quarter.",
+   "auc": 0.5868,
+   "ic": 0.1639,
+   "snr_spearman_pct": null,
+   "stale_guard_hit": false,
+   "push_failed": false
+  }
+ ],
+ "principle": "排程是否活著，一律以**產物的新鮮度**判斷，不看排程面板的狀態燈——面板顯示的是「有沒有被觸發」，不是「有沒有做完事」。每一次月度復驗的判決都留在這裡，包含資料過期而拒絕判決的那些。",
+ "disclaimer": "Operational record — research status only, not a live strategy, not financial advice.",
+ "published_utc": "2026-09-30T10:00:49Z",
+ "_source": "archive"
+}

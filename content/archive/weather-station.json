@@ -1,0 +1,95 @@
+{
+ "updated_utc": "2026-09-30 10:00:51",
+ "gauges": [
+  {
+   "id": "adx",
+   "label_zh": "ADX 市場狀態",
+   "label_en": "ADX regime",
+   "value": "RANGING",
+   "detail": "TRENDING 0/9 coins",
+   "tier": "verified-2",
+   "note_zh": "盤整=獵取順風",
+   "note_en": "ranging favors raids"
+  },
+  {
+   "id": "breakout",
+   "label_zh": "突破派",
+   "label_en": "Breakout crowd",
+   "value": "STARVED",
+   "detail": "PAID 6/9 coins",
+   "tier": "verified-1",
+   "note_zh": "挨餓=獵取順風",
+   "note_en": "starved favors raids"
+  },
+  {
+   "id": "psar",
+   "label_zh": "趨勢派 (PSAR)",
+   "label_en": "Trend crowd (PSAR)",
+   "value": "PAID",
+   "tier": "verified-1",
+   "note_zh": "盛宴=V7 逆風",
+   "note_en": "feasting is V7 headwind"
+  }
+ ],
+ "sensors": [
+  {
+   "id": "mr",
+   "label_zh": "回歸派",
+   "label_en": "Mean-reversion",
+   "value": "STARVED"
+  },
+  {
+   "id": "grid",
+   "label_zh": "網格",
+   "label_en": "Grid bots",
+   "value": "PAID"
+  },
+  {
+   "id": "funding",
+   "label_zh": "資金費率反向",
+   "label_en": "Funding contrarian",
+   "value": "DORMANT"
+  },
+  {
+   "id": "carry",
+   "label_zh": "carry 農夫",
+   "label_en": "Carry farmers",
+   "value": "THIN"
+  },
+  {
+   "id": "liq_bounce",
+   "label_zh": "清算搶反彈",
+   "label_en": "Liq-bounce hunters",
+   "value": "PAID"
+  }
+ ],
+ "reefing": {
+  "status": "preregistered",
+  "label_zh": "縮帆",
+  "label_en": "Reefing",
+  "note_zh": "不預測風暴，只在風大時收帆——風控研究線，未生效",
+  "note_en": "reduce sail when the wind is up; pre-registered, not live",
+  "vol_target_w_btc": 1.0,
+  "vol_target_w_core9": 0.896,
+  "adx_desize_now": "x1.0",
+  "mr_family_corr_60d": 0.38,
+  "clocks": [
+   {
+    "id": "adx_desize",
+    "label_zh": "ADX 減碼判決",
+    "due": "2026-09-16",
+    "days_left": 0
+   },
+   {
+    "id": "vol_target",
+    "label_zh": "vol targeting 判決",
+    "due": "2026-09-19",
+    "days_left": 0
+   }
+  ]
+ },
+ "cadence": "hourly",
+ "disclaimer": "Research display only. Not financial advice.",
+ "published_utc": "2026-09-30T10:00:49Z",
+ "_source": "archive"
+}
