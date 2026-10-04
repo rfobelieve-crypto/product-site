@@ -30,3 +30,8 @@ export const BACKTEST_CHART_URL = process.env.BACKTEST_CHART_URL ?? '/archive/sw
 
 export const CONJ_BACKTEST_CHART_URL =
   process.env.CONJ_BACKTEST_CHART_URL ?? '/archive/conj-backtest';
+
+// 2026-10-04: live regime board (TradingView Lightweight Charts), rebuilt
+// hourly on the research machine (arb/ops/regime_site.py) and committed to
+// public/archive/regime/ — the one chart on this site that is not a snapshot.
+export const REGIME_CHART_URL = process.env.REGIME_CHART_URL ?? '/archive/regime/index.html';

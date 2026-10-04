@@ -386,7 +386,8 @@
         "pdh_pdl": "prev-day",
         "pwh_pwl": "prev-week"
       }
-    }
+    },
+    "regimeSection": "Regime (hourly)"
   },
   "v7Filters": {
     "title": "V7 structural filters (verified · adoption countdown)",
@@ -623,6 +624,11 @@
       "standing": "**The signal logic stands**: six engine self-audit checks all pass (levels sit a median 2.305 ATR from price, pierce depth 0.525 ATR, no duplicate events), and the parameters are not curve-fitted (all 81 grid combinations positive, the frozen set ranks at the 51st percentile, and the first-half optimum loses to it out of sample). The problem is executability, not validity.",
       "pending": "Recomputed across four entry paths: frozen phantom price +0.0366, immediate market -0.0008, confirmed-reclaim -0.0495, resting limit -0.0504 (in R). The best after costs is -0.0293 R. **Every honest entry is negative and they cluster together** — no entry design rescues it, because the edge was never in the trade, it was in the accounting.",
       "clocks": "The three forward clocks (Gate F·A, §0.59, §0.474b E) measure the edge under the old entry price. Decision: let them finish as a historical record, not reopened, with conclusions applying only to an entry price now known to be unexecutable. The underlying phenomenon is not refuted — event-level measurement does not pass through the fill assumption and is under separate study."
+    },
+    "regime": {
+      "label": "REGIME",
+      "title": "Price × regime",
+      "body": "Hourly candles for 30 Binance perps; each coin's own 168h moving-average band ±0.5σ gives three states (green up / amber chop / red down, computed from the previous closed bar, no look-ahead). Arrows mark confirmed crossings; the lower pane is market breadth. Rebuilt every hour."
     }
   }
 }

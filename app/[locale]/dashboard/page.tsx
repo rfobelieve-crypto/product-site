@@ -17,6 +17,8 @@ import { Link } from '@/i18n/navigation';
 import { getLiveStatus } from '@/lib/liveStatus';
 import { getSweepStatus } from '@/lib/sweepStatus';
 import { pageAlternates } from '@/lib/seo';
+import { ChartDetail } from '@/components/sections/ChartDetail';
+import { REGIME_CHART_URL } from '@/lib/charts';
 
 export async function generateMetadata({
   params,
@@ -118,6 +120,15 @@ export default async function DashboardPage({
             strategy card can answer. */}
         <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
           <PreregBoardCard locale={locale} />
+        </section>
+
+        {/* 2026-10-04: the regime board is the only live (hourly) chart on the
+            site, so it sits first among the per-strategy sections. */}
+        <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">
+          <SectionHeader title={t('regimeSection')} href="/charts/regime" cta={t('detail')} />
+          <div className="mt-3">
+            <ChartDetail src={REGIME_CHART_URL} label={tc('regime.label')} title={tc('regime.title')} />
+          </div>
         </section>
 
         <section className="mx-auto mt-10 max-w-7xl px-4 sm:px-8">

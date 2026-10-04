@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-Hant" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Regime Board</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#f6f4ef;--panel:#fffdf8;--ink:#1b2733;--muted:#5f6b78;--line:#d9d4c7;--up:#1e8f6e;--chop:#d9a441;--down:#c23b4b;--ma:#6b7a8c;--accent:#1f5f8b;--grid:#ebe7dd;color-scheme:light}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131722;--panel:#1e222d;--ink:#d1d4dc;--muted:#8a94a6;--line:#2a2e39;--up:#26a69a;--chop:#e0b35a;--down:#ef5350;--ma:#9aa5b1;--accent:#6fb3e0;--grid:#232733;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#131722;--panel:#1e222d;--ink:#d1d4dc;--muted:#8a94a6;--line:#2a2e39;--up:#26a69a;--chop:#e0b35a;--down:#ef5350;--ma:#9aa5b1;--accent:#6fb3e0;--grid:#232733;color-scheme:dark}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:14px;padding-inline:12px;padding-block:8px 16px}
+.wrap{max-width:1600px;margin:0 auto;display:flex;flex-direction:column;gap:8px;height:100%}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+h1{font-size:18px;font-weight:600;margin:0}.sub{color:var(--muted);font-size:12px}
+.bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+select,button{font:inherit;font-size:13px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:4px 8px}
+button{cursor:pointer}button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
+button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:12px}
+.chip b{font-weight:500;color:var(--muted);margin-right:4px}
+.dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:-1px;margin-right:4px}
+#main{position:relative;flex:1 1 auto;min-height:380px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#breadth{height:140px;background:var(--panel);border:1px solid var(--line);border-radius:4px;position:relative}
+.legend{position:absolute;left:10px;top:8px;z-index:5;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);pointer-events:none;background:color-mix(in srgb,var(--panel) 80%,transparent);padding:3px 6px;border-radius:3px;line-height:1.5}
+.note{font-size:12px;color:var(--muted);line-height:1.5;max-width:80ch;margin:0}
+@media (max-width:600px){#main{min-height:300px}#breadth{height:110px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Regime Board</h1><span class="sub" id="sub">載入中…</span></header>
+  <div class="bar">
+    <select id="coin" aria-label="幣"></select>
+    <button type="button" data-days="3">3 天</button><button type="button" data-days="7" aria-pressed="true">7 天</button><button type="button" data-days="30">30 天</button><button type="button" data-days="75">全部</button>
+    <label style="font-size:12px;color:var(--muted)"><input type="checkbox" id="allx" checked> 顯示未確認穿越</label>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div id="main"><div class="legend" id="legend"></div></div>
+  <div id="breadth"><div class="legend" id="legend2">市場寬度：處於上漲態 ／ 下跌態的幣佔比（30 幣）</div></div>
+  <p class="note">狀態 = 168h 均線帶 ±0.5σ 三態，用前一小時收盤算，沒有前瞻；底色 綠上漲／黃震盪／紅下跌。▲▼ 確認穿越（成交量 z≥1 且離均線 ≥0.6σ）；BTC 的 ◆ 是強平確認（Coinglass，供應商資料）、頂部黃條是 F 窗（上一小時強平 >p95）。資料：幣安 USDT 永續 1h，每小時更新。</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const hex = (h, a) => { const c = h.replace('#', ''); const n = parseInt(c.length === 3 ? c.split('').map(x => x + x).join('') : c, 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; };
+let DATA, coin, days = 7, main, bd, cs, maS, upS, loS, bgS, fS, upB, dnB;
+const LAB = { '-1': '下跌', '0': '震盪', '1': '上漲' }, COL = () => ({ '-1': css('--down'), '0': css('--chop'), '1': css('--up') });
+function mkChart(el, opts) {
+  return LightweightCharts.createChart(el, Object.assign({ layout: { background: { type: 'solid', color: css('--panel') }, textColor: css('--ink'), fontFamily: 'IBM Plex Mono, ui-monospace, monospace', fontSize: 11 }, grid: { vertLines: { color: css('--grid') }, horzLines: { color: css('--grid') } }, crosshair: { mode: 0 }, rightPriceScale: { borderColor: css('--line') }, timeScale: { borderColor: css('--line'), timeVisible: true, secondsVisible: false }, autoSize: true }, opts || {}));
+}
+function init() {
+  main = mkChart(document.getElementById('main')); bd = mkChart(document.getElementById('breadth'), { rightPriceScale: { scaleMargins: { top: 0.05, bottom: 0.05 } } });
+  bgS = main.addHistogramSeries({ priceScaleId: 'bg', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false }); main.priceScale('bg').applyOptions({ scaleMargins: { top: 0, bottom: 0 }, visible: false });
+  fS = main.addHistogramSeries({ priceScaleId: 'f', lastValueVisible: false, priceLineVisible: false }); main.priceScale('f').applyOptions({ scaleMargins: { top: 0, bottom: 0.96 }, visible: false });
+  upS = main.addLineSeries({ color: css('--ma'), lineWidth: 1, lineStyle: 2, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
+  loS = main.addLineSeries({ color: css('--ma'), lineWidth: 1, lineStyle: 2, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
+  maS = main.addLineSeries({ color: css('--ma'), lineWidth: 1, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
+  cs = main.addCandlestickSeries({ upColor: css('--up'), downColor: css('--down'), borderVisible: false, wickUpColor: css('--up'), wickDownColor: css('--down') });
+  upB = bd.addHistogramSeries({ color: hex(css('--up'), 0.7), priceFormat: { type: 'percent' }, lastValueVisible: false, priceLineVisible: false }); dnB = bd.addHistogramSeries({ color: hex(css('--down'), 0.7), priceFormat: { type: 'percent' }, lastValueVisible: false, priceLineVisible: false });
+  // 兩張圖時間軸同步
+  let lock = false; const sync = (a, b) => a.timeScale().subscribeVisibleLogicalRangeChange(r => { if (lock || !r) return; lock = true; b.timeScale().setVisibleLogicalRange(r); lock = false; }); sync(main, bd); sync(bd, main);
+  main.subscribeCrosshairMove(p => legend(p)); bd.subscribeCrosshairMove(p => { if (p && p.time) main.setCrosshairPosition(0, p.time, cs); });
+}
+function legend(p) {
+  const d = DATA.coins[coin]; let i = (p && p.time) ? Math.round((p.time - DATA.t0) / 3600) : DATA.n - 1; if (i < 0 || i >= DATA.n || d.px[i] == null) i = DATA.n - 1;
+  const t = new Date((DATA.t0 + i * 3600) * 1000); const s = d.s[i]; const f = DATA.f_hours && DATA.f_hours[i];
+  const fmt = v => v == null ? '—' : (v >= 100 ? v.toFixed(1) : v >= 1 ? v.toFixed(3) : v.toPrecision(4));
+  document.getElementById('legend').innerHTML = `<span style="color:${COL()[String(s)]}">●</span> ${coin}USDT · ${t.toISOString().slice(5, 16).replace('T', ' ')} UTC · O ${fmt(d.o[i])} H ${fmt(d.h[i])} L ${fmt(d.l[i])} C ${fmt(d.px[i])} · 均線 ${fmt(d.ma[i])} · <b>${LAB[String(s)] || '—'}</b>${coin === 'BTC' && f ? ' · <span style="color:' + css('--chop') + '">F 窗</span>' : ''}`;
+  const b = DATA.breadth; document.getElementById('legend2').textContent = `市場寬度 ${t.toISOString().slice(5, 16).replace('T', ' ')} UTC：上漲態 ${b.up[i] == null ? '—' : (100 * b.up[i]).toFixed(0) + '%'} ／ 下跌態 ${b.down[i] == null ? '—' : (100 * b.down[i]).toFixed(0) + '%'}（${b.n[i]} 幣）`;
+}
+function chips() {
+  const d = DATA.coins[coin], nw = d.now, pct = x => x == null ? '—' : (100 * x).toFixed(0) + '%'; const c = COL();
+  const items = [`<span class="dot" style="background:${c[String(nw.state)]}"></span>現在 <b></b>${LAB[String(nw.state)] || '—'} · 已 ${nw.hours} h`, `<b>離均線</b>${nw.dist == null ? '—' : (nw.dist > 0 ? '+' : '') + nw.dist + 'σ'}`, `<b>成交量 z</b>${nw.vz == null ? '—' : nw.vz}`, `<b>75 天穿越</b>${d.n_cross}（確認 ${d.n_conf}）`, `<b>6h 存活</b>全部 ${pct(d.surv_all)} · 確認 ${pct(d.surv_conf)}`];
+  if (coin === 'BTC' && DATA.f_last && DATA.f_last.ok) { const g = DATA.f_last; items.push(`<span class="dot" style="background:${g.F ? css('--chop') : css('--line')}"></span><b>F 窗</b>${g.F ? '開 · 只掛 ' + (g.side === 'BUY' ? 'bid' : g.side === 'SELL' ? 'ask' : '兩側') : '關'} · 上一小時強平 $${(g.liq_usd / 1e3).toFixed(0)}k p${(100 * g.p1).toFixed(0)}${g.confirmed ? ' · ★ 強平確認的切換' : ''}`); }
+  document.getElementById('chips').innerHTML = items.map(x => `<span class="chip">${x}</span>`).join('');
+}
+function draw() {
+  const d = DATA.coins[coin], n = DATA.n, T = i => DATA.t0 + i * 3600, c = COL();
+  const rows = []; for (let i = 0; i < n; i++) if (d.px[i] != null && d.o[i] != null) rows.push({ time: T(i), open: d.o[i], high: d.h[i], low: d.l[i], close: d.px[i] });
+  cs.setData(rows);
+  const line = arr => { const o = []; for (let i = 0; i < n; i++) if (arr[i] != null) o.push({ time: T(i), value: arr[i] }); return o; };
+  maS.setData(line(d.ma)); upS.setData(line(d.ma.map((m, i) => m == null || d.sig[i] == null ? null : m * Math.exp(0.5 * d.sig[i])))); loS.setData(line(d.ma.map((m, i) => m == null || d.sig[i] == null ? null : m * Math.exp(-0.5 * d.sig[i]))));
+  const bg = []; for (let i = 0; i < n; i++) if (d.s[i] != null) bg.push({ time: T(i), value: 1, color: hex(c[String(d.s[i])], 0.16) }); bgS.setData(bg);
+  const f = []; if (coin === 'BTC' && DATA.f_hours) for (let i = 0; i < n; i++) if (DATA.f_hours[i]) f.push({ time: T(i), value: 1, color: hex(css('--chop'), 0.9) }); fS.setData(f);
+  const showAll = document.getElementById('allx').checked; const mk = [];
+  d.ev.forEach(e => { const up = e[1] > 0; if (e[4]) mk.push({ time: T(e[0]), position: up ? 'belowBar' : 'aboveBar', shape: 'square', color: css('--accent'), size: 1, text: '強平確認' }); if (e[2]) mk.push({ time: T(e[0]), position: up ? 'belowBar' : 'aboveBar', shape: up ? 'arrowUp' : 'arrowDown', color: up ? c['1'] : c['-1'], size: 2, text: up ? '確認↑' : '確認↓' }); else if (showAll) mk.push({ time: T(e[0]), position: up ? 'belowBar' : 'aboveBar', shape: 'circle', color: up ? c['1'] : c['-1'], size: 0 }); });
+  mk.sort((a, b) => a.time - b.time); cs.setMarkers(mk);
+  const b = DATA.breadth; upB.setData(line(b.up.map(v => v == null ? null : 100 * v))); dnB.setData(line(b.down.map(v => v == null ? null : -100 * v)));
+  setRange(); chips(); legend(null);
+}
+function setRange() { const n = DATA.n, bars = Math.min(n, days * 24); main.timeScale().setVisibleLogicalRange({ from: n - bars - 2, to: n + 3 }); }
+async function boot() {
+  const r = await fetch('data.json', { cache: 'no-store' }); DATA = await r.json();
+  const sel = document.getElementById('coin'); DATA.order.forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = k; sel.appendChild(o); });
+  coin = DATA.order[0]; try { const s = localStorage.getItem('regime_board_coin'); if (s && DATA.coins[s]) coin = s; } catch (e) {} sel.value = coin;
+  document.getElementById('sub').textContent = `${DATA.order.length} 個幣安加密永續 · 最後一根 ${DATA.last_bar} · 更新 ${DATA.built}` + (Object.keys(DATA.errors || {}).length ? ` · 缺 ${Object.keys(DATA.errors).join(',')}` : '');
+  init(); draw();
+  sel.addEventListener('change', () => { coin = sel.value; try { localStorage.setItem('regime_board_coin', coin); } catch (e) {} draw(); });
+  document.querySelectorAll('button[data-days]').forEach(b => b.addEventListener('click', () => { days = +b.dataset.days; document.querySelectorAll('button[data-days]').forEach(o => o.setAttribute('aria-pressed', o === b ? 'true' : 'false')); setRange(); }));
+  document.getElementById('allx').addEventListener('change', draw);
+  setInterval(async () => { try { const r2 = await fetch('data.json', { cache: 'no-store' }); const d2 = await r2.json(); if (d2.built !== DATA.built) { DATA = d2; draw(); document.getElementById('sub').textContent = `${DATA.order.length} 個幣安加密永續 · 最後一根 ${DATA.last_bar} · 更新 ${DATA.built}`; } } catch (e) {} }, 5 * 60 * 1000);
+}
+boot().catch(e => { document.getElementById('sub').textContent = '載入失敗：' + e; });
+</script>
+</body>
+</html>
