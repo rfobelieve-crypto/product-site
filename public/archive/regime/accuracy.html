@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-Hant" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Regime Accuracy</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#131722;--panel:#1e222d;--ink:#d1d4dc;--muted:#8a94a6;--line:#2a2e39;--up:#26a69a;--chop:#e0b35a;--down:#ef5350;--accent:#6fb3e0;--grid:#232733;color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:14px;padding-inline:12px;padding-block:8px 16px}
+.wrap{max-width:1600px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}h1{font-size:18px;font-weight:600;margin:0}.sub{color:var(--muted);font-size:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(420px,1fr));gap:10px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 12px;display:flex;flex-direction:column;gap:6px}
+.card h2{font-size:13px;font-weight:500;margin:0;color:var(--ink)}.card p{margin:0;font-size:12px;color:var(--muted);line-height:1.5}
+canvas{width:100%!important;height:230px!important}
+.kpis{display:flex;flex-wrap:wrap;gap:6px}.kpi{background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:12px}.kpi b{color:var(--muted);font-weight:500;margin-right:4px}
+@media (max-width:600px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Regime Accuracy</h1><span class="sub" id="sub">載入中…</span></header>
+  <div class="kpis" id="kpis"></div>
+  <div class="grid">
+    <div class="card"><h2>1. 延續準確率：h 小時後仍在同一態的機率</h2><canvas id="c1"></canvas><p>三態各一條；虛線＝隨機持久性 Σp²。趨勢態 6h 約 81%、24h 約 60%，約 35h 後跌破隨機。震盪態最黏。</p></div>
+    <div class="card"><h2>2. 切換後存活曲線：全部穿越 vs 強平確認</h2><canvas id="c2"></canvas><p>確認 = 穿越那小時幣安 BTC 強平 z≥1 且收盤離均線 ≥0.6σ。兩條線在每一小時都分開。</p></div>
+    <div class="card"><h2>3. 精確率、側別命中、召回：全年／前半／後半</h2><canvas id="c3"></canvas><p>召回 = 真正延續 ≥24h 的切換裡被確認到的比例；這是目前最弱的一環。</p></div>
+    <div class="card"><h2>4. 第二軸：24h 強平強度 × 趨勢態 24h 延續</h2><canvas id="c4"></canvas><p>切點 0.157／1.044 寫死。被清越多的趨勢越持久；震盪態沒有這個差。</p></div>
+    <div class="card"><h2>5. 趨勢態年齡 × 24h 延續</h2><canvas id="c5"></canvas><p>剛切換的態不可信，撐過一天的態才可信（存活分析：中位停留 3h、k≥24 後每 6h 翻掉 13–15%）。</p></div>
+    <div class="card"><h2>6. 延續／切換機率的校準（前半訓、後半測，五分位）</h2><canvas id="c6"></canvas><p>點落在對角線附近＝機率可信。p1 AUC、p2 AUC 見上方。</p></div>
+    <div class="card"><h2>7. 每一次穿越：強平 z × 離均線 σ（綠＝6h 存活）</h2><canvas id="c7"></canvas><p>右上角的確認區幾乎全綠，左半邊幾乎全紅：「強平大且走得遠」抓的是真東西。</p></div>
+  </div>
+  <p class="sub">歷史基線：幣安 BTC 1h ＋ Coinglass 強平（供應商資料，未獨立查證），2025-10-04 → 2026-10-04，樣本內。前向從 2026-10-04 起由記錄器累積，上方 KPI 的「前向」列每小時更新；確認切換累積 ≥30 次或 2027-01-15 讀（PREREG_REGIME_SCORECARD §B）。</p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
+<script>
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+Chart.defaults.color = css('--muted'); Chart.defaults.borderColor = css('--grid'); Chart.defaults.font.family = 'IBM Plex Mono, ui-monospace, monospace'; Chart.defaults.font.size = 11;
+const pct = { ticks: { callback: v => v + '%' } };
+async function boot() {
+  const [A, D] = await Promise.all([fetch('accuracy.json', { cache: 'no-store' }).then(r => r.json()), fetch('data.json', { cache: 'no-store' }).then(r => r.json()).catch(() => ({}))]);
+  document.getElementById('sub').textContent = `歷史基線 ${A.span[0]} → ${A.span[1]}（${A.n_hours} h，建於 ${A.built}）`;
+  const f = (D.score && D.score.forward) || {}; const fmt = v => v == null ? '—' : v + '%';
+  document.getElementById('kpis').innerHTML = [
+    `<span class="kpi"><b>確認切換</b>6h 存活 ${A.split[0].conf_surv6}% · 側別 ${A.split[0].conf_hit}% · n=${A.split[0].n_conf}</span>`, `<span class="kpi"><b>一般穿越</b>6h 存活 ${A.split[0].cross_surv6}% · n=${A.split[0].n_cross}</span>`,
+    `<span class="kpi"><b>召回</b>${A.split[0].recall}%</span>`, `<span class="kpi"><b>p1 AUC</b>${A.calibration.p1.auc}</span>`, `<span class="kpi"><b>p2 AUC</b>${A.calibration.p2.auc}</span>`,
+    `<span class="kpi"><b>前向（${f.since ? f.since.slice(0, 10) : '—'} 起 ${f.hours || 0} h）</b>趨勢態 24h 延續 ${fmt(f.persist_24h)}（${f.trend_hours_scored || 0} h） · 確認切換 ${f.conf_n || 0} 次存活 ${fmt(f.conf_surv6)} · 穿越 ${f.cross_n || 0} 次</span>`].join('');
+  const P = A.persistence;
+  new Chart(c1, { type: 'line', data: { labels: P.h, datasets: [{ label: `下跌（${P.share.down}%）`, data: P.down, borderColor: css('--down'), pointRadius: 0, borderWidth: 2 }, { label: `震盪（${P.share.chop}%）`, data: P.chop, borderColor: css('--chop'), pointRadius: 0, borderWidth: 2 }, { label: `上漲（${P.share.up}%）`, data: P.up, borderColor: css('--up'), pointRadius: 0, borderWidth: 2 }, { label: `隨機 Σp² ${P.baseline}%`, data: P.h.map(() => P.baseline), borderColor: css('--muted'), borderDash: [4, 4], pointRadius: 0, borderWidth: 1 }] }, options: { scales: { x: { title: { display: true, text: 'h 小時後' } }, y: { ...pct, min: 20, max: 100 } }, plugins: { legend: { position: 'bottom' } } } });
+  const S = A.survival;
+  new Chart(c2, { type: 'line', data: { labels: S.h, datasets: [{ label: `全部穿越 n=${S.n_all}`, data: S.all, borderColor: css('--muted'), pointRadius: 0, borderWidth: 2 }, { label: `強平確認 n=${S.n_conf}`, data: S.confirmed, borderColor: css('--accent'), pointRadius: 0, borderWidth: 2.5 }] }, options: { scales: { x: { title: { display: true, text: '切換後小時' } }, y: { ...pct, min: 0, max: 100 } }, plugins: { legend: { position: 'bottom' } } } });
+  new Chart(c3, { type: 'bar', data: { labels: A.split.map(r => `${r.label}（確認 n=${r.n_conf}）`), datasets: [{ label: '全部穿越 6h 存活', data: A.split.map(r => r.cross_surv6), backgroundColor: css('--muted') }, { label: '確認 6h 存活', data: A.split.map(r => r.conf_surv6), backgroundColor: css('--accent') }, { label: '確認 側別命中', data: A.split.map(r => r.conf_hit), backgroundColor: css('--up') }, { label: '召回', data: A.split.map(r => r.recall), backgroundColor: css('--chop') }] }, options: { scales: { y: { ...pct, min: 0, max: 100 } }, plugins: { legend: { position: 'bottom' } } } });
+  new Chart(c4, { type: 'bar', data: { labels: A.liq_tiers.map(t => `${t.tier}（n=${t.n}）`), datasets: [{ label: '趨勢態 24h 延續', data: A.liq_tiers.map(t => t.persist24), backgroundColor: [css('--muted'), css('--chop'), css('--up')] }] }, options: { scales: { y: { ...pct, min: 0, max: 100 } }, plugins: { legend: { display: false } } } });
+  new Chart(c5, { type: 'bar', data: { labels: A.age.map(t => `${t.age}（n=${t.n}）`), datasets: [{ label: '趨勢態 24h 延續', data: A.age.map(t => t.persist24), backgroundColor: css('--accent') }] }, options: { scales: { y: { ...pct, min: 0, max: 100 } }, plugins: { legend: { display: false } } } });
+  const C = A.calibration;
+  new Chart(c6, { type: 'scatter', data: { datasets: [{ label: `p1 延續（AUC ${C.p1.auc}）`, data: C.p1.pred.map((x, i) => ({ x, y: C.p1.actual[i] })), backgroundColor: css('--up'), pointRadius: 5 }, { label: `p2 切換（AUC ${C.p2.auc}）`, data: C.p2.pred.map((x, i) => ({ x, y: C.p2.actual[i] })), backgroundColor: css('--down'), pointRadius: 5 }, { label: '對角線', type: 'line', data: [{ x: 0, y: 0 }, { x: 100, y: 100 }], borderColor: css('--muted'), borderDash: [4, 4], pointRadius: 0, borderWidth: 1 }] }, options: { scales: { x: { title: { display: true, text: '預測 %' }, min: 0, max: 100 }, y: { title: { display: true, text: '實際 %' }, min: 0, max: 100 } }, plugins: { legend: { position: 'bottom' } } } });
+  new Chart(c7, { type: 'scatter', data: { datasets: [{ label: '6h 內翻回', data: A.scatter.filter(p => !p.ok).map(p => ({ x: p.lz, y: p.d })), backgroundColor: css('--down'), pointRadius: 3 }, { label: '6h 存活', data: A.scatter.filter(p => p.ok).map(p => ({ x: p.lz, y: p.d })), backgroundColor: css('--up'), pointRadius: 4 }] }, options: { scales: { x: { title: { display: true, text: '穿越小時強平 z' } }, y: { title: { display: true, text: '離均線 σ' } } }, plugins: { legend: { position: 'bottom' }, annotation: undefined } } });
+}
+boot().catch(e => { document.getElementById('sub').textContent = '載入失敗：' + e; });
+</script>
+</body>
+</html>
