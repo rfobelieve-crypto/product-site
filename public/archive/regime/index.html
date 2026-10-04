@@ -23,9 +23,11 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
 .dot{display:inline-block;width:9px;height:9px;border-radius:50%;vertical-align:-1px;margin-right:4px}
 #main{position:relative;flex:1 1 auto;min-height:380px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
 #breadth{height:140px;background:var(--panel);border:1px solid var(--line);border-radius:4px;position:relative}
+#liqpane,#probpane{height:150px;background:var(--panel);border:1px solid var(--line);border-radius:4px;position:relative}
+#cyclepane{height:170px;background:var(--panel);border:1px solid var(--line);border-radius:4px;position:relative}
 .legend{position:absolute;left:10px;top:8px;z-index:5;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;color:var(--ink);pointer-events:none;background:color-mix(in srgb,var(--panel) 80%,transparent);padding:3px 6px;border-radius:3px;line-height:1.5}
 .note{font-size:12px;color:var(--muted);line-height:1.5;max-width:80ch;margin:0}
-@media (max-width:600px){#main{min-height:300px}#breadth{height:110px}}
+@media (max-width:600px){#main{min-height:300px}#breadth{height:110px}#liqpane,#probpane{height:120px}#cyclepane{height:140px}}
 </style>
 </head>
 <body>
@@ -37,15 +39,19 @@ button:focus-visible,select:focus-visible{outline:2px solid var(--accent);outlin
     <label style="font-size:12px;color:var(--muted)"><input type="checkbox" id="allx" checked> 顯示未確認穿越</label>
   </div>
   <div class="chips" id="chips"></div>
+  <div class="chips" id="score" style="opacity:.92"></div>
   <div id="main"><div class="legend" id="legend"></div></div>
   <div id="breadth"><div class="legend" id="legend2">市場寬度：處於上漲態 ／ 下跌態的幣佔比（30 幣）</div></div>
+  <div id="liqpane" class="btconly"><div class="legend" id="legend3">BTC 強平（幣安，Coinglass）：紅＝多頭被清、綠＝空頭被清；線＝24h 強平強度 z（低 ≤0.157、高 >1.044）</div></div>
+  <div id="probpane" class="btconly"><div class="legend" id="legend4">延續機率（趨勢態，綠）／切換機率（震盪態，紅）：單變數邏輯迴歸(|離均線 σ|)，係數寫死（PREREG_REGIME_V3 §G.5）</div></div>
+  <div id="cyclepane" class="btconly"><div class="legend" id="legend5">週期層：MVRV 擴張窗 z（CoinMetrics 日頻，兩年）；±1 = 頂區／底區；只報不進狀態</div></div>
   <p class="note">狀態 = 168h 均線帶 ±0.5σ 三態，用前一小時收盤算，沒有前瞻；底色 綠上漲／黃震盪／紅下跌。▲▼ 確認穿越（成交量 z≥1 且離均線 ≥0.6σ）；BTC 的 ◆ 是強平確認（Coinglass，供應商資料）、頂部黃條是 F 窗（上一小時強平 >p95）；BTC 籌碼列的「強平強度 24h」是 regime 第二軸：被清越多的趨勢越持久（低／中／高 24h 延續 49／59／73%）。資料：幣安 USDT 永續 1h，每小時更新。週期層 MVRV 來自 CoinMetrics（日頻、免費），擴張窗均值 ±1σ 的 z，只報不進狀態（PREREG_MVRV_BAND §E）。</p>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
 <script>
 const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
 const hex = (h, a) => { const c = h.replace('#', ''); const n = parseInt(c.length === 3 ? c.split('').map(x => x + x).join('') : c, 16); return `rgba(${(n >> 16) & 255},${(n >> 8) & 255},${n & 255},${a})`; };
-let DATA, coin, days = 7, main, bd, cs, maS, upS, loS, bgS, fS, upB, dnB;
+let DATA, coin, days = 7, main, bd, lq, pb, cy, cs, maS, upS, loS, bgS, fS, upB, dnB, lqL, lqS, lqZ, p1S, p2S, cyZ;
 const LAB = { '-1': '下跌', '0': '震盪', '1': '上漲' }, COL = () => ({ '-1': css('--down'), '0': css('--chop'), '1': css('--up') });
 function mkChart(el, opts) {
   return LightweightCharts.createChart(el, Object.assign({ layout: { background: { type: 'solid', color: css('--panel') }, textColor: css('--ink'), fontFamily: 'IBM Plex Mono, ui-monospace, monospace', fontSize: 11 }, grid: { vertLines: { color: css('--grid') }, horzLines: { color: css('--grid') } }, crosshair: { mode: 0 }, rightPriceScale: { borderColor: css('--line') }, timeScale: { borderColor: css('--line'), timeVisible: true, secondsVisible: false }, autoSize: true }, opts || {}));
@@ -59,8 +65,15 @@ function init() {
   maS = main.addLineSeries({ color: css('--ma'), lineWidth: 1, lastValueVisible: false, priceLineVisible: false, crosshairMarkerVisible: false });
   cs = main.addCandlestickSeries({ upColor: css('--up'), downColor: css('--down'), borderVisible: false, wickUpColor: css('--up'), wickDownColor: css('--down') });
   upB = bd.addHistogramSeries({ color: hex(css('--up'), 0.7), priceFormat: { type: 'percent' }, lastValueVisible: false, priceLineVisible: false }); dnB = bd.addHistogramSeries({ color: hex(css('--down'), 0.7), priceFormat: { type: 'percent' }, lastValueVisible: false, priceLineVisible: false });
-  // 兩張圖時間軸同步
-  let lock = false; const sync = (a, b) => a.timeScale().subscribeVisibleLogicalRangeChange(r => { if (lock || !r) return; lock = true; b.timeScale().setVisibleLogicalRange(r); lock = false; }); sync(main, bd); sync(bd, main);
+  lq = mkChart(document.getElementById('liqpane')); pb = mkChart(document.getElementById('probpane'), { rightPriceScale: { scaleMargins: { top: 0.08, bottom: 0.08 } } }); cy = mkChart(document.getElementById('cyclepane'));
+  lqL = lq.addHistogramSeries({ color: hex(css('--down'), 0.75), priceScaleId: 'lq', lastValueVisible: false, priceLineVisible: false }); lqS = lq.addHistogramSeries({ color: hex(css('--up'), 0.75), priceScaleId: 'lq', lastValueVisible: false, priceLineVisible: false }); lq.priceScale('lq').applyOptions({ scaleMargins: { top: 0.1, bottom: 0 }, visible: false });
+  lqZ = lq.addLineSeries({ color: css('--chop'), lineWidth: 2, lastValueVisible: true, priceLineVisible: false }); lqZ.createPriceLine({ price: 0.157, color: css('--muted'), lineWidth: 1, lineStyle: 2, title: '低' }); lqZ.createPriceLine({ price: 1.044, color: css('--muted'), lineWidth: 1, lineStyle: 2, title: '高' });
+  p1S = pb.addLineSeries({ color: css('--up'), lineWidth: 2, lastValueVisible: true, priceLineVisible: false }); p2S = pb.addLineSeries({ color: css('--down'), lineWidth: 2, lastValueVisible: true, priceLineVisible: false });
+  p1S.createPriceLine({ price: 60, color: css('--muted'), lineWidth: 1, lineStyle: 2, title: '延續基準 60%' }); p2S.createPriceLine({ price: 36, color: css('--muted'), lineWidth: 1, lineStyle: 2, title: '切換基準 36%' });
+  cyZ = cy.addLineSeries({ color: css('--accent'), lineWidth: 2, lastValueVisible: true, priceLineVisible: false }); cyZ.createPriceLine({ price: 1, color: css('--down'), lineWidth: 1, lineStyle: 2, title: '+1σ 頂區' }); cyZ.createPriceLine({ price: -1, color: css('--up'), lineWidth: 1, lineStyle: 2, title: '−1σ 底區' }); cyZ.createPriceLine({ price: 0, color: css('--line'), lineWidth: 1, lineStyle: 0, title: '' });
+  // 四張小時圖時間軸同步（週期圖是日頻，不同步）
+  let lock = false; const sync = (a, b) => a.timeScale().subscribeVisibleLogicalRangeChange(r => { if (lock || !r) return; lock = true; b.timeScale().setVisibleLogicalRange(r); lock = false; });
+  const hourly = [main, bd, lq, pb]; hourly.forEach(a => hourly.forEach(b => { if (a !== b) sync(a, b); }));
   main.subscribeCrosshairMove(p => legend(p)); bd.subscribeCrosshairMove(p => { if (p && p.time) main.setCrosshairPosition(0, p.time, cs); });
 }
 function legend(p) {
@@ -68,7 +81,15 @@ function legend(p) {
   const t = new Date((DATA.t0 + i * 3600) * 1000); const s = d.s[i]; const f = DATA.f_hours && DATA.f_hours[i];
   const fmt = v => v == null ? '—' : (v >= 100 ? v.toFixed(1) : v >= 1 ? v.toFixed(3) : v.toPrecision(4));
   document.getElementById('legend').innerHTML = `<span style="color:${COL()[String(s)]}">●</span> ${coin}USDT · ${t.toISOString().slice(5, 16).replace('T', ' ')} UTC · O ${fmt(d.o[i])} H ${fmt(d.h[i])} L ${fmt(d.l[i])} C ${fmt(d.px[i])} · 均線 ${fmt(d.ma[i])} · <b>${LAB[String(s)] || '—'}</b>${coin === 'BTC' && f ? ' · <span style="color:' + css('--chop') + '">F 窗</span>' : ''}`;
+  if (coin === 'BTC' && DATA.liq && DATA.liq.long) { const L = DATA.liq; const z = L.liq24_z[i]; document.getElementById('legend3').textContent = `BTC 強平 ${t.toISOString().slice(5, 16).replace('T', ' ')} UTC：多頭被清 $${L.long[i] == null ? '—' : (L.long[i] / 1e6).toFixed(2)}M ／ 空頭被清 $${L.short[i] == null ? '—' : (L.short[i] / 1e6).toFixed(2)}M ／ 24h 強度 z ${z == null ? '—' : (z > 0 ? '+' : '') + z.toFixed(2)}（${z == null ? '—' : z <= 0.157 ? '低' : z <= 1.044 ? '中' : '高'}）`; }
   const b = DATA.breadth; document.getElementById('legend2').textContent = `市場寬度 ${t.toISOString().slice(5, 16).replace('T', ' ')} UTC：上漲態 ${b.up[i] == null ? '—' : (100 * b.up[i]).toFixed(0) + '%'} ／ 下跌態 ${b.down[i] == null ? '—' : (100 * b.down[i]).toFixed(0) + '%'}（${b.n[i]} 幣）`;
+}
+function scoreRow() {
+  const sc = DATA.score; const el = document.getElementById('score'); if (!sc || coin !== 'BTC') { el.innerHTML = ''; return; }
+  const b = sc.baseline, f = sc.forward || {}; const fmt = v => v == null ? '—' : v + '%';
+  const items = [`<b>準確率 · 歷史基線</b>趨勢態延續 6h ${b.persist_6h}% / 24h ${b.persist_24h}% · 確認切換 6h 存活 ${b.conf_surv6}%（n=${b.conf_n}）側別 ${b.conf_hit}% · 一般穿越 ${b.cross_surv6}% · 召回 ${b.recall}% · 強平低/中/高 ${b.liq24_low_mid_high}% · p1 AUC ${b.p1_auc} / p2 ${b.p2_auc}`,
+    `<b>前向（${f.since ? f.since.slice(0, 10) : '—'} 起，已記 ${f.hours || 0} h）</b>趨勢態 24h 延續 ${fmt(f.persist_24h)}（${f.trend_hours_scored || 0} h） · 震盪態 24h 內切換 ${fmt(f.switch_24h)}（${f.chop_hours_scored || 0} h） · 穿越 ${f.cross_n || 0} 次存活 ${fmt(f.cross_surv6)} · 確認切換 ${f.conf_n || 0} 次存活 ${fmt(f.conf_surv6)} · F 窗 ${f.f_hours || 0} h · ${f.clock || ''}`];
+  el.innerHTML = items.map(x => `<span class="chip">${x}</span>`).join('');
 }
 function chips() {
   const d = DATA.coins[coin], nw = d.now, pct = x => x == null ? '—' : (100 * x).toFixed(0) + '%'; const c = COL();
@@ -89,7 +110,16 @@ function draw() {
   d.ev.forEach(e => { const up = e[1] > 0; if (e[4]) mk.push({ time: T(e[0]), position: up ? 'belowBar' : 'aboveBar', shape: 'square', color: css('--accent'), size: 1, text: '強平確認' }); if (e[2]) mk.push({ time: T(e[0]), position: up ? 'belowBar' : 'aboveBar', shape: up ? 'arrowUp' : 'arrowDown', color: up ? c['1'] : c['-1'], size: 2, text: up ? '確認↑' : '確認↓' }); else if (showAll) mk.push({ time: T(e[0]), position: up ? 'belowBar' : 'aboveBar', shape: 'circle', color: up ? c['1'] : c['-1'], size: 0 }); });
   mk.sort((a, b) => a.time - b.time); cs.setMarkers(mk);
   const b = DATA.breadth; upB.setData(line(b.up.map(v => v == null ? null : 100 * v))); dnB.setData(line(b.down.map(v => v == null ? null : -100 * v)));
-  setRange(); chips(); legend(null);
+  const isBTC = coin === 'BTC'; document.querySelectorAll('.btconly').forEach(el => { el.hidden = !isBTC; });
+  if (isBTC) {
+    const L = DATA.liq || {}; if (L.long) { lqL.setData(line(L.long.map(v => v == null ? null : v / 1e6))); lqS.setData(line(L.short.map(v => v == null ? null : v / 1e6))); lqZ.setData(line(L.liq24_z)); }
+    const cf = DATA.coef || {}; const sig = x => 1 / (1 + Math.exp(-x)); const pr = (m, v) => m ? sig(m.intercept + m.coef[0] * ((Math.abs(v) - m.mu[0]) / m.sd[0])) : null;
+    const p1 = [], p2 = []; for (let i = 0; i < n; i++) { const dv = DATA.dist_btc && DATA.dist_btc[i]; const st = d.s[i]; if (dv == null || st == null) continue; if (st !== 0 && cf.p1_persist) p1.push({ time: T(i), value: 100 * pr(cf.p1_persist, dv) }); if (st === 0 && cf.p2_switch) p2.push({ time: T(i), value: 100 * pr(cf.p2_switch, dv) }); }
+    p1S.setData(p1); p2S.setData(p2);
+    const C = DATA.cycle && DATA.cycle.series; if (C) { cyZ.setData(C.d.map((dd, i) => ({ time: dd, value: C.z[i] }))); cy.timeScale().fitContent(); }
+    setTimeout(() => { const r = main.timeScale().getVisibleLogicalRange(); if (r) [lq, pb].forEach(c => c.timeScale().setVisibleLogicalRange(r)); }, 60);
+  }
+  setRange(); chips(); scoreRow(); legend(null);
 }
 function setRange() { const n = DATA.n, bars = Math.min(n, days * 24); main.timeScale().setVisibleLogicalRange({ from: n - bars - 2, to: n + 3 }); }
 async function boot() {
