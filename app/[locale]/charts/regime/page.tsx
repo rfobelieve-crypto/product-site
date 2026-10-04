@@ -4,7 +4,7 @@ import { Nav } from '@/components/sections/Nav';
 import { ChartDetail } from '@/components/sections/ChartDetail';
 import { Footer } from '@/components/sections/Footer';
 import { Link } from '@/i18n/navigation';
-import { REGIME_CHART_URL } from '@/lib/charts';
+import { REGIME_CHART_URL, REGIME_ACCURACY_URL } from '@/lib/charts';
 
 export async function generateMetadata({
   params,
@@ -43,6 +43,9 @@ export default async function RegimeChartPage({
           <p className="mt-2 px-1 font-body text-[11px] leading-relaxed text-mist/45">
             {t('regime.body')}
           </p>
+        </div>
+        <div className="mx-auto mt-3 max-w-7xl px-4 sm:px-8">
+          <ChartDetail src={REGIME_ACCURACY_URL} label={t('regime.label')} title={t('regime.accuracyTitle')} />
         </div>
       </main>
       <Footer />

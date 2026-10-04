@@ -628,7 +628,8 @@
     "regime": {
       "label": "REGIME",
       "title": "Price × regime",
-      "body": "Hourly candles for 30 Binance perps; each coin's own 168h moving-average band ±0.5σ gives three states (green up / amber chop / red down, computed from the previous closed bar, no look-ahead). Arrows mark confirmed crossings; the lower pane is market breadth. Rebuilt every hour."
+      "body": "Hourly candles for 30 Binance perps; each coin's own 168h moving-average band ±0.5σ gives three states (green up / amber chop / red down, computed from the previous closed bar, no look-ahead). Arrows mark confirmed crossings; the lower pane is market breadth. Rebuilt every hour.",
+      "accuracyTitle": "Regime accuracy"
     }
   }
 }

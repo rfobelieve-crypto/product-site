@@ -35,3 +35,4 @@ export const CONJ_BACKTEST_CHART_URL =
 // hourly on the research machine (arb/ops/regime_site.py) and committed to
 // public/archive/regime/ — the one chart on this site that is not a snapshot.
 export const REGIME_CHART_URL = process.env.REGIME_CHART_URL ?? '/archive/regime/index.html';
+export const REGIME_ACCURACY_URL = process.env.REGIME_ACCURACY_URL ?? '/archive/regime/accuracy.html';
