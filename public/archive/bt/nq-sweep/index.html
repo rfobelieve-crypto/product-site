@@ -64,8 +64,24 @@ function mkChart(el, extra) {
     grid: { vertLines: { color: css('--grid') }, horzLines: { color: css('--grid') } }, rightPriceScale: { borderColor: css('--line') },
     timeScale: { borderColor: css('--line'), timeVisible: true, secondsVisible: false }, crosshair: { mode: 0 }, autoSize: true }, extra || {}));
 }
+// 部位框（10-08 使用者：「看不出 3R 的感覺」）：每筆從進場到出場，綠框＝進場→目標、紅框＝進場→停損；沒有目標的格只畫紅框。
+const boxes = { list: [], chart: null, series: null, req: null,
+  attached(p) { this.chart = p.chart; this.series = p.series; this.req = p.requestUpdate; }, detached() {}, updateAllViews() {},
+  paneViews() { const self = this; return [{ zOrder: () => 'bottom', renderer: () => ({ draw: (target) => target.useBitmapCoordinateSpace(sc => {
+    const ctx = sc.context, hr = sc.horizontalPixelRatio, vr = sc.verticalPixelRatio, ts = self.chart.timeScale(), sp = ts.options().barSpacing || 6;
+    self.list.forEach(b => {
+      const x1 = ts.timeToCoordinate(b.t0), x2 = ts.timeToCoordinate(b.t1); if (x1 === null || x2 === null) return;
+      const xa = (x1 - sp / 2) * hr, w = Math.max(2, (x2 - x1 + sp)) * hr, ye = self.series.priceToCoordinate(b.e), ys = self.series.priceToCoordinate(b.s);
+      if (ye === null || ys === null) return;
+      ctx.fillStyle = b.sel ? 'rgba(239,83,80,0.45)' : 'rgba(239,83,80,0.26)'; ctx.fillRect(xa, Math.min(ye, ys) * vr, w, Math.abs(ys - ye) * vr);
+      if (b.g != null) { const yg = self.series.priceToCoordinate(b.g); if (yg !== null) { ctx.fillStyle = b.sel ? 'rgba(38,166,154,0.45)' : 'rgba(38,166,154,0.26)'; ctx.fillRect(xa, Math.min(ye, yg) * vr, w, Math.abs(yg - ye) * vr); } }
+      ctx.fillStyle = 'rgba(200,200,200,0.7)'; ctx.fillRect(xa, ye * vr - hr / 2, w, Math.max(1, vr));
+    });
+  }) }) }]; },
+  set(list) { this.list = list; if (this.req) this.req(); } };
 function init() {
   main = mkChart(document.getElementById('main')); cs = main.addCandlestickSeries({ upColor: css('--up'), downColor: css('--down'), borderVisible: false, wickUpColor: css('--up'), wickDownColor: css('--down') });
+  cs.attachPrimitive(boxes);
   eq = mkChart(document.getElementById('eq'), { rightPriceScale: { scaleMargins: { top: 0.15, bottom: 0.1 } } }); eqS = eq.addLineSeries({ color: css('--accent'), lineWidth: 2, priceLineVisible: false, lastValueVisible: true });
   main.timeScale().subscribeVisibleTimeRangeChange(r => { if (r && eqHas) { try { eq.timeScale().setVisibleRange(r); } catch (e) {} } });
   const S = document.getElementById('sym'); Object.keys(D.syms).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = k; S.appendChild(o); });
@@ -79,7 +95,7 @@ function init() {
   sym = S.value; fillGrids(); render();
 }
 function fillGrids() {
-  const G = document.getElementById('grid'); G.innerHTML = ''; Object.keys(D.syms[sym].grids).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = '停損 ' + k; G.appendChild(o); }); grid = G.value;
+  const G = document.getElementById('grid'); G.innerHTML = ''; Object.keys(D.syms[sym].grids).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = '停損 ' + k; G.appendChild(o); }); const pref = Object.keys(D.syms[sym].grids).find(k => /ATR×3R/.test(k)) || Object.keys(D.syms[sym].grids).find(k => /3R/.test(k)); if (pref) G.value = pref; grid = G.value;
 }
 function current() {
   const R = D.syms[sym]; let tr = R.grids[grid][acc].filter(t => t.done);
@@ -103,15 +119,16 @@ function render() {
     const up = t.side === 1, col = up ? css('--up') : css('--down');
     mk.push({ time: B.t[t.j] + TZ, position: up ? 'belowBar' : 'aboveBar', color: css('--lvl'), shape: 'circle', size: 1 });
     mk.push({ time: B.t[t.f] + TZ, position: up ? 'belowBar' : 'aboveBar', color: col, shape: up ? 'arrowUp' : 'arrowDown', size: 2, text: (up ? 'L ' : 'S ') + t.lvl });
-    mk.push({ time: B.t[t.x] + TZ, position: t.pts >= 0 ? 'aboveBar' : 'belowBar', color: t.pts >= 0 ? css('--up') : css('--down'), shape: 'square', size: 1, text: (t.pts >= 0 ? '+' : '') + t.pts.toFixed(1) });
+    mk.push({ time: B.t[t.x] + TZ, position: t.pts >= 0 ? 'aboveBar' : 'belowBar', color: t.pts >= 0 ? css('--up') : css('--down'), shape: 'square', size: 1, text: (t.st ? '停損 ' : (t.tgt != null && Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標 ' : '')) + (t.pts >= 0 ? '+' : '') + t.pts.toFixed(1) + (t.tgt != null ? ' (' + ((t.pts + R.cost) / Math.abs(t.lvl - t.stop)).toFixed(1) + 'R)' : '') });
   });
   mk.sort((a, b) => a.time - b.time); cs.setMarkers(mk);
+  boxes.set(tr.map(t => ({ t0: B.t[t.f] + TZ, t1: B.t[t.x] + TZ, e: t.lvl, s: t.stop, g: t.tgt != null ? t.tgt : null, k: t.f })));
   const sorted = [...tr].sort((a, b) => B.t[a.x] - B.t[b.x]); let cum = 0; const ed = []; let lastT = -1;
   sorted.forEach(t => { cum += t.pts; const tt = B.t[t.x] + TZ; if (tt === lastT) ed[ed.length - 1].value = +cum.toFixed(1); else ed.push({ time: tt, value: +cum.toFixed(1) }); lastT = tt; });
   eqS.setData(ed); eqHas = ed.length > 0;
   const s = stats(tr, R.pt_usd); const C = document.getElementById('chips'); C.innerHTML = '';
   const chip = (k, v) => { const e = document.createElement('span'); e.className = 'chip'; e.innerHTML = '<b>' + k + '</b>' + v; C.appendChild(e); };
-  if (s.n) { chip('筆數', s.n); chip('勝率', (s.wr * 100).toFixed(1) + '%'); chip('每筆淨點', (s.avg >= 0 ? '+' : '') + s.avg.toFixed(1)); chip('每筆 $', (s.usd >= 0 ? '+' : '') + s.usd.toFixed(0)); chip('合計點', (s.sum >= 0 ? '+' : '') + s.sum.toFixed(0)); chip('PF', isFinite(s.pf) ? s.pf.toFixed(2) : '∞'); chip('被停損', (s.stopped * 100).toFixed(0) + '%'); chip('最長連輸', s.maxrun); chip('最大回撤(點)', s.mdd.toFixed(0)); }
+  if (s.n) { chip('筆數', s.n); chip('勝率', (s.wr * 100).toFixed(1) + '%'); chip('每筆淨點', (s.avg >= 0 ? '+' : '') + s.avg.toFixed(1)); chip('每筆 $', (s.usd >= 0 ? '+' : '') + s.usd.toFixed(0)); chip('合計點', (s.sum >= 0 ? '+' : '') + s.sum.toFixed(0)); chip('PF', isFinite(s.pf) ? s.pf.toFixed(2) : '∞'); chip('被停損', (s.stopped * 100).toFixed(0) + '%'); if (tr.some(t => t.tgt != null)) chip('打到目標', (tr.filter(t => t.tgt != null && !t.st && Math.abs(t.exit_px - t.tgt) < 0.01).length / s.n * 100).toFixed(0) + '%'); chip('最長連輸', s.maxrun); chip('最大回撤(點)', s.mdd.toFixed(0)); }
   const tb = document.querySelector('#tbl tbody'); tb.innerHTML = '';
   [...tr].sort((a, b) => B.t[b.f] - B.t[a.f]).forEach(t => {
     const r = document.createElement('tr'); const cls = t.pts >= 0 ? 'pos' : 'neg';
@@ -129,6 +146,7 @@ function setRange() {
 function select(t, row) {
   const B = D.syms[sym].bars; document.querySelectorAll('#tbl tr.sel').forEach(r => r.classList.remove('sel')); row.classList.add('sel');
   lines.forEach(l => cs.removePriceLine(l)); lines = [];
+  boxes.list.forEach(b => b.sel = (b.k === t.f)); boxes.set(boxes.list);
   lines.push(cs.createPriceLine({ price: t.lvl, color: css('--lvl'), lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: '價位' }));
   lines.push(cs.createPriceLine({ price: t.stop, color: css('--down'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '停損' }));
   if (t.tgt) lines.push(cs.createPriceLine({ price: t.tgt, color: css('--up'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '目標' }));
