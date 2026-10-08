@@ -1,0 +1,141 @@
+<!doctype html>
+<html lang="zh-Hant" data-theme="dark">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Backtest Viewer</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{--bg:#f6f4ef;--panel:#fffdf8;--ink:#1b2733;--muted:#5f6b78;--line:#d9d4c7;--up:#1e8f6e;--down:#c23b4b;--lvl:#b8860b;--accent:#1f5f8b;--grid:#ebe7dc;--sel:#fff3c4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131722;--panel:#1e222d;--ink:#d1d4dc;--muted:#8a94a6;--line:#2a2e39;--up:#26a69a;--down:#ef5350;--lvl:#f0b90b;--accent:#5aa0d8;--grid:#242833;--sel:#2b3140}}
+:root[data-theme="dark"]{--bg:#131722;--panel:#1e222d;--ink:#d1d4dc;--muted:#8a94a6;--line:#2a2e39;--up:#26a69a;--down:#ef5350;--lvl:#f0b90b;--accent:#5aa0d8;--grid:#242833;--sel:#2b3140}
+*{box-sizing:border-box}html,body{height:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:14px;padding-inline:12px;padding-block:8px 16px}
+.wrap{max-width:1600px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
+header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
+h1{font-size:18px;font-weight:600;margin:0}.sub{color:var(--muted);font-size:12px}
+.bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
+select,button{font:inherit;font-size:13px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:4px 8px}
+button{cursor:pointer}button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
+label.ck{font-size:12px;color:var(--muted)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:12px}
+.chip b{font-weight:500;color:var(--muted);margin-right:4px}
+#main{position:relative;height:56vh;min-height:360px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#eq{position:relative;height:160px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+.legend{position:absolute;left:10px;top:8px;z-index:5;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;pointer-events:none;background:color-mix(in srgb,var(--panel) 80%,transparent);padding:2px 6px;border-radius:3px}
+.tbl{overflow:auto;max-height:320px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}
+table{border-collapse:collapse;width:100%;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;font-variant-numeric:tabular-nums}
+th,td{padding:4px 8px;text-align:right;border-bottom:1px solid var(--grid);white-space:nowrap}th{position:sticky;top:0;background:var(--panel);color:var(--muted);font-weight:500}
+td:first-child,th:first-child{text-align:left}tr{cursor:pointer}tr:hover{background:var(--grid)}tr.sel{background:var(--sel)}
+.pos{color:var(--up)}.neg{color:var(--down)}
+.note{font-size:12px;color:var(--muted);line-height:1.5;max-width:100ch;margin:0}
+@media (max-width:600px){#main{height:46vh;min-height:300px}#eq{height:120px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header><h1>Backtest Viewer</h1><span class="sub" id="sub">載入中…</span></header>
+  <div class="bar">
+    <select id="sym" aria-label="商品"></select>
+    <select id="grid" aria-label="停損格"></select>
+    <select id="acc" aria-label="成交棒算法"><option value="cons">保守（成交棒內逆向超過停損＝被打到）</option><option value="opt">樂觀（成交棒不查）</option></select>
+    <select id="sess" aria-label="時段"><option value="">全部時段</option><option value="EU">歐盤 03–09:30 ET</option><option value="US">美盤 09:30–16</option><option value="ASIA">亞洲 18–03</option></select>
+    <select id="dir" aria-label="方向"><option value="">多空都看</option><option value="1">只看多單</option><option value="-1">只看空單</option></select>
+    <label class="ck"><input type="checkbox" id="roll"> 含換月週（±5 天）</label>
+    <span class="bar" id="per"><button type="button" data-days="30">30 天</button><button type="button" data-days="90" aria-pressed="true">90 天</button><button type="button" data-days="365">1 年</button><button type="button" data-days="0">全部</button></span>
+  </div>
+  <div class="chips" id="chips"></div>
+  <div id="main"><div class="legend">◆ 掃單棒　▼▲ 進場（在價位）　■ 出場（標點數）　── 選中那筆的價位／停損</div></div>
+  <div id="eq"><div class="legend">權益曲線（累計點數，依出場時間；1 口）</div></div>
+  <div class="tbl"><table id="tbl"><thead><tr><th>成交（台北）</th><th>方向</th><th>價位</th><th>停損</th><th>等待</th><th>FVG</th><th>時段</th><th>出場</th><th>點數</th><th>$</th></tr></thead><tbody></tbody></table></div>
+  <p class="note" id="note"></p>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
+<script>
+const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).trim();
+const TZ = 8 * 3600;                      // 圖軸顯示台北時間：時間戳加 8 小時（lightweight-charts 以 UTC 畫）
+let eqHas = false;
+let dir = '';
+let D, sym, grid, acc = 'cons', sess = '', days = 90, incRoll = false, main, eq, cs, eqS, lines = [], selIdx = -1;
+const fmt = (ts) => { const d = new Date((ts) * 1000); return d.toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }); };
+const fmtY = (ts) => new Date(ts * 1000).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+function mkChart(el, extra) {
+  return LightweightCharts.createChart(el, Object.assign({ layout: { background: { type: 'solid', color: css('--panel') }, textColor: css('--ink'), fontFamily: '"IBM Plex Mono", ui-monospace, monospace', fontSize: 11 },
+    grid: { vertLines: { color: css('--grid') }, horzLines: { color: css('--grid') } }, rightPriceScale: { borderColor: css('--line') },
+    timeScale: { borderColor: css('--line'), timeVisible: true, secondsVisible: false }, crosshair: { mode: 0 }, autoSize: true }, extra || {}));
+}
+function init() {
+  main = mkChart(document.getElementById('main')); cs = main.addCandlestickSeries({ upColor: css('--up'), downColor: css('--down'), borderVisible: false, wickUpColor: css('--up'), wickDownColor: css('--down') });
+  eq = mkChart(document.getElementById('eq'), { rightPriceScale: { scaleMargins: { top: 0.15, bottom: 0.1 } } }); eqS = eq.addLineSeries({ color: css('--accent'), lineWidth: 2, priceLineVisible: false, lastValueVisible: true });
+  main.timeScale().subscribeVisibleTimeRangeChange(r => { if (r && eqHas) { try { eq.timeScale().setVisibleRange(r); } catch (e) {} } });
+  const S = document.getElementById('sym'); Object.keys(D.syms).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = k; S.appendChild(o); });
+  S.onchange = () => { sym = S.value; fillGrids(); render(); };
+  document.getElementById('grid').onchange = e => { grid = e.target.value; render(); };
+  document.getElementById('acc').onchange = e => { acc = e.target.value; render(); };
+  document.getElementById('sess').onchange = e => { sess = e.target.value; render(); };
+  document.getElementById('roll').onchange = e => { incRoll = e.target.checked; render(); };
+  document.getElementById('dir').onchange = e => { dir = e.target.value; render(); };
+  document.querySelectorAll('#per button').forEach(b => b.onclick = () => { days = +b.dataset.days; document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', x === b)); setRange(); });
+  sym = S.value; fillGrids(); render();
+}
+function fillGrids() {
+  const G = document.getElementById('grid'); G.innerHTML = ''; Object.keys(D.syms[sym].grids).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = '停損 ' + k; G.appendChild(o); }); grid = G.value;
+}
+function current() {
+  const R = D.syms[sym]; let tr = R.grids[grid][acc].filter(t => t.done);
+  if (!incRoll) tr = tr.filter(t => !t.roll);
+  if (sess) tr = tr.filter(t => t.sess.startsWith(sess));
+  if (dir) tr = tr.filter(t => t.side === +dir);
+  return tr;
+}
+function stats(tr, pt) {
+  const p = tr.map(t => t.pts); const n = p.length; if (!n) return {};
+  const sum = p.reduce((a, b) => a + b, 0), w = p.filter(x => x > 0), l = p.filter(x => x <= 0);
+  const pf = l.length ? w.reduce((a, b) => a + b, 0) / -l.reduce((a, b) => a + b, 0) : Infinity;
+  let run = 0, maxrun = 0, cum = 0, peak = 0, mdd = 0; p.forEach(x => { run = x <= 0 ? run + 1 : 0; maxrun = Math.max(maxrun, run); cum += x; peak = Math.max(peak, cum); mdd = Math.max(mdd, peak - cum); });
+  return { n, wr: w.length / n, avg: sum / n, sum, pf, maxrun, mdd, usd: sum / n * pt, stopped: tr.filter(t => t.st).length / n };
+}
+function render() {
+  const R = D.syms[sym], B = R.bars, tr = current(); selIdx = -1; lines.forEach(l => cs.removePriceLine(l)); lines = [];
+  cs.setData(B.t.map((t, i) => ({ time: t + TZ, open: B.o[i], high: B.h[i], low: B.l[i], close: B.c[i] })));
+  const mk = [];
+  tr.forEach((t, k) => {
+    const up = t.side === 1, col = up ? css('--up') : css('--down');
+    mk.push({ time: B.t[t.j] + TZ, position: up ? 'belowBar' : 'aboveBar', color: css('--lvl'), shape: 'circle', size: 1 });
+    mk.push({ time: B.t[t.f] + TZ, position: up ? 'belowBar' : 'aboveBar', color: col, shape: up ? 'arrowUp' : 'arrowDown', size: 2, text: (up ? 'L ' : 'S ') + t.lvl });
+    mk.push({ time: B.t[t.x] + TZ, position: t.pts >= 0 ? 'aboveBar' : 'belowBar', color: t.pts >= 0 ? css('--up') : css('--down'), shape: 'square', size: 1, text: (t.pts >= 0 ? '+' : '') + t.pts.toFixed(1) });
+  });
+  mk.sort((a, b) => a.time - b.time); cs.setMarkers(mk);
+  const sorted = [...tr].sort((a, b) => B.t[a.x] - B.t[b.x]); let cum = 0; const ed = []; let lastT = -1;
+  sorted.forEach(t => { cum += t.pts; const tt = B.t[t.x] + TZ; if (tt === lastT) ed[ed.length - 1].value = +cum.toFixed(1); else ed.push({ time: tt, value: +cum.toFixed(1) }); lastT = tt; });
+  eqS.setData(ed); eqHas = ed.length > 0;
+  const s = stats(tr, R.pt_usd); const C = document.getElementById('chips'); C.innerHTML = '';
+  const chip = (k, v) => { const e = document.createElement('span'); e.className = 'chip'; e.innerHTML = '<b>' + k + '</b>' + v; C.appendChild(e); };
+  if (s.n) { chip('筆數', s.n); chip('勝率', (s.wr * 100).toFixed(1) + '%'); chip('每筆淨點', (s.avg >= 0 ? '+' : '') + s.avg.toFixed(1)); chip('每筆 $', (s.usd >= 0 ? '+' : '') + s.usd.toFixed(0)); chip('合計點', (s.sum >= 0 ? '+' : '') + s.sum.toFixed(0)); chip('PF', isFinite(s.pf) ? s.pf.toFixed(2) : '∞'); chip('被停損', (s.stopped * 100).toFixed(0) + '%'); chip('最長連輸', s.maxrun); chip('最大回撤(點)', s.mdd.toFixed(0)); }
+  const tb = document.querySelector('#tbl tbody'); tb.innerHTML = '';
+  [...tr].sort((a, b) => B.t[b.f] - B.t[a.f]).forEach(t => {
+    const r = document.createElement('tr'); const cls = t.pts >= 0 ? 'pos' : 'neg';
+    r.innerHTML = `<td>${fmtY(B.t[t.f])}</td><td>${t.side === 1 ? '多' : '空'}</td><td>${t.lvl}</td><td>${t.stop}</td><td>${t.wait} 根</td><td>${t.fvg ? '有' : '—'}</td><td>${t.sess}</td><td>${t.st ? '停損' : (t.tgt ? (Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標' : '時間') : '第 8 根')}${t.roll ? ' ·換月' : ''}</td><td class="${cls}">${(t.pts >= 0 ? '+' : '') + t.pts.toFixed(1)}</td><td class="${cls}">${(t.pts * R.pt_usd >= 0 ? '+' : '') + (t.pts * R.pt_usd).toFixed(0)}</td>`;
+    r.onclick = () => select(t, r); tb.appendChild(r);
+  });
+  document.getElementById('sub').textContent = `${sym}=F 1h · 規則 PIVOT ${D.rule.PIVOT} / W ${D.rule.W} / HOLD ${D.rule.HOLD} · 停損 ${grid} · 成本 ${R.cost} 點 · 建於 ${D.built}`;
+  document.getElementById('note').textContent = `資料 Yahoo 連續合約 1h（730 天上限），1 口。規則 2026-07-28 凍結、前向紙上 2026-10-07 起（Arb_NqSweepPaper）。「保守」把成交那根棒內逆向超過停損的都算停損，「樂觀」不查，真值在兩者之間（1h 看不出棒內順序）。換月週（季月第三個週五 ±5 天）預設剔除。時段依進場時間（ET）。紙上、不下單。`;
+  setRange();
+}
+function setRange() {
+  const B = D.syms[sym].bars, last = B.t[B.t.length - 1] + TZ;
+  try { if (!days) main.timeScale().fitContent(); else main.timeScale().setVisibleRange({ from: last - days * 86400, to: last + 3600 }); } catch (e) {}
+}
+function select(t, row) {
+  const B = D.syms[sym].bars; document.querySelectorAll('#tbl tr.sel').forEach(r => r.classList.remove('sel')); row.classList.add('sel');
+  lines.forEach(l => cs.removePriceLine(l)); lines = [];
+  lines.push(cs.createPriceLine({ price: t.lvl, color: css('--lvl'), lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: '價位' }));
+  lines.push(cs.createPriceLine({ price: t.stop, color: css('--down'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '停損' }));
+  if (t.tgt) lines.push(cs.createPriceLine({ price: t.tgt, color: css('--up'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '目標' }));
+  try { main.timeScale().setVisibleRange({ from: B.t[t.o] + TZ - 6 * 3600, to: B.t[t.x] + TZ + 12 * 3600 }); } catch (e) {}
+  document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', 'false'));
+}
+fetch('data.json?v=' + Date.now()).then(r => r.json()).then(d => { D = d; init(); }).catch(e => { document.getElementById('sub').textContent = '資料載入失敗：' + e; });
+</script>
+</body>
+</html>
