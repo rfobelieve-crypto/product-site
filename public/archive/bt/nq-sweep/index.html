@@ -42,12 +42,13 @@ td:first-child,th:first-child{text-align:left}tr{cursor:pointer}tr:hover{backgro
     <select id="sess" aria-label="時段"><option value="">全部時段</option><option value="EU">歐盤 03–09:30 ET</option><option value="US">美盤 09:30–16</option><option value="ASIA">亞洲 18–03</option></select>
     <select id="dir" aria-label="方向"><option value="">多空都看</option><option value="1">只看多單</option><option value="-1">只看空單</option></select>
     <label class="ck"><input type="checkbox" id="roll"> 含換月週（±5 天）</label>
+    <label class="ck"><input type="checkbox" id="noamb"> 排除棒內分不出先後的單</label>
     <span class="bar" id="per"><button type="button" data-days="30">30 天</button><button type="button" data-days="90" aria-pressed="true">90 天</button><button type="button" data-days="365">1 年</button><button type="button" data-days="0">全部</button></span>
   </div>
   <div class="chips" id="chips"></div>
-  <div id="main"><div class="legend">◆ 掃單棒　▼▲ 進場（在價位）　■ 出場（標點數）　── 選中那筆的價位／停損</div></div>
+  <div id="main"><div class="legend" id="legend">◆ 掃單棒　▼▲ 進場（在價位）　■ 出場（標點數；灰色＝棒內分不出先後）　── 選中那筆的價位／停損</div></div>
   <div id="eq"><div class="legend">權益曲線（累計點數，依出場時間；1 口）</div></div>
-  <div class="tbl"><table id="tbl"><thead><tr><th>成交（台北）</th><th>方向</th><th>價位</th><th>停損</th><th>等待</th><th>FVG</th><th>時段</th><th>出場</th><th>點數</th><th>$</th></tr></thead><tbody></tbody></table></div>
+  <div class="tbl"><table id="tbl"><thead><tr><th>成交（台北）</th><th>方向</th><th>價位</th><th>停損</th><th>等待</th><th>標記</th><th>時段</th><th>出場</th><th>點數</th><th>$</th></tr></thead><tbody></tbody></table></div>
   <p class="note" id="note"></p>
 </div>
 <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@4.2.3/dist/lightweight-charts.standalone.production.js"></script>
@@ -56,6 +57,7 @@ const css = k => getComputedStyle(document.documentElement).getPropertyValue(k).
 const TZ = 8 * 3600;                      // 圖軸顯示台北時間：時間戳加 8 小時（lightweight-charts 以 UTC 畫）
 let eqHas = false;
 let dir = '';
+let noAmb = false;
 let D, sym, grid, acc = 'cons', sess = '', days = 90, incRoll = false, main, eq, cs, eqS, lines = [], selIdx = -1;
 const fmt = (ts) => { const d = new Date((ts) * 1000); return d.toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false }); };
 const fmtY = (ts) => new Date(ts * 1000).toLocaleString('zh-TW', { timeZone: 'Asia/Taipei', year: 'numeric', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
@@ -91,14 +93,18 @@ function init() {
   document.getElementById('sess').onchange = e => { sess = e.target.value; render(); };
   document.getElementById('roll').onchange = e => { incRoll = e.target.checked; render(); };
   document.getElementById('dir').onchange = e => { dir = e.target.value; render(); };
+  document.getElementById('noamb').onchange = e => { noAmb = e.target.checked; render(); };
+  if (D.legend) document.getElementById('legend').textContent = D.legend;
   document.querySelectorAll('#per button').forEach(b => b.onclick = () => { days = +b.dataset.days; document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', x === b)); setRange(); });
   sym = S.value; fillGrids(); render();
 }
 function fillGrids() {
-  const G = document.getElementById('grid'); G.innerHTML = ''; Object.keys(D.syms[sym].grids).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = '停損 ' + k; G.appendChild(o); }); const pref = Object.keys(D.syms[sym].grids).find(k => /ATR×3R/.test(k)) || Object.keys(D.syms[sym].grids).find(k => /3R/.test(k)); if (pref) G.value = pref; grid = G.value;
+  const G = document.getElementById('grid'); G.innerHTML = ''; Object.keys(D.syms[sym].grids).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = (D.grid_prefix != null ? D.grid_prefix : '停損 ') + k; G.appendChild(o); }); const pref = Object.keys(D.syms[sym].grids).find(k => /ATR×3R/.test(k)) || Object.keys(D.syms[sym].grids).find(k => /3R/.test(k)); if (D.default_grid && D.syms[sym].grids[D.default_grid]) G.value = D.default_grid; else if (pref) G.value = pref; grid = G.value;
 }
+function syncAcc() { const G = D.syms[sym].grids[grid]; const A = document.getElementById('acc'); A.style.display = G.opt ? '' : 'none'; acc = G.opt ? A.value : 'cons'; }
 function current() {
-  const R = D.syms[sym]; let tr = R.grids[grid][acc].filter(t => t.done);
+  const R = D.syms[sym], G = R.grids[grid]; let tr = (G[acc] || G.cons).filter(t => t.done);
+  if (noAmb) tr = tr.filter(t => !t.amb);
   if (!incRoll) tr = tr.filter(t => !t.roll);
   if (sess) tr = tr.filter(t => t.sess.startsWith(sess));
   if (dir) tr = tr.filter(t => t.side === +dir);
@@ -112,31 +118,33 @@ function stats(tr, pt) {
   return { n, wr: w.length / n, avg: sum / n, sum, pf, maxrun, mdd, usd: sum / n * pt, stopped: tr.filter(t => t.st).length / n };
 }
 function render() {
-  const R = D.syms[sym], B = R.bars, tr = current(); selIdx = -1; lines.forEach(l => cs.removePriceLine(l)); lines = [];
+  syncAcc(); const R = D.syms[sym], B = R.bars, tr = current(); selIdx = -1; lines.forEach(l => cs.removePriceLine(l)); lines = [];
   cs.setData(B.t.map((t, i) => ({ time: t + TZ, open: B.o[i], high: B.h[i], low: B.l[i], close: B.c[i] })));
   const mk = [];
   tr.forEach((t, k) => {
     const up = t.side === 1, col = up ? css('--up') : css('--down');
-    mk.push({ time: B.t[t.j] + TZ, position: up ? 'belowBar' : 'aboveBar', color: css('--lvl'), shape: 'circle', size: 1 });
-    mk.push({ time: B.t[t.f] + TZ, position: up ? 'belowBar' : 'aboveBar', color: col, shape: up ? 'arrowUp' : 'arrowDown', size: 2, text: (up ? 'L ' : 'S ') + t.lvl });
-    mk.push({ time: B.t[t.x] + TZ, position: t.pts >= 0 ? 'aboveBar' : 'belowBar', color: t.pts >= 0 ? css('--up') : css('--down'), shape: 'square', size: 1, text: (t.st ? '停損 ' : (t.tgt != null && Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標 ' : '')) + (t.pts >= 0 ? '+' : '') + t.pts.toFixed(1) + (t.tgt != null ? ' (' + ((t.pts + R.cost) / Math.abs(t.lvl - t.stop)).toFixed(1) + 'R)' : '') });
+    const ent = t.e != null ? t.e : t.lvl, rr = t.Rr != null ? t.Rr : (t.tgt != null ? (t.pts + R.cost) / Math.abs(t.lvl - t.stop) : null);
+    if (t.j !== t.f && D.mark_j !== false) mk.push({ time: B.t[t.j] + TZ, position: up ? 'belowBar' : 'aboveBar', color: css('--lvl'), shape: 'circle', size: 1 });
+    mk.push({ time: B.t[t.f] + TZ, position: up ? 'belowBar' : 'aboveBar', color: col, shape: up ? 'arrowUp' : 'arrowDown', size: 2, text: (up ? 'L ' : 'S ') + String(+(+ent).toFixed(2)) + (t.tag ? ' ' + t.tag : '') });
+    const why = t.xr ? t.xr + ' ' : (t.st ? '停損 ' : (t.tgt != null && Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標 ' : ''));
+    mk.push({ time: B.t[t.x] + TZ, position: t.pts >= 0 ? 'aboveBar' : 'belowBar', color: t.amb ? '#9aa0a6' : (t.pts >= 0 ? css('--up') : css('--down')), shape: 'square', size: 1, text: (t.amb ? '? ' : '') + why + (t.pts >= 0 ? '+' : '') + t.pts.toFixed(1) + (rr != null ? ' (' + rr.toFixed(1) + 'R)' : '') });
   });
   mk.sort((a, b) => a.time - b.time); cs.setMarkers(mk);
-  boxes.set(tr.map(t => ({ t0: B.t[t.f] + TZ, t1: B.t[t.x] + TZ, e: t.lvl, s: t.stop, g: t.tgt != null ? t.tgt : null, k: t.f })));
+  boxes.set(tr.filter(t => t.stop != null).map(t => ({ t0: B.t[t.f] + TZ, t1: B.t[t.x] + TZ, e: t.e != null ? t.e : t.lvl, s: t.stop, g: t.tgt != null ? t.tgt : null, k: t.f })));
   const sorted = [...tr].sort((a, b) => B.t[a.x] - B.t[b.x]); let cum = 0; const ed = []; let lastT = -1;
   sorted.forEach(t => { cum += t.pts; const tt = B.t[t.x] + TZ; if (tt === lastT) ed[ed.length - 1].value = +cum.toFixed(1); else ed.push({ time: tt, value: +cum.toFixed(1) }); lastT = tt; });
   eqS.setData(ed); eqHas = ed.length > 0;
   const s = stats(tr, R.pt_usd); const C = document.getElementById('chips'); C.innerHTML = '';
   const chip = (k, v) => { const e = document.createElement('span'); e.className = 'chip'; e.innerHTML = '<b>' + k + '</b>' + v; C.appendChild(e); };
-  if (s.n) { chip('筆數', s.n); chip('勝率', (s.wr * 100).toFixed(1) + '%'); chip('每筆淨點', (s.avg >= 0 ? '+' : '') + s.avg.toFixed(1)); chip('每筆 $', (s.usd >= 0 ? '+' : '') + s.usd.toFixed(0)); chip('合計點', (s.sum >= 0 ? '+' : '') + s.sum.toFixed(0)); chip('PF', isFinite(s.pf) ? s.pf.toFixed(2) : '∞'); chip('被停損', (s.stopped * 100).toFixed(0) + '%'); if (tr.some(t => t.tgt != null)) chip('打到目標', (tr.filter(t => t.tgt != null && !t.st && Math.abs(t.exit_px - t.tgt) < 0.01).length / s.n * 100).toFixed(0) + '%'); chip('最長連輸', s.maxrun); chip('最大回撤(點)', s.mdd.toFixed(0)); }
+  if (s.n) { chip('筆數', s.n); chip('勝率', (s.wr * 100).toFixed(1) + '%'); chip('每筆淨點', (s.avg >= 0 ? '+' : '') + s.avg.toFixed(1)); chip('每筆 $', (s.usd >= 0 ? '+' : '') + s.usd.toFixed(0)); chip('合計點', (s.sum >= 0 ? '+' : '') + s.sum.toFixed(0)); chip('PF', isFinite(s.pf) ? s.pf.toFixed(2) : '∞'); chip('被停損', (s.stopped * 100).toFixed(0) + '%'); if (tr.some(t => t.tgt != null)) chip('打到目標', (tr.filter(t => t.tgt != null && !t.st && Math.abs(t.exit_px - t.tgt) < 0.01).length / s.n * 100).toFixed(0) + '%'); chip('最長連輸', s.maxrun); const rs = tr.filter(t => t.Rr != null).map(t => t.Rr); if (rs.length) { const mr = rs.reduce((a, b) => a + b, 0) / rs.length; chip('每筆 R', (mr >= 0 ? '+' : '') + mr.toFixed(2)); } if (tr.some(t => t.amb != null)) chip('分不出先後', (tr.filter(t => t.amb).length / s.n * 100).toFixed(0) + '%'); chip('最大回撤(點)', s.mdd.toFixed(0)); }
   const tb = document.querySelector('#tbl tbody'); tb.innerHTML = '';
   [...tr].sort((a, b) => B.t[b.f] - B.t[a.f]).forEach(t => {
     const r = document.createElement('tr'); const cls = t.pts >= 0 ? 'pos' : 'neg';
-    r.innerHTML = `<td>${fmtY(B.t[t.f])}</td><td>${t.side === 1 ? '多' : '空'}</td><td>${t.lvl}</td><td>${t.stop}</td><td>${t.wait} 根</td><td>${t.fvg ? '有' : '—'}</td><td>${t.sess}</td><td>${t.st ? '停損' : (t.tgt ? (Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標' : '時間') : '第 8 根')}${t.roll ? ' ·換月' : ''}</td><td class="${cls}">${(t.pts >= 0 ? '+' : '') + t.pts.toFixed(1)}</td><td class="${cls}">${(t.pts * R.pt_usd >= 0 ? '+' : '') + (t.pts * R.pt_usd).toFixed(0)}</td>`;
+    r.innerHTML = `<td>${fmtY(B.t[t.f])}</td><td>${t.side === 1 ? '多' : '空'}</td><td>${t.e != null ? (+t.e).toFixed(2) : t.lvl}</td><td>${t.stop != null ? (+t.stop).toFixed(2) : '—'}</td><td>${t.wait} 根</td><td>${t.tag || (t.fvg ? 'FVG' : '—')}${t.amb ? ' ?' : ''}</td><td>${t.sess}</td><td>${t.xr || (t.st ? '停損' : (t.tgt ? (Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標' : '時間') : '第 8 根'))}${t.roll ? ' ·換月' : ''}</td><td class="${cls}">${(t.pts >= 0 ? '+' : '') + t.pts.toFixed(1)}</td><td class="${cls}">${(t.pts * R.pt_usd >= 0 ? '+' : '') + (t.pts * R.pt_usd).toFixed(0)}</td>`;
     r.onclick = () => select(t, r); tb.appendChild(r);
   });
-  document.getElementById('sub').textContent = `${sym}=F 1h · 規則 PIVOT ${D.rule.PIVOT} / W ${D.rule.W} / HOLD ${D.rule.HOLD} · 停損 ${grid} · 成本 ${R.cost} 點 · 建於 ${D.built}`;
-  document.getElementById('note').textContent = `資料 Yahoo 連續合約 1h（730 天上限），1 口。規則 2026-07-28 凍結、前向紙上 2026-10-07 起（Arb_NqSweepPaper）。「保守」把成交那根棒內逆向超過停損的都算停損，「樂觀」不查，真值在兩者之間（1h 看不出棒內順序）。換月週（季月第三個週五 ±5 天）預設剔除。時段依進場時間（ET）。紙上、不下單。`;
+  if (R.sub) document.getElementById('sub').textContent = R.sub + ` · ${grid} · 建於 ${D.built}`; else document.getElementById('sub').textContent = `${sym}=F 1h · 規則 PIVOT ${D.rule.PIVOT} / W ${D.rule.W} / HOLD ${D.rule.HOLD} · 停損 ${grid} · 成本 ${R.cost} 點 · 建於 ${D.built}`;
+  if (D.note) document.getElementById('note').textContent = D.note; else document.getElementById('note').textContent = `資料 Yahoo 連續合約 1h（730 天上限），1 口。規則 2026-07-28 凍結、前向紙上 2026-10-07 起（Arb_NqSweepPaper）。「保守」把成交那根棒內逆向超過停損的都算停損，「樂觀」不查，真值在兩者之間（1h 看不出棒內順序）。換月週（季月第三個週五 ±5 天）預設剔除。時段依進場時間（ET）。紙上、不下單。`;
   setRange();
 }
 function setRange() {
@@ -147,10 +155,11 @@ function select(t, row) {
   const B = D.syms[sym].bars; document.querySelectorAll('#tbl tr.sel').forEach(r => r.classList.remove('sel')); row.classList.add('sel');
   lines.forEach(l => cs.removePriceLine(l)); lines = [];
   boxes.list.forEach(b => b.sel = (b.k === t.f)); boxes.set(boxes.list);
-  lines.push(cs.createPriceLine({ price: t.lvl, color: css('--lvl'), lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: '價位' }));
-  lines.push(cs.createPriceLine({ price: t.stop, color: css('--down'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '停損' }));
+  lines.push(cs.createPriceLine({ price: t.e != null ? t.e : t.lvl, color: css('--lvl'), lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: t.e != null ? '進場' : '價位' }));
+  if (t.stop != null) lines.push(cs.createPriceLine({ price: t.stop, color: css('--down'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '停損' }));
   if (t.tgt) lines.push(cs.createPriceLine({ price: t.tgt, color: css('--up'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '目標' }));
-  try { main.timeScale().setVisibleRange({ from: B.t[t.o] + TZ - 6 * 3600, to: B.t[t.x] + TZ + 12 * 3600 }); } catch (e) {}
+  const tf = D.syms[sym].tf || 3600, span = tf >= 3600 ? 6 : 30;
+  try { main.timeScale().setVisibleRange({ from: B.t[Math.min(t.o, t.f)] + TZ - span * tf, to: B.t[t.x] + TZ + 2 * span * tf }); } catch (e) {}
   document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', 'false'));
 }
 fetch('data.json?v=' + Date.now()).then(r => r.json()).then(d => { D = d; init(); }).catch(e => { document.getElementById('sub').textContent = '資料載入失敗：' + e; });
