@@ -83,7 +83,7 @@ const boxes = { list: [], chart: null, series: null, req: null,
   }) }) }]; },
   set(list) { this.list = list; if (this.req) this.req(); } };
 // 流動性線（10-09 使用者：「把現在系統認定的流動性區域用線都標出來」）：syms[SYM].levels = [{t0,t1,p,kind,label}]；每種 kind 一個開關
-const LV_COLOR = { '時段高低': '#f0b90b', '15m轉折': '#5aa0d8', '1h轉折': '#b57bee', '使用者線': '#ffffff', '相等高低': '#ff8a65' };
+const LV_COLOR = { '時段高低': '#f0b90b', '15m轉折': '#5aa0d8', '1h轉折': '#b57bee', '使用者線': '#ffffff', '相等高低': '#ff8a65', '15m轉折·弱': '#3d6f93', '1h轉折·弱': '#7a56a3' };
 let lvOn = {};
 const levels = { list: [], chart: null, series: null, req: null,
   attached(p) { this.chart = p.chart; this.series = p.series; this.req = p.requestUpdate; }, detached() {}, updateAllViews() {},
@@ -105,7 +105,7 @@ const levels = { list: [], chart: null, series: null, req: null,
 function fillLevels() {
   const L = (D.syms[sym].levels || []), box = document.getElementById('lv'); box.innerHTML = '';
   const kinds = [...new Set(L.map(b => b.kind))];
-  kinds.forEach(k => { if (lvOn[k] == null) lvOn[k] = true; const lab = document.createElement('label'); lab.className = 'ck';
+  kinds.forEach(k => { if (lvOn[k] == null) lvOn[k] = !(D.levels_off || []).includes(k); const lab = document.createElement('label'); lab.className = 'ck';
     const inp = document.createElement('input'); inp.type = 'checkbox'; inp.checked = lvOn[k];
     inp.onchange = e => { lvOn[k] = e.target.checked; levels.set(levels.list); };
     const sw = document.createElement('span'); sw.style.color = LV_COLOR[k] || '#999'; sw.textContent = ' ━ ';
