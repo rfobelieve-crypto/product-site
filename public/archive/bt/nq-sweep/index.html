@@ -43,7 +43,8 @@ td:first-child,th:first-child{text-align:left}tr{cursor:pointer}tr:hover{backgro
     <select id="dir" aria-label="方向"><option value="">多空都看</option><option value="1">只看多單</option><option value="-1">只看空單</option></select>
     <label class="ck"><input type="checkbox" id="roll"> 含換月週（±5 天）</label>
     <label class="ck"><input type="checkbox" id="noamb"> 排除棒內分不出先後的單</label>
-    <span class="bar" id="per"><button type="button" data-days="30">30 天</button><button type="button" data-days="90" aria-pressed="true">90 天</button><button type="button" data-days="365">1 年</button><button type="button" data-days="0">全部</button></span>
+    <span class="bar" id="lv"></span>
+    <span class="bar" id="per"><button type="button" data-days="3">3 天</button><button type="button" data-days="30">30 天</button><button type="button" data-days="90" aria-pressed="true">90 天</button><button type="button" data-days="365">1 年</button><button type="button" data-days="0">全部</button></span>
   </div>
   <div class="chips" id="chips"></div>
   <div id="main"><div class="legend" id="legend">◆ 掃單棒　▼▲ 進場（在價位）　■ 出場（標點數；灰色＝棒內分不出先後）　── 選中那筆的價位／停損</div></div>
@@ -81,13 +82,43 @@ const boxes = { list: [], chart: null, series: null, req: null,
     });
   }) }) }]; },
   set(list) { this.list = list; if (this.req) this.req(); } };
+// 流動性線（10-09 使用者：「把現在系統認定的流動性區域用線都標出來」）：syms[SYM].levels = [{t0,t1,p,kind,label}]；每種 kind 一個開關
+const LV_COLOR = { '時段高低': '#f0b90b', '15m轉折': '#5aa0d8', '1h轉折': '#b57bee', '使用者線': '#ffffff', '相等高低': '#ff8a65', '15m轉折·弱': '#3d6f93', '1h轉折·弱': '#7a56a3', '時段內15m轉折': '#5aa0d8', '時段內1h轉折': '#b57bee' };
+let lvOn = {};
+const levels = { list: [], chart: null, series: null, req: null,
+  attached(p) { this.chart = p.chart; this.series = p.series; this.req = p.requestUpdate; }, detached() {}, updateAllViews() {},
+  paneViews() { const self = this; return [{ zOrder: () => 'top', renderer: () => ({ draw: (target) => target.useBitmapCoordinateSpace(sc => {
+    const ctx = sc.context, hr = sc.horizontalPixelRatio, vr = sc.verticalPixelRatio, ts = self.chart.timeScale();
+    const vis = ts.getVisibleRange(); if (!vis) return;
+    ctx.font = (10 * vr) + 'px "IBM Plex Mono", monospace'; ctx.textBaseline = 'bottom';
+    self.list.forEach(b => {
+      if (!lvOn[b.kind] || b.t1 < vis.from || b.t0 > vis.to) return;
+      const x1 = ts.timeToCoordinate(Math.max(b.t0, vis.from)), x2 = ts.timeToCoordinate(Math.min(b.t1, vis.to)); if (x1 === null || x2 === null) return;
+      const y = self.series.priceToCoordinate(b.p); if (y === null) return;
+      const col = LV_COLOR[b.kind] || '#999';
+      ctx.strokeStyle = col; ctx.lineWidth = Math.max(1, vr) * (b.kind === '使用者線' ? 1.5 : 1); ctx.setLineDash(b.kind === '使用者線' ? [6 * hr, 4 * hr] : []);
+      ctx.beginPath(); ctx.moveTo(x1 * hr, y * vr); ctx.lineTo(x2 * hr, y * vr); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = col; ctx.fillText(b.label + ' ' + b.p, x1 * hr + 3 * hr, y * vr - 2 * vr);
+    });
+  }) }) }]; },
+  set(list) { this.list = list; if (this.req) this.req(); } };
+function fillLevels() {
+  const L = (D.syms[sym].levels || []), box = document.getElementById('lv'); box.innerHTML = '';
+  const kinds = [...new Set(L.map(b => b.kind))];
+  kinds.forEach(k => { if (lvOn[k] == null) lvOn[k] = !(D.levels_off || []).includes(k); const lab = document.createElement('label'); lab.className = 'ck';
+    const inp = document.createElement('input'); inp.type = 'checkbox'; inp.checked = lvOn[k];
+    inp.onchange = e => { lvOn[k] = e.target.checked; levels.set(levels.list); };
+    const sw = document.createElement('span'); sw.style.color = LV_COLOR[k] || '#999'; sw.textContent = ' ━ ';
+    lab.appendChild(inp); lab.appendChild(sw); lab.appendChild(document.createTextNode(k)); box.appendChild(lab); });
+  levels.set(L.map(b => ({ t0: b.t0 + TZ, t1: b.t1 + TZ, p: b.p, kind: b.kind, label: b.label })));
+}
 function init() {
   main = mkChart(document.getElementById('main')); cs = main.addCandlestickSeries({ upColor: css('--up'), downColor: css('--down'), borderVisible: false, wickUpColor: css('--up'), wickDownColor: css('--down') });
-  cs.attachPrimitive(boxes);
+  cs.attachPrimitive(boxes); cs.attachPrimitive(levels);
   eq = mkChart(document.getElementById('eq'), { rightPriceScale: { scaleMargins: { top: 0.15, bottom: 0.1 } } }); eqS = eq.addLineSeries({ color: css('--accent'), lineWidth: 2, priceLineVisible: false, lastValueVisible: true });
   main.timeScale().subscribeVisibleTimeRangeChange(r => { if (r && eqHas) { try { eq.timeScale().setVisibleRange(r); } catch (e) {} } });
   const S = document.getElementById('sym'); Object.keys(D.syms).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = k; S.appendChild(o); });
-  S.onchange = () => { sym = S.value; fillGrids(); render(); };
+  S.onchange = () => { sym = S.value; fillGrids(); fillLevels(); render(); };
   document.getElementById('grid').onchange = e => { grid = e.target.value; render(); };
   document.getElementById('acc').onchange = e => { acc = e.target.value; render(); };
   document.getElementById('sess').onchange = e => { sess = e.target.value; render(); };
@@ -95,8 +126,9 @@ function init() {
   document.getElementById('dir').onchange = e => { dir = e.target.value; render(); };
   document.getElementById('noamb').onchange = e => { noAmb = e.target.checked; render(); };
   if (D.legend) document.getElementById('legend').textContent = D.legend;
+  if (D.default_days != null) { days = D.default_days; document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', +x.dataset.days === days)); }
   document.querySelectorAll('#per button').forEach(b => b.onclick = () => { days = +b.dataset.days; document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', x === b)); setRange(); });
-  sym = S.value; fillGrids(); render();
+  sym = S.value; fillGrids(); fillLevels(); render();
 }
 function fillGrids() {
   const G = document.getElementById('grid'); G.innerHTML = ''; Object.keys(D.syms[sym].grids).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = (D.grid_prefix != null ? D.grid_prefix : '停損 ') + k; G.appendChild(o); }); const pref = Object.keys(D.syms[sym].grids).find(k => /ATR×3R/.test(k)) || Object.keys(D.syms[sym].grids).find(k => /3R/.test(k)); if (D.default_grid && D.syms[sym].grids[D.default_grid]) G.value = D.default_grid; else if (pref) G.value = pref; grid = G.value;
