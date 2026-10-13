@@ -5,31 +5,48 @@
 <title>Backtest Viewer</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
-:root{--bg:#f6f4ef;--panel:#fffdf8;--ink:#1b2733;--muted:#5f6b78;--line:#d9d4c7;--up:#1e8f6e;--down:#c23b4b;--lvl:#b8860b;--accent:#1f5f8b;--grid:#ebe7dc;--sel:#fff3c4}
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#131722;--panel:#1e222d;--ink:#d1d4dc;--muted:#8a94a6;--line:#2a2e39;--up:#26a69a;--down:#ef5350;--lvl:#f0b90b;--accent:#5aa0d8;--grid:#242833;--sel:#2b3140}}
-:root[data-theme="dark"]{--bg:#131722;--panel:#1e222d;--ink:#d1d4dc;--muted:#8a94a6;--line:#2a2e39;--up:#26a69a;--down:#ef5350;--lvl:#f0b90b;--accent:#5aa0d8;--grid:#242833;--sel:#2b3140}
+:root{--card:#fffdf8;--bg:#f6f4ef;--panel:#fffdf8;--ink:#1b2733;--muted:#5f6b78;--line:#d9d4c7;--up:#1e8f6e;--down:#c23b4b;--lvl:#b8860b;--accent:#1f5f8b;--grid:#ebe7dc;--sel:#fff3c4}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){--bg:#000;--panel:#000;--ink:#d1d4dc;--muted:#787b86;--line:#1f1f1f;--up:#26a69a;--down:#ef5350;--lvl:#f0b90b;--accent:#5aa0d8;--grid:#131313;--sel:#1c1f26;--card:#0b0b0b}}
+:root[data-theme="dark"]{--bg:#000;--panel:#000;--ink:#d1d4dc;--muted:#787b86;--line:#1f1f1f;--up:#26a69a;--down:#ef5350;--lvl:#f0b90b;--accent:#5aa0d8;--grid:#131313;--sel:#1c1f26;--card:#0b0b0b}
 *{box-sizing:border-box}html,body{height:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"IBM Plex Sans",system-ui,sans-serif;font-size:14px;padding-inline:12px;padding-block:8px 16px}
 .wrap{max-width:1600px;margin:0 auto;display:flex;flex-direction:column;gap:8px}
 header{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 16px}
 h1{font-size:18px;font-weight:600;margin:0}.sub{color:var(--muted);font-size:12px}
 .bar{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center}
-select,button{font:inherit;font-size:13px;color:var(--ink);background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:4px 8px}
+select,button{font:inherit;font-size:13px;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:4px;padding:4px 8px}
 button{cursor:pointer}button[aria-pressed="true"]{border-color:var(--accent);color:var(--accent);font-weight:600}
 label.ck{font-size:12px;color:var(--muted)}
 .chips{display:flex;flex-wrap:wrap;gap:6px}
-.chip{background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:12px}
+.chip{background:var(--card);border:1px solid var(--line);border-radius:4px;padding:4px 8px;font-family:"IBM Plex Mono",ui-monospace,monospace;font-variant-numeric:tabular-nums;font-size:12px}
 .chip b{font-weight:500;color:var(--muted);margin-right:4px}
-#main{position:relative;height:56vh;min-height:360px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
+#stage{display:flex;height:64vh;min-height:380px;background:var(--panel);border:1px solid var(--line);border-radius:4px;overflow:hidden}
+#stage.fs{position:fixed;inset:0;height:100vh;z-index:50;border:0;border-radius:0}
+#stage:fullscreen{height:100vh;border:0;border-radius:0}
+#main{position:relative;flex:1;min-width:0;height:auto}
+#tools{display:flex;flex-direction:column;width:48px;flex:none;border-right:1px solid var(--line);padding:4px 0;gap:1px;align-items:center;overflow:auto;background:var(--card)}
+#tools button{width:42px;height:38px;padding:0;border:0;background:transparent;border-radius:4px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:0;color:var(--ink);line-height:1}
+#tools button .g{font-size:15px}#tools button .n{font-size:9px;color:var(--muted);margin-top:2px}
+#tools button:hover{background:var(--grid)}#tools button[aria-pressed=true]{background:var(--sel);color:var(--accent)}#tools button[aria-pressed=true] .n{color:var(--accent)}
+#tools .sep{width:28px;border-top:1px solid var(--line);margin:3px 0}#tools .sp{flex:1}
+#tools input[type=checkbox]{display:none}
+#dstat{position:absolute;left:10px;bottom:30px;z-index:5;font-size:11px;color:var(--muted);background:color-mix(in srgb,var(--panel) 75%,transparent);padding:1px 6px;border-radius:3px;pointer-events:none}
+.props[hidden],#draw[hidden]{display:none}
+#ohlc{top:28px}#ohlc b{font-weight:500;color:var(--muted);margin:0 2px 0 8px}#ohlc b:first-child{margin-left:0}
+.props{position:absolute;left:10px;top:50px;z-index:6;background:color-mix(in srgb,var(--card) 92%,transparent);border:1px solid var(--line);border-radius:4px;padding:6px 8px;max-width:calc(100% - 80px)}
 #eq{position:relative;height:160px;background:var(--panel);border:1px solid var(--line);border-radius:4px}
 .legend{position:absolute;left:10px;top:8px;z-index:5;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;pointer-events:none;background:color-mix(in srgb,var(--panel) 80%,transparent);padding:2px 6px;border-radius:3px}
-.tbl{overflow:auto;max-height:320px;border:1px solid var(--line);border-radius:4px;background:var(--panel)}
+.tbl{overflow:auto;max-height:320px;border:1px solid var(--line);border-radius:4px;background:var(--card)}
 table{border-collapse:collapse;width:100%;font-family:"IBM Plex Mono",ui-monospace,monospace;font-size:12px;font-variant-numeric:tabular-nums}
-th,td{padding:4px 8px;text-align:right;border-bottom:1px solid var(--grid);white-space:nowrap}th{position:sticky;top:0;background:var(--panel);color:var(--muted);font-weight:500}
+th,td{padding:4px 8px;text-align:right;border-bottom:1px solid var(--grid);white-space:nowrap}th{position:sticky;top:0;background:var(--card);color:var(--muted);font-weight:500}
 td:first-child,th:first-child{text-align:left}tr{cursor:pointer}tr:hover{background:var(--grid)}tr.sel{background:var(--sel)}
 .pos{color:var(--up)}.neg{color:var(--down)}
 .note{font-size:12px;color:var(--muted);line-height:1.5;max-width:100ch;margin:0}
-@media (max-width:600px){#main{height:46vh;min-height:300px}#eq{height:120px}}
+#main.drawing{cursor:crosshair}
+.props input[type=text]{font:inherit;font-size:12px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:3px 6px}
+.props input[type=number]{font:inherit;font-size:12px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:4px;padding:2px 4px}
+#pnote{min-width:min(420px,70vw)}
+@media (max-width:600px){#stage{height:60vh;min-height:320px}#eq{height:120px}#tools{width:40px}#tools button{width:36px}}
 </style>
 </head>
 <body>
@@ -43,10 +60,61 @@ td:first-child,th:first-child{text-align:left}tr{cursor:pointer}tr:hover{backgro
     <select id="dir" aria-label="方向"><option value="">多空都看</option><option value="1">只看多單</option><option value="-1">只看空單</option></select>
     <label class="ck"><input type="checkbox" id="roll"> 含換月週（±5 天）</label>
     <label class="ck"><input type="checkbox" id="noamb"> 排除棒內分不出先後的單</label>
-    <span class="bar" id="per"><button type="button" data-days="30">30 天</button><button type="button" data-days="90" aria-pressed="true">90 天</button><button type="button" data-days="365">1 年</button><button type="button" data-days="0">全部</button></span>
+    <span class="bar" id="lv"></span>
+    <span class="bar" id="draw" hidden>
+      <select id="dmode" aria-label="畫哪些筆的結構"><option value="none">不畫程式的結構</option><option value="sel">只畫選中那筆</option><option value="all">畫全部</option></select>
+      <label class="ck"><input type="checkbox" id="d_mark" checked> 程式進場箭頭</label>
+      <label class="ck"><input type="checkbox" id="d_sess" checked> 時段框</label>
+      <label class="ck"><input type="checkbox" id="d_vp" checked> 固定成交量</label>
+      <label class="ck"><input type="checkbox" id="d_fvg" checked> FVG</label>
+      <label class="ck"><input type="checkbox" id="d_liq" checked> 流動性線</label>
+      <label class="ck"><input type="checkbox" id="d_pos" checked> 部位框</label>
+      <label class="ck"><input type="checkbox" id="d_vol" checked> 成交量</label>
+    </span>
+    <span class="bar" id="per"><button type="button" data-days="3">3 天</button><button type="button" data-days="30">30 天</button><button type="button" data-days="90" aria-pressed="true">90 天</button><button type="button" data-days="365">1 年</button><button type="button" data-days="0">全部</button></span>
   </div>
   <div class="chips" id="chips"></div>
-  <div id="main"><div class="legend" id="legend">◆ 掃單棒　▼▲ 進場（在價位）　■ 出場（標點數；灰色＝棒內分不出先後）　── 選中那筆的價位／停損</div></div>
+  <div id="stage">
+    <div id="tools">
+      <button type="button" data-tool="sel" aria-pressed="true" title="選取／拖動（Esc）"><span class="g">↖</span><span class="n">選取</span></button>
+      <button type="button" data-tool="liq_b" title="買方流動性 Buyside（L）：點高點、拖到被掃的地方；磁吸只吸 High"><span class="g">▔</span><span class="n">買方流動</span></button>
+      <button type="button" data-tool="liq_s" title="賣方流動性 Sellside（Shift+L）：點低點、拖到被掃的地方；磁吸只吸 Low"><span class="g">▁</span><span class="n">賣方流動</span></button>
+      <button type="button" data-tool="vp" title="固定成交量（V）：拖一段時間，價格範圍與直方圖自動算"><span class="g">▥</span><span class="n">成交量</span></button>
+      <button type="button" data-tool="fvg" title="FVG（F）：拖出缺口的框"><span class="g">▦</span><span class="n">FVG</span></button>
+      <button type="button" data-tool="ifvg" title="IFVG（I）：翻轉後的缺口，拖出框"><span class="g" style="color:#4db6ac">▩</span><span class="n">IFVG</span></button>
+      <button type="button" data-tool="box" title="區域（B）"><span class="g">▢</span><span class="n">區域</span></button>
+      <button type="button" data-tool="pos_l" title="多單（G）：點進場價、往下拖到停損；目標預設 2R，面板可改"><span class="g" style="color:var(--up)">▲</span><span class="n">多單</span></button>
+      <button type="button" data-tool="pos_s" title="空單（S）：點進場價、往上拖到停損"><span class="g" style="color:var(--down)">▼</span><span class="n">空單</span></button>
+      <button type="button" data-tool="tline" title="趨勢線（T）"><span class="g">╱</span><span class="n">趨勢</span></button>
+      <button type="button" data-tool="text" title="文字（N）：點一下、打字"><span class="g">T</span><span class="n">文字</span></button>
+      <div class="sep"></div>
+      <button type="button" id="b_magnet" aria-pressed="true" title="磁吸：靠近 O/H/L/C 就吸上去"><span class="g">🧲</span><span class="n">磁吸</span></button>
+      <button type="button" id="b_stay" aria-pressed="false" title="連續畫：畫完不跳回選取"><span class="g">∞</span><span class="n">連續</span></button>
+      <button type="button" id="b_show" aria-pressed="true" title="顯示／隱藏我畫的圖"><span class="g">👁</span><span class="n">我的圖</span></button>
+      <input type="checkbox" id="magnet" checked><input type="checkbox" id="stay"><input type="checkbox" id="ud_show" checked>
+      <div class="sep"></div>
+      <button type="button" id="b_undo" title="回上一動（Ctrl+Z）"><span class="g">↶</span><span class="n">上一動</span></button>
+      <button type="button" id="b_redo" title="重做（Ctrl+Y 或 Ctrl+Shift+Z）"><span class="g">↷</span><span class="n">重做</span></button>
+      <div class="sp"></div>
+      <button type="button" id="b_prev" title="上一筆進場（←）"><span class="g">◀</span><span class="n">上一筆</span></button>
+      <button type="button" id="b_next" title="下一筆進場（→）"><span class="g">▶</span><span class="n">下一筆</span></button>
+      <button type="button" id="fsbtn" title="全螢幕（Shift+F；Esc 離開）"><span class="g">⛶</span><span class="n">全螢幕</span></button>
+    </div>
+    <div id="main">
+      <div class="legend" id="legend">◆ 掃單棒　▼▲ 進場（在價位）　■ 出場（標點數；灰色＝棒內分不出先後）　── 選中那筆的價位／停損</div>
+      <div class="legend" id="ohlc"></div>
+      <span id="dstat"></span>
+      <div class="bar props" id="props" hidden>
+        <span class="sub" id="pinfo"></span>
+        <select id="pkind" hidden aria-label="種類"></select>
+        <input type="text" id="plabel" placeholder="標籤" aria-label="標籤" style="width:150px">
+        <input type="text" id="pnote" placeholder="備註：為什麼這樣畫、看到什麼（我會逐字讀）" aria-label="備註">
+        <span class="bar" id="pnum"></span>
+        <button type="button" id="pdup" title="複製一份往右 6 根">複製</button>
+        <button type="button" id="pdel" title="Delete 鍵也可以">刪除</button>
+      </div>
+    </div>
+  </div>
   <div id="eq"><div class="legend">權益曲線（累計點數，依出場時間；1 口）</div></div>
   <div class="tbl"><table id="tbl"><thead><tr><th>成交（台北）</th><th>方向</th><th>價位</th><th>停損</th><th>等待</th><th>標記</th><th>時段</th><th>出場</th><th>點數</th><th>$</th></tr></thead><tbody></tbody></table></div>
   <p class="note" id="note"></p>
@@ -64,7 +132,7 @@ const fmtY = (ts) => new Date(ts * 1000).toLocaleString('zh-TW', { timeZone: 'As
 function mkChart(el, extra) {
   return LightweightCharts.createChart(el, Object.assign({ layout: { background: { type: 'solid', color: css('--panel') }, textColor: css('--ink'), fontFamily: '"IBM Plex Mono", ui-monospace, monospace', fontSize: 11 },
     grid: { vertLines: { color: css('--grid') }, horzLines: { color: css('--grid') } }, rightPriceScale: { borderColor: css('--line') },
-    timeScale: { borderColor: css('--line'), timeVisible: true, secondsVisible: false }, crosshair: { mode: 0 }, autoSize: true }, extra || {}));
+    timeScale: { borderColor: css('--line'), timeVisible: true, secondsVisible: false, rightOffset: 6 }, crosshair: { mode: 0, vertLine: { color: '#758696', width: 1, style: 3, labelBackgroundColor: '#2a2e39' }, horzLine: { color: '#758696', width: 1, style: 3, labelBackgroundColor: '#2a2e39' } }, autoSize: true }, extra || {}));
 }
 // 部位框（10-08 使用者：「看不出 3R 的感覺」）：每筆從進場到出場，綠框＝進場→目標、紅框＝進場→停損；沒有目標的格只畫紅框。
 const boxes = { list: [], chart: null, series: null, req: null,
@@ -72,22 +140,310 @@ const boxes = { list: [], chart: null, series: null, req: null,
   paneViews() { const self = this; return [{ zOrder: () => 'bottom', renderer: () => ({ draw: (target) => target.useBitmapCoordinateSpace(sc => {
     const ctx = sc.context, hr = sc.horizontalPixelRatio, vr = sc.verticalPixelRatio, ts = self.chart.timeScale(), sp = ts.options().barSpacing || 6;
     self.list.forEach(b => {
+      if (b.hide) return;
       const x1 = ts.timeToCoordinate(b.t0), x2 = ts.timeToCoordinate(b.t1); if (x1 === null || x2 === null) return;
       const xa = (x1 - sp / 2) * hr, w = Math.max(2, (x2 - x1 + sp)) * hr, ye = self.series.priceToCoordinate(b.e), ys = self.series.priceToCoordinate(b.s);
       if (ye === null || ys === null) return;
       ctx.fillStyle = b.sel ? 'rgba(239,83,80,0.45)' : 'rgba(239,83,80,0.26)'; ctx.fillRect(xa, Math.min(ye, ys) * vr, w, Math.abs(ys - ye) * vr);
       if (b.g != null) { const yg = self.series.priceToCoordinate(b.g); if (yg !== null) { ctx.fillStyle = b.sel ? 'rgba(38,166,154,0.45)' : 'rgba(38,166,154,0.26)'; ctx.fillRect(xa, Math.min(ye, yg) * vr, w, Math.abs(yg - ye) * vr); } }
       ctx.fillStyle = 'rgba(200,200,200,0.7)'; ctx.fillRect(xa, ye * vr - hr / 2, w, Math.max(1, vr));
+      if (b.lab) { ctx.font = (10 * vr) + 'px "IBM Plex Mono", monospace'; ctx.textBaseline = 'middle';
+        const tag = (y, txt, col) => { const tw = ctx.measureText(txt).width + 8 * hr; ctx.fillStyle = col; ctx.fillRect(xa + w + 2 * hr, y * vr - 7 * vr, tw, 14 * vr); ctx.fillStyle = '#fff'; ctx.fillText(txt, xa + w + 6 * hr, y * vr); };
+        tag(ys, (+b.s).toFixed(2), 'rgba(239,83,80,0.95)'); if (b.g != null) { const yg = self.series.priceToCoordinate(b.g); if (yg !== null) tag(yg, (+b.g).toFixed(2), 'rgba(38,166,154,0.95)'); }
+        tag(ye, (+b.e).toFixed(2), 'rgba(120,120,130,0.95)'); }
     });
   }) }) }]; },
   set(list) { this.list = list; if (this.req) this.req(); } };
+// 流動性線（10-09 使用者：「把現在系統認定的流動性區域用線都標出來」）：syms[SYM].levels = [{t0,t1,p,kind,label}]；每種 kind 一個開關
+const LV_COLOR = { '時段高低': '#f0b90b', '15m轉折': '#5aa0d8', '1h轉折': '#b57bee', '使用者線': '#ffffff', '相等高低': '#ff8a65', '15m轉折·弱': '#3d6f93', '1h轉折·弱': '#7a56a3', '時段內15m轉折': '#5aa0d8', '時段內1h轉折': '#b57bee', '被掃的線': '#f0b90b', 'POC': '#ff8a65', '獵取極值': '#e05c5c' };
+let lvOn = {};
+const levels = { list: [], chart: null, series: null, req: null,
+  attached(p) { this.chart = p.chart; this.series = p.series; this.req = p.requestUpdate; }, detached() {}, updateAllViews() {},
+  paneViews() { const self = this; return [{ zOrder: () => 'top', renderer: () => ({ draw: (target) => target.useBitmapCoordinateSpace(sc => {
+    const ctx = sc.context, hr = sc.horizontalPixelRatio, vr = sc.verticalPixelRatio, ts = self.chart.timeScale();
+    const vis = ts.getVisibleRange(); if (!vis) return;
+    ctx.font = (10 * vr) + 'px "IBM Plex Mono", monospace'; ctx.textBaseline = 'bottom';
+    self.list.forEach(b => {
+      if (!lvOn[b.kind] || b.t1 < vis.from || b.t0 > vis.to) return;
+      const x1 = ts.timeToCoordinate(Math.max(b.t0, vis.from)), x2 = ts.timeToCoordinate(Math.min(b.t1, vis.to)); if (x1 === null || x2 === null) return;
+      const y = self.series.priceToCoordinate(b.p); if (y === null) return;
+      const col = LV_COLOR[b.kind] || '#999';
+      ctx.strokeStyle = col; ctx.lineWidth = Math.max(1, vr) * (b.kind === '使用者線' ? 1.5 : 1); ctx.setLineDash(b.kind === '使用者線' ? [6 * hr, 4 * hr] : []);
+      ctx.beginPath(); ctx.moveTo(x1 * hr, y * vr); ctx.lineTo(x2 * hr, y * vr); ctx.stroke(); ctx.setLineDash([]);
+      ctx.fillStyle = col; ctx.fillText(b.label + ' ' + b.p, x1 * hr + 3 * hr, y * vr - 2 * vr);
+    });
+  }) }) }]; },
+  set(list) { this.list = list; if (this.req) this.req(); } };
+// 時段框（使用者的 TV 畫法：Tokyo／London／New York 三個時段各一個半透明框，框高＝時段高低，名字在框底）
+const SESS_COLOR = { '亞洲': ['rgba(63,81,181,0.22)', '#7986cb', 'Tokyo'], '倫敦': ['rgba(255,152,0,0.18)', '#ffb74d', 'London'], '紐約': ['rgba(156,39,176,0.20)', '#ba68c8', 'New York'] };
+function snapT(B, t) { let lo = 0, hi = B.t.length - 1; if (t <= B.t[0]) return B.t[0] + TZ; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (B.t[m] <= t) lo = m; else hi = m - 1; } return B.t[lo] + TZ; }
+function xr(ts, B, t0, t1, vis) { const a = Math.max(snapT(B, t0), vis.from), b = Math.min(snapT(B, t1), vis.to); if (a > b) return null; const x1 = ts.timeToCoordinate(a), x2 = ts.timeToCoordinate(b); if (x1 === null || x2 === null) return null; return [x1, x2]; }
+const sessBoxes = { list: [], B: null, chart: null, series: null, req: null,
+  attached(p) { this.chart = p.chart; this.series = p.series; this.req = p.requestUpdate; }, detached() {}, updateAllViews() {},
+  paneViews() { const self = this; return [{ zOrder: () => 'bottom', renderer: () => ({ draw: (target) => target.useBitmapCoordinateSpace(sc => {
+    if (!self.B || !document.getElementById('d_sess').checked) return;
+    const ctx = sc.context, hr = sc.horizontalPixelRatio, vr = sc.verticalPixelRatio, ts = self.chart.timeScale(), sp = ts.options().barSpacing || 6;
+    const vis = ts.getVisibleRange(); if (!vis) return;
+    ctx.font = (11 * vr) + 'px "IBM Plex Sans", sans-serif'; ctx.textBaseline = 'top';
+    self.list.forEach(b => {
+      if (b.t1 + TZ < vis.from || b.t0 + TZ > vis.to) return;
+      const r = xr(ts, self.B, b.t0, b.t1, vis); if (!r) return;
+      const yh = self.series.priceToCoordinate(b.hi), yl = self.series.priceToCoordinate(b.lo); if (yh === null || yl === null) return;
+      const c = SESS_COLOR[b.kind] || ['rgba(120,120,120,0.15)', '#999', b.kind];
+      const xa = (r[0] - sp / 2) * hr, w = (r[1] - r[0] + sp) * hr;
+      ctx.fillStyle = c[0]; ctx.fillRect(xa, yh * vr, w, (yl - yh) * vr);
+      ctx.fillStyle = c[1]; ctx.fillText(c[2], xa + 4 * hr, yl * vr + 3 * vr);
+    });
+  }) }) }]; },
+  set(list, B) { this.list = list; this.B = B; if (this.req) this.req(); } };
+// setup 結構（使用者 10-12：「讓回測平台可以畫圖…重新去讀我怎麼畫的」）：固定成交量框＋左緣直方圖＋POC 紅線、FVG 灰框、IFVG 框、流動性白線＋ Buyside／Sellside 標籤、獵取極值紅虛線
+const setups = { list: [], B: null, chart: null, series: null, req: null,
+  attached(p) { this.chart = p.chart; this.series = p.series; this.req = p.requestUpdate; }, detached() {}, updateAllViews() {},
+  paneViews() { const self = this; return [{ zOrder: () => 'bottom', renderer: () => ({ draw: (target) => target.useBitmapCoordinateSpace(sc => {
+    if (!self.B) return;
+    const ctx = sc.context, hr = sc.horizontalPixelRatio, vr = sc.verticalPixelRatio, ts = self.chart.timeScale(), sp = ts.options().barSpacing || 6, S = self.series;
+    const vis = ts.getVisibleRange(); if (!vis) return;
+    const on = id => document.getElementById(id).checked;
+    const px = p => S.priceToCoordinate(p);
+    self.list.forEach(u => {
+      if (on('d_vp') && u.vp && u.vp.bins && u.vp.bins.length) {
+        const r = xr(ts, self.B, u.vp.t0, u.vp.t1, vis);
+        if (r) {
+          const xa = (r[0] - sp / 2) * hr, w = (r[1] - r[0] + sp) * hr, bins = u.vp.bins, bw = u.vp.bin || 1;
+          const yt = px(bins[bins.length - 1][0] + bw), yb = px(bins[0][0]);
+          if (yt !== null && yb !== null) {
+            ctx.fillStyle = 'rgba(233,30,99,0.16)'; ctx.fillRect(xa, yt * vr, w, (yb - yt) * vr);
+            const vmax = Math.max(...bins.map(b => b[1])), tot = bins.reduce((a, b) => a + b[1], 0);
+            let ip = 0; bins.forEach((b, i) => { if (b[1] > bins[ip][1]) ip = i; });
+            let lo = ip, hi = ip, acc = bins[ip][1];
+            while (acc < 0.7 * tot && (lo > 0 || hi < bins.length - 1)) { const a = lo > 0 ? bins[lo - 1][1] : -1, c = hi < bins.length - 1 ? bins[hi + 1][1] : -1; if (c >= a) { hi++; acc += bins[hi][1]; } else { lo--; acc += bins[lo][1]; } }
+            const maxw = Math.max(12 * hr, w * 0.55);
+            bins.forEach((b, i) => { const y0 = px(b[0] + bw), y1 = px(b[0]); if (y0 === null || y1 === null) return; const h = Math.max(1, (y1 - y0) * vr - 0.5);
+              ctx.fillStyle = i === ip ? 'rgba(239,83,80,0.95)' : (i >= lo && i <= hi ? 'rgba(255,213,79,0.85)' : 'rgba(100,149,237,0.75)'); ctx.fillRect(xa, y0 * vr, Math.max(1, b[1] / vmax * maxw), h); });
+            const yp = px(u.vp.poc);
+            if (yp !== null) { ctx.strokeStyle = '#ef5350'; ctx.lineWidth = Math.max(1.5, 1.5 * vr); ctx.beginPath(); ctx.moveTo(xa, yp * vr); ctx.lineTo(xa + w, yp * vr); ctx.stroke();
+              ctx.font = (10 * vr) + 'px "IBM Plex Mono", monospace'; ctx.textBaseline = 'bottom'; ctx.fillStyle = '#ef5350'; ctx.fillText('POC ' + u.vp.poc, xa + w + 3 * hr, yp * vr - 1); }
+          }
+        }
+      }
+      if (on('d_fvg')) {
+        (u.fvg || []).forEach(g => { const r = xr(ts, self.B, g.t0, g.t1, vis); if (!r) return; const y0 = px(g.hi), y1 = px(g.lo); if (y0 === null || y1 === null) return;
+          const xa = (r[0] - sp / 2) * hr, w = (r[1] - r[0] + sp) * hr;
+          ctx.fillStyle = g.ifvg ? 'rgba(38,166,154,0.18)' : 'rgba(158,158,158,0.22)'; ctx.fillRect(xa, y0 * vr, w, (y1 - y0) * vr);
+          ctx.strokeStyle = g.ifvg ? 'rgba(38,166,154,0.9)' : 'rgba(200,200,200,0.55)'; ctx.lineWidth = Math.max(1, vr); ctx.setLineDash([4 * hr, 3 * hr]); ctx.strokeRect(xa, y0 * vr, w, (y1 - y0) * vr); ctx.setLineDash([]);
+          ctx.font = (11 * vr) + 'px "IBM Plex Sans", sans-serif'; ctx.textBaseline = 'middle'; ctx.fillStyle = g.ifvg ? '#4db6ac' : '#e0e0e0'; ctx.fillText(g.ifvg ? 'IFVG' : 'FVG', xa + w / 2 - 12 * hr, (y0 + y1) / 2 * vr); });
+      }
+      if (on('d_liq') && u.liq) {
+        const r = xr(ts, self.B, u.liq.t0, u.liq.t1, vis); const y = px(u.liq.p);
+        if (r && y !== null) { const xa = (r[0] - sp / 2) * hr, xb = (r[1] + sp / 2) * hr; ctx.strokeStyle = '#ffffff'; ctx.lineWidth = Math.max(1.5, 1.5 * vr); ctx.beginPath(); ctx.moveTo(xa, y * vr); ctx.lineTo(xb, y * vr); ctx.stroke();
+          ctx.font = (11 * vr) + 'px "IBM Plex Sans", sans-serif'; ctx.textBaseline = u.liq.side === 1 ? 'top' : 'bottom'; ctx.fillStyle = '#ffffff'; ctx.fillText(u.liq.side === 1 ? 'Sellside Liquidity' : 'Buyside Liquidity', xa + 6 * hr, y * vr + (u.liq.side === 1 ? 3 : -3) * vr); }
+        if (u.ext) { const ye = px(u.ext.p); const r2 = xr(ts, self.B, u.ext.t0, u.ext.t1, vis);
+          if (ye !== null && r2) { ctx.strokeStyle = 'rgba(239,83,80,0.8)'; ctx.lineWidth = Math.max(1, vr); ctx.setLineDash([3 * hr, 3 * hr]); ctx.beginPath(); ctx.moveTo((r2[0] - sp / 2) * hr, ye * vr); ctx.lineTo((r2[1] + sp / 2) * hr, ye * vr); ctx.stroke(); ctx.setLineDash([]); } }
+      }
+    });
+  }) }) }]; },
+  set(list, B) { this.list = list; this.B = B; if (this.req) this.req(); } };
+let volS = null;
+
+// ===== 使用者畫圖（10-12 使用者：「在 /nq-manual-entries/ 生成畫圖工具，我在上面畫圖然後你去讀我的圖」）=====
+// 工具：流動性線／固定成交量／FVG／區域／多單／空單／趨勢線／文字。每一筆存成 {type,t0,t1,p0,p1,p2,side,label,note,trade}，時間是 UTC epoch（棒的時間），
+// 自動 POST 到同目錄 drawings.json（bt/server.py 寫檔＋歷史），localStorage 當備份。讀的人：research/20261008_nq_manual/read_drawings.py。
+const UD = { list: [], sel: null, tool: 'sel', drag: null, timer: null, savedAt: null, err: null, dirty: false, undo: [], redo: [], last: '[]', lastKey: null };
+const DRAW_URL = 'drawings.json';
+const uid = () => Math.random().toString(36).slice(2, 8) + Date.now().toString(36).slice(-4);
+const TYPE_NAME = { liq: '流動性線', vp: '固定成交量', fvg: 'FVG', box: '區域', pos: '部位', tline: '趨勢線', text: '文字' };
+function bars() { return D.syms[sym].bars; }
+function tfOf() { const B = bars(); return D.syms[sym].tf || (B.t[1] - B.t[0]); }
+function tIdx(t) { const B = bars(), n = B.t.length, tf = tfOf();
+  if (t <= B.t[0]) return (t - B.t[0]) / tf; if (t >= B.t[n - 1]) return n - 1 + (t - B.t[n - 1]) / tf;
+  let lo = 0, hi = n - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (B.t[m] <= t) lo = m; else hi = m - 1; }
+  return lo + (t - B.t[lo]) / (B.t[lo + 1] - B.t[lo]); }
+function idxT(L) { const B = bars(), n = B.t.length, tf = tfOf(); L = Math.round(L); if (L < 0) return B.t[0] + L * tf; if (L >= n) return B.t[n - 1] + (L - n + 1) * tf; return B.t[L]; }
+function tX(t) { // lightweight-charts 4.2 的 logicalToCoordinate 遇到非整數索引回 0（10-12 換級別圖不見的原因）→ 用相鄰兩根整數索引內插
+  const ts = main.timeScale(), L = tIdx(t), a = Math.floor(L), x0 = ts.logicalToCoordinate(a); if (x0 === null) return null; if (L === a) return x0; const x1 = ts.logicalToCoordinate(a + 1); return x1 === null ? x0 : x0 + (L - a) * (x1 - x0); }
+function xL(x) { return main.timeScale().coordinateToLogical(x); }
+function xT(x) { const L = xL(x); return L === null ? null : idxT(L); }
+function magnet(x, y, prefer) { const B = bars(), L = xL(x); if (L === null) return null; const p = cs.coordinateToPrice(y); if (p === null) return null;
+  const i = Math.round(L); if (!document.getElementById('magnet').checked || i < 0 || i >= B.t.length) return Math.round(p * 4) / 4;
+  let best = Math.round(p * 4) / 4, bd = prefer ? 16 : 9; (prefer === 'h' ? [B.h[i]] : prefer === 'l' ? [B.l[i]] : [B.o[i], B.h[i], B.l[i], B.c[i]]).forEach(q => { const yq = cs.priceToCoordinate(q); if (yq !== null && Math.abs(yq - y) < bd) { bd = Math.abs(yq - y); best = q; } }); return best; }
+function udProfile(d) { // 固定成交量：框內每根棒的量平均攤到它的高低（同 judge.poc），BIN 1 點；價格範圍自動＝框內高低
+  const B = bars(), key = d.t0 + '|' + d.t1 + '|' + sym; if (d._pk === key) return d._prof;
+  const a = Math.min(d.t0, d.t1), b = Math.max(d.t0, d.t1); let lo = Infinity, hi = -Infinity; const idx = [];
+  for (let i = 0; i < B.t.length; i++) if (B.t[i] >= a && B.t[i] <= b) { idx.push(i); lo = Math.min(lo, B.l[i]); hi = Math.max(hi, B.h[i]); }
+  d._pk = key; if (!idx.length || !B.v) { d._prof = null; return null; }
+  const bw = 1; lo = Math.floor(lo); const n = Math.ceil((hi - lo) / bw) + 2, prof = new Float64Array(n);
+  idx.forEach(i => { let x0 = Math.floor((B.l[i] - lo) / bw), x1 = Math.ceil((B.h[i] - lo) / bw); x1 = Math.max(x0 + 1, x1); for (let k = x0; k < x1; k++) prof[k] += B.v[i] / (x1 - x0); });
+  let ip = 0; for (let k = 1; k < n; k++) if (prof[k] > prof[ip]) ip = k;
+  const bins = []; for (let k = 0; k < n; k++) if (prof[k] > 0) bins.push([lo + k * bw, prof[k]]);
+  d.p0 = lo; d.p1 = hi; d.poc = lo + (ip + .5) * bw; d.nbars = idx.length; d._prof = { bins, bw, poc: d.poc }; return d._prof; }
+function hist(ctx, xa, w, P, hr, vr, px) { const bins = P.bins, bw = P.bw; if (!bins.length) return; const vmax = Math.max(...bins.map(b => b[1])), tot = bins.reduce((s, b) => s + b[1], 0);
+  let ip = 0; bins.forEach((b, i) => { if (b[1] > bins[ip][1]) ip = i; }); let lo = ip, hi = ip, acc = bins[ip][1];
+  while (acc < 0.7 * tot && (lo > 0 || hi < bins.length - 1)) { const a = lo > 0 ? bins[lo - 1][1] : -1, c = hi < bins.length - 1 ? bins[hi + 1][1] : -1; if (c >= a) { hi++; acc += bins[hi][1]; } else { lo--; acc += bins[lo][1]; } }
+  const maxw = Math.max(12 * hr, w * 0.55);
+  bins.forEach((b, i) => { const y0 = px(b[0] + bw), y1 = px(b[0]); if (y0 === null || y1 === null) return; const h = Math.max(1, (y1 - y0) * vr - 0.5);
+    ctx.fillStyle = i === ip ? 'rgba(239,83,80,0.95)' : (i >= lo && i <= hi ? 'rgba(255,213,79,0.85)' : 'rgba(100,149,237,0.75)'); ctx.fillRect(xa, y0 * vr, Math.max(1, b[1] / vmax * maxw), h); });
+  const yp = px(P.poc); if (yp !== null) { ctx.strokeStyle = '#ef5350'; ctx.lineWidth = Math.max(1.5, 1.5 * vr); ctx.beginPath(); ctx.moveTo(xa, yp * vr); ctx.lineTo(xa + w, yp * vr); ctx.stroke();
+    ctx.font = (10 * vr) + 'px "IBM Plex Mono", monospace'; ctx.textBaseline = 'bottom'; ctx.fillStyle = '#ef5350'; ctx.fillText('POC ' + P.poc.toFixed(2), xa + w + 3 * hr, yp * vr - 1); } }
+function geom(d) { const g = { x0: tX(d.t0), x1: tX(d.t1), y0: cs.priceToCoordinate(d.p0), y1: cs.priceToCoordinate(d.p1), y2: d.p2 != null ? cs.priceToCoordinate(d.p2) : null };
+  if (g.x0 === null || g.x1 === null || g.y0 === null || g.y1 === null) return null; return g; }
+function handles(d, g) { const sp = (main.timeScale().options().barSpacing || 6) / 2;
+  switch (d.type) {
+    case 'liq': return [{ k: 't0', x: g.x0 - sp, y: g.y0 }, { k: 't1', x: g.x1 + sp, y: g.y0 }, { k: 'p0', x: (g.x0 + g.x1) / 2, y: g.y0 }];
+    case 'tline': return [{ k: 't0p0', x: g.x0, y: g.y0 }, { k: 't1p1', x: g.x1, y: g.y1 }];
+    case 'vp': return [{ k: 't0', x: g.x0 - sp, y: (g.y0 + g.y1) / 2 }, { k: 't1', x: g.x1 + sp, y: (g.y0 + g.y1) / 2 }];
+    case 'fvg': case 'box': return [{ k: 't0p0', x: g.x0 - sp, y: g.y0 }, { k: 't1p1', x: g.x1 + sp, y: g.y1 }, { k: 't0p1', x: g.x0 - sp, y: g.y1 }, { k: 't1p0', x: g.x1 + sp, y: g.y0 }];
+    case 'pos': { const xm = (g.x0 + g.x1) / 2; return [{ k: 't0', x: g.x0 - sp, y: g.y0 }, { k: 't1', x: g.x1 + sp, y: g.y0 }, { k: 'p1', x: xm, y: g.y1 }, { k: 'p2', x: xm, y: g.y2 }, { k: 'p0', x: xm, y: g.y0 }]; }
+    case 'text': return [{ k: 't0p0', x: g.x0, y: g.y0 }];
+  } return []; }
+const segD = (px, py, x0, y0, x1, y1) => { const dx = x1 - x0, dy = y1 - y0, l2 = dx * dx + dy * dy || 1; let t = ((px - x0) * dx + (py - y0) * dy) / l2; t = Math.max(0, Math.min(1, t)); return Math.hypot(px - (x0 + t * dx), py - (y0 + t * dy)); };
+function hitTest(x, y) { if (!document.getElementById('ud_show').checked) return null; const sp = (main.timeScale().options().barSpacing || 6) / 2;
+  if (UD.sel) { const g = geom(UD.sel); if (g) for (const h of handles(UD.sel, g)) if (h.y !== null && Math.hypot(h.x - x, h.y - y) < 8) return { d: UD.sel, kind: 'h:' + h.k }; }
+  for (let i = UD.list.length - 1; i >= 0; i--) { const d = UD.list[i], g = geom(d); if (!g) continue;
+    const xa = Math.min(g.x0, g.x1) - sp, xb = Math.max(g.x0, g.x1) + sp;
+    if (d.type === 'liq') { if (segD(x, y, xa, g.y0, xb, g.y0) < 6) return { d, kind: 'move' }; }
+    else if (d.type === 'tline') { if (segD(x, y, g.x0, g.y0, g.x1, g.y1) < 6) return { d, kind: 'move' }; }
+    else if (d.type === 'text') { if (Math.abs(x - g.x0) < 40 && Math.abs(y - g.y0) < 12) return { d, kind: 'move' }; }
+    else { const ys = d.type === 'pos' ? [g.y0, g.y1, g.y2] : [g.y0, g.y1]; const ya = Math.min(...ys) - 3, yb = Math.max(...ys) + 3; if (x >= xa && x <= xb && y >= ya && y <= yb) return { d, kind: 'move' }; } }
+  return null; }
+// 畫
+const udraw = { chart: null, series: null, req: null,
+  attached(p) { this.chart = p.chart; this.series = p.series; this.req = p.requestUpdate; }, detached() {}, updateAllViews() {},
+  paneViews() { const self = this; return [{ zOrder: () => 'top', renderer: () => ({ draw: (target) => target.useBitmapCoordinateSpace(sc => {
+    if (!document.getElementById('ud_show').checked) return;
+    const ctx = sc.context, hr = sc.horizontalPixelRatio, vr = sc.verticalPixelRatio, sp = (self.chart.timeScale().options().barSpacing || 6) / 2, px = p => cs.priceToCoordinate(p);
+    const F = (n, mono) => (n * vr) + 'px ' + (mono ? '"IBM Plex Mono", monospace' : '"IBM Plex Sans", sans-serif');
+    const tag = (xr, y, txt, col) => { ctx.font = F(10, true); ctx.textBaseline = 'middle'; const tw = ctx.measureText(txt).width + 8 * hr; ctx.fillStyle = col; ctx.fillRect(xr + 2 * hr, y * vr - 7 * vr, tw, 14 * vr); ctx.fillStyle = '#fff'; ctx.fillText(txt, xr + 6 * hr, y * vr); };
+    UD.list.forEach(d => { const g = geom(d); if (!g) return; const selected = d === UD.sel;
+      const xa = (Math.min(g.x0, g.x1) - sp) * hr, xb = (Math.max(g.x0, g.x1) + sp) * hr, w = xb - xa;
+      if (d.type === 'liq') { ctx.strokeStyle = '#ffffff'; ctx.lineWidth = Math.max(2, 2 * vr); ctx.beginPath(); ctx.moveTo(xa, g.y0 * vr); ctx.lineTo(xb, g.y0 * vr); ctx.stroke();
+        ctx.font = F(11); ctx.textBaseline = d.side === 1 ? 'top' : 'bottom'; ctx.fillStyle = '#ffffff'; ctx.fillText((d.label || '') + '  ' + (+d.p0).toFixed(2), xa + 6 * hr, g.y0 * vr + (d.side === 1 ? 3 : -3) * vr); }
+      else if (d.type === 'tline') { ctx.strokeStyle = '#ffd54f'; ctx.lineWidth = Math.max(1.5, 1.5 * vr); ctx.beginPath(); ctx.moveTo(g.x0 * hr, g.y0 * vr); ctx.lineTo(g.x1 * hr, g.y1 * vr); ctx.stroke();
+        if (d.label) { ctx.font = F(11); ctx.textBaseline = 'bottom'; ctx.fillStyle = '#ffd54f'; ctx.fillText(d.label, g.x1 * hr + 4 * hr, g.y1 * vr); } }
+      else if (d.type === 'vp') { const P = udProfile(d); const yt = px(d.p1 + 1), yb = px(d.p0); if (yt === null || yb === null) return;
+        ctx.fillStyle = 'rgba(233,30,99,0.16)'; ctx.fillRect(xa, yt * vr, w, (yb - yt) * vr); ctx.strokeStyle = 'rgba(233,30,99,0.8)'; ctx.lineWidth = Math.max(1, vr); ctx.strokeRect(xa, yt * vr, w, (yb - yt) * vr);
+        if (P) hist(ctx, xa, w, P, hr, vr, px);
+        ctx.font = F(11); ctx.textBaseline = 'top'; ctx.fillStyle = '#f48fb1'; ctx.fillText((d.label || 'VP') + (d.nbars ? ' ' + d.nbars + ' 根' : ''), xa + 4 * hr, yt * vr + 3 * vr); }
+      else if (d.type === 'fvg' || d.type === 'box') { const y0 = Math.min(g.y0, g.y1), y1 = Math.max(g.y0, g.y1); const ifvg = /IFVG/i.test(d.label || '');
+        const fill = d.type === 'box' ? 'rgba(90,160,216,0.18)' : (ifvg ? 'rgba(38,166,154,0.18)' : 'rgba(158,158,158,0.22)'), line = d.type === 'box' ? 'rgba(90,160,216,0.9)' : (ifvg ? 'rgba(38,166,154,0.9)' : 'rgba(200,200,200,0.55)'), ink = d.type === 'box' ? '#90caf9' : (ifvg ? '#4db6ac' : '#e0e0e0');
+        ctx.fillStyle = fill; ctx.fillRect(xa, y0 * vr, w, (y1 - y0) * vr); ctx.strokeStyle = line; ctx.lineWidth = Math.max(1, vr); ctx.setLineDash([4 * hr, 3 * hr]); ctx.strokeRect(xa, y0 * vr, w, (y1 - y0) * vr); ctx.setLineDash([]);
+        ctx.font = F(11); ctx.textBaseline = 'middle'; ctx.textAlign = 'center'; ctx.fillStyle = ink; ctx.fillText((d.label || '') + '  ' + Math.abs(d.p1 - d.p0).toFixed(2), (xa + xb) / 2, (y0 + y1) / 2 * vr); ctx.textAlign = 'left'; }
+      else if (d.type === 'pos') { if (g.y2 === null) return; const ye = g.y0, ys = g.y1, yg = g.y2;
+        ctx.fillStyle = selected ? 'rgba(239,83,80,0.45)' : 'rgba(239,83,80,0.28)'; ctx.fillRect(xa, Math.min(ye, ys) * vr, w, Math.abs(ys - ye) * vr);
+        ctx.fillStyle = selected ? 'rgba(38,166,154,0.45)' : 'rgba(38,166,154,0.28)'; ctx.fillRect(xa, Math.min(ye, yg) * vr, w, Math.abs(yg - ye) * vr);
+        ctx.fillStyle = 'rgba(230,230,230,0.9)'; ctx.fillRect(xa, ye * vr - hr / 2, w, Math.max(1, vr));
+        const r = Math.abs(d.p0 - d.p1), rr = r ? Math.abs(d.p2 - d.p0) / r : 0;
+        tag(xb, ys, '停 ' + (+d.p1).toFixed(2) + '  −' + r.toFixed(2), 'rgba(239,83,80,0.95)'); tag(xb, yg, '標 ' + (+d.p2).toFixed(2) + '  +' + Math.abs(d.p2 - d.p0).toFixed(2) + ' (' + rr.toFixed(1) + 'R)', 'rgba(38,166,154,0.95)'); tag(xb, ye, (d.side === 1 ? 'Long ' : 'Short ') + (+d.p0).toFixed(2), 'rgba(120,120,130,0.95)');
+        if (d.label && !/^(Long|Short)$/.test(d.label)) { ctx.font = F(11); ctx.textBaseline = 'bottom'; ctx.fillStyle = '#fff'; ctx.fillText(d.label, xa + 4 * hr, Math.min(ye, ys, yg) * vr - 3 * vr); } }
+      else if (d.type === 'text') { ctx.font = F(12); ctx.textBaseline = 'middle'; const txt = d.label || '註'; const tw = ctx.measureText(txt).width + 10 * hr;
+        ctx.fillStyle = 'rgba(255,213,79,0.92)'; ctx.fillRect(g.x0 * hr - 5 * hr, g.y0 * vr - 9 * vr, tw, 18 * vr); ctx.fillStyle = '#1b1b1b'; ctx.fillText(txt, g.x0 * hr, g.y0 * vr); }
+      if (d.note) { ctx.font = F(10); ctx.textBaseline = 'top'; ctx.fillStyle = 'rgba(255,255,255,0.75)'; const yN = d.type === 'pos' ? Math.max(g.y0, g.y1, g.y2) : (d.type === 'liq' ? g.y0 + (d.side === 1 ? 14 : -26) : Math.max(g.y0, g.y1)); ctx.fillText('✎ ' + d.note.slice(0, 60), xa + 4 * hr, yN * vr + 3 * vr); }
+      if (selected) { ctx.fillStyle = '#ffeb3b'; ctx.strokeStyle = '#1b1b1b'; ctx.lineWidth = vr; handles(d, g).forEach(h => { if (h.y === null) return; ctx.fillRect(h.x * hr - 4 * hr, h.y * vr - 4 * vr, 8 * hr, 8 * vr); ctx.strokeRect(h.x * hr - 4 * hr, h.y * vr - 4 * vr, 8 * hr, 8 * vr); }); }
+    });
+  }) }) }]; } };
+// 存
+function udClean(d) { const o = {}; Object.keys(d).forEach(k => { if (k[0] !== '_') o[k] = d[k]; }); return o; }
+function udStat() { const el = document.getElementById('dstat'); const n = UD.list.length; el.textContent = '我的圖 ' + n + ' 筆 · ' + (UD.err ? '存檔失敗（已留本機備份）' : (UD.dirty ? '存檔中…' : (UD.savedAt ? '已存 ' + UD.savedAt.toLocaleTimeString('zh-TW', { hour12: false }) : ''))); el.style.color = UD.err ? '#ef5350' : ''; }
+function udSave(o) { o = o || {}; const now = JSON.stringify(UD.list.map(udClean)); if (!o.noHist && now !== UD.last) { if (!(o.coalesce && o.coalesce === UD.lastKey)) { UD.undo.push(UD.last); if (UD.undo.length > 200) UD.undo.shift(); UD.redo = []; } UD.lastKey = o.coalesce || null; } UD.last = now;
+  UD.dirty = true; UD.list.forEach(d => d.updated = Math.floor(Date.now() / 1000)); try { localStorage.setItem('bt_draw_' + location.pathname, JSON.stringify({ updated: Math.floor(Date.now() / 1000), drawings: UD.list.map(udClean) })); } catch (e) {} clearTimeout(UD.timer); UD.timer = setTimeout(udFlush, 600); udStat(); if (udraw.req) udraw.req(); }
+function udFlush() { const body = JSON.stringify({ site: location.pathname, updated: Math.floor(Date.now() / 1000), drawings: UD.list.map(udClean), agent: navigator.userAgent.slice(0, 60) });
+  fetch(DRAW_URL, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body }).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(() => { UD.dirty = false; UD.err = null; UD.savedAt = new Date(); udStat(); }).catch(e => { UD.err = e; udStat(); }); }
+function udLoad() { let loc = null; try { loc = JSON.parse(localStorage.getItem('bt_draw_' + location.pathname)); } catch (e) {}
+  return fetch(DRAW_URL + '?v=' + Date.now()).then(r => r.ok ? r.json() : { drawings: [], updated: 0 }).catch(() => ({ drawings: [], updated: 0 })).then(srv => {
+    let use = srv; if (loc && loc.drawings && (loc.updated || 0) > (srv.updated || 0) + 2) use = loc;
+    UD.list = (use.drawings || []).filter(d => d && d.type && d.t0 != null); UD.last = JSON.stringify(UD.list.map(udClean)); if (use === loc && UD.list.length) udFlush(); else { UD.savedAt = srv.saved ? new Date(srv.saved * 1000) : null; } udStat(); if (udraw.req) udraw.req(); }); }
+// 工具列與屬性面板
+// Ctrl+Z 回上一動、Ctrl+Y／Ctrl+Shift+Z 重做（10-12 使用者）：堆疊存整份清單的 JSON，最多 200 步，重新整理頁面就清掉
+function udUndo(redo) { const from = redo ? UD.redo : UD.undo, to = redo ? UD.undo : UD.redo; if (!from.length) return; const st = from.pop(); to.push(JSON.stringify(UD.list.map(udClean))); UD.list = JSON.parse(st); UD.sel = null; renderProps(); UD.lastKey = null; udSave({ noHist: true }); udStat(); }
+function setTool(t) { UD.tool = t; document.querySelectorAll('#tools button[data-tool]').forEach(b => b.setAttribute('aria-pressed', b.dataset.tool === t)); const el = document.getElementById('main'); el.classList.toggle('drawing', t !== 'sel'); main.applyOptions({ handleScroll: t === 'sel', handleScale: t === 'sel' }); }
+function setSel(d) { UD.sel = d; renderProps(); if (udraw.req) udraw.req(); }
+function renderProps() { const d = UD.sel, P = document.getElementById('props'); P.hidden = !d; if (!d) return;
+  document.getElementById('pinfo').textContent = TYPE_NAME[d.type] + ' · ' + fmtY(d.t0) + (d.t1 !== d.t0 ? ' → ' + fmtY(d.t1) : '') + (d.tf ? ' · 畫於 ' + (d.tf / 60) + 'm' : '') + (d.trade ? ' · 對應程式進場 ' + fmtY(d.trade.t) : '');
+  const K = document.getElementById('pkind'); K.innerHTML = ''; K.hidden = true;
+  const opts = d.type === 'liq' ? [['-1', 'Buyside Liquidity'], ['1', 'Sellside Liquidity']] : d.type === 'fvg' ? [['FVG', 'FVG'], ['IFVG', 'IFVG']] : d.type === 'pos' ? [['1', '多單 Long'], ['-1', '空單 Short']] : null;
+  if (opts) { K.hidden = false; opts.forEach(([v, n]) => { const o = document.createElement('option'); o.value = v; o.textContent = n; K.appendChild(o); }); K.value = d.type === 'fvg' ? (/IFVG/i.test(d.label) ? 'IFVG' : 'FVG') : String(d.side); }
+  document.getElementById('plabel').value = d.label || ''; document.getElementById('pnote').value = d.note || '';
+  const N = document.getElementById('pnum'); N.innerHTML = '';
+  const num = (k, name) => { if (d[k] == null) return; const l = document.createElement('label'); l.className = 'ck'; l.textContent = name + ' '; const i = document.createElement('input'); i.type = 'number'; i.step = '0.25'; i.value = (+d[k]).toFixed(2); i.style.width = '92px'; i.onchange = () => { d[k] = +i.value; udSave(); }; l.appendChild(i); N.appendChild(l); };
+  if (d.type === 'pos') { num('p0', '進場'); num('p1', '停損'); num('p2', '目標'); } else if (d.type === 'liq' || d.type === 'text') num('p0', '價位'); else if (d.type === 'fvg' || d.type === 'box' || d.type === 'tline') { num('p0', '價 1'); num('p1', '價 2'); } }
+// 全螢幕（TV 的 Shift+F）：先用瀏覽器的 Fullscreen API，不支援（iOS Safari）就用 position:fixed 蓋滿
+function toggleFS() { const st = document.getElementById('stage'); if (document.fullscreenElement) { document.exitFullscreen(); return; } if (st.classList.contains('fs')) { st.classList.remove('fs'); fsSync(); return; }
+  if (st.requestFullscreen) st.requestFullscreen().catch(() => { st.classList.add('fs'); fsSync(); }); else { st.classList.add('fs'); fsSync(); } }
+function fsSync() { const on = !!document.fullscreenElement || document.getElementById('stage').classList.contains('fs'); const b = document.getElementById('fsbtn'); b.querySelector('.g').textContent = on ? '✕' : '⛶'; b.querySelector('.n').textContent = on ? '離開' : '全螢幕'; }
+// 滑鼠在哪根棒就顯示那根的 O/H/L/C/V（TV 左上角那一行）；沒指著就顯示最後一根
+function ohlc(time) { const B = bars(); let i = -1; if (time != null) { const t = time - TZ; let lo = 0, hi = B.t.length - 1; while (lo < hi) { const m = (lo + hi + 1) >> 1; if (B.t[m] <= t) lo = m; else hi = m - 1; } if (B.t[lo] === t) i = lo; }
+  if (i < 0) i = B.t.length - 1; const o = B.o[i], h = B.h[i], l = B.l[i], c = B.c[i], up = c >= o, col = up ? css('--up') : css('--down'), ch = c - o, pc = o ? ch / o * 100 : 0;
+  const f = x => (+x).toFixed(2); document.getElementById('ohlc').innerHTML = '<b>' + fmtY(B.t[i]) + '</b><b>O</b><span style="color:' + col + '">' + f(o) + '</span><b>H</b><span style="color:' + col + '">' + f(h) + '</span><b>L</b><span style="color:' + col + '">' + f(l) + '</span><b>C</b><span style="color:' + col + '">' + f(c) + '</span><span style="color:' + col + '"> ' + (ch >= 0 ? '+' : '') + f(ch) + ' (' + (pc >= 0 ? '+' : '') + pc.toFixed(2) + '%)</span>' + (B.v ? '<b>V</b><span style="color:' + col + '">' + B.v[i] + '</span>' : ''); }
+// 上一筆／下一筆進場（全螢幕裡看不到表格，用這個或 ← → 換）
+function stepTrade(k) { const B = bars(), tr = [...current()].sort((a, b) => B.t[a.f] - B.t[b.f]); if (!tr.length) return; let i = tr.findIndex(t => t.f === selIdx); i = i < 0 ? (k > 0 ? 0 : tr.length - 1) : Math.max(0, Math.min(tr.length - 1, i + k)); const t = tr[i]; const row = t._row; if (row) { select(t, row); row.scrollIntoView({ block: 'nearest' }); } }
+function udInit() {
+  cs.attachPrimitive(udraw);
+  document.querySelectorAll('#tools button[data-tool]').forEach(b => b.onclick = () => setTool(b.dataset.tool));
+  document.getElementById('ud_show').onchange = () => udraw.req && udraw.req();
+  [['b_magnet', 'magnet'], ['b_stay', 'stay'], ['b_show', 'ud_show']].forEach(([b, c]) => { const B = document.getElementById(b), C = document.getElementById(c); B.onclick = () => { C.checked = !C.checked; B.setAttribute('aria-pressed', C.checked); C.dispatchEvent(new Event('change')); }; });
+  document.getElementById('fsbtn').onclick = toggleFS; document.addEventListener('fullscreenchange', fsSync);
+  document.getElementById('b_prev').onclick = () => stepTrade(-1); document.getElementById('b_next').onclick = () => stepTrade(1);
+  main.subscribeCrosshairMove(pr => ohlc(pr && pr.time != null ? pr.time : null));
+  document.getElementById('pkind').onchange = e => { const d = UD.sel; if (!d) return; if (d.type === 'fvg') d.label = e.target.value; else { d.side = +e.target.value; if (d.type === 'liq') d.label = d.side === -1 ? 'Buyside Liquidity' : 'Sellside Liquidity'; if (d.type === 'pos') { d.label = d.side === 1 ? 'Long' : 'Short'; } } udSave(); renderProps(); };
+  document.getElementById('plabel').oninput = e => { if (UD.sel) { UD.sel.label = e.target.value; udSave({ coalesce: 'label:' + UD.sel.id }); } };
+  document.getElementById('pnote').oninput = e => { if (UD.sel) { UD.sel.note = e.target.value; udSave({ coalesce: 'note:' + UD.sel.id }); } };
+  document.getElementById('b_undo').onclick = () => udUndo(false); document.getElementById('b_redo').onclick = () => udUndo(true);
+  document.getElementById('pdel').onclick = () => { if (!UD.sel) return; UD.list = UD.list.filter(d => d !== UD.sel); setSel(null); udSave(); };
+  document.getElementById('pdup').onclick = () => { if (!UD.sel) return; const c = JSON.parse(JSON.stringify(udClean(UD.sel))); c.id = uid(); c.created = Math.floor(Date.now() / 1000); const tf = c.tf || tfOf(); c.t0 += 6 * tf; c.t1 += 6 * tf; UD.list.push(c); setSel(c); udSave(); };
+  document.addEventListener('keydown', e => { if (/INPUT|TEXTAREA|SELECT/.test(e.target.tagName)) return;
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'z' || e.key === 'Z')) { e.preventDefault(); udUndo(e.shiftKey); return; } if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || e.key === 'Y')) { e.preventDefault(); udUndo(true); return; } if (e.key === 'Escape') { if (UD.drag && UD.drag.kind === 'new') { UD.list = UD.list.filter(d => d !== UD.drag.d); UD.drag = null; } setTool('sel'); setSel(null); } if ((e.key === 'Delete' || e.key === 'Backspace') && UD.sel) { UD.list = UD.list.filter(d => d !== UD.sel); setSel(null); udSave(); }
+    const keys = { l: 'liq_b', L: 'liq_s', v: 'vp', f: 'fvg', i: 'ifvg', b: 'box', g: 'pos_l', s: 'pos_s', t: 'tline', n: 'text' }; if (!e.ctrlKey && !e.metaKey && !e.altKey && keys[e.key]) setTool(keys[e.key]);
+    if (e.key === 'F' && e.shiftKey) toggleFS(); if (e.key === 'ArrowLeft') stepTrade(-1); if (e.key === 'ArrowRight') stepTrade(1);
+    if (e.key === 'Escape' && document.getElementById('stage').classList.contains('fs')) { document.getElementById('stage').classList.remove('fs'); fsSync(); } });
+  const el = main.chartElement(); el.style.touchAction = 'none';
+  const pt = e => { const r = el.getBoundingClientRect(); return { x: e.clientX - r.left, y: e.clientY - r.top }; };
+  const pref = (tool, d) => tool === 'liq_b' ? 'h' : tool === 'liq_s' ? 'l' : (d && d.type === 'liq' ? (d.side === -1 ? 'h' : 'l') : null);
+  el.addEventListener('pointerdown', e => { if (e.button !== 0 && e.pointerType === 'mouse') return; const q = pt(e); const ps = main.paneSize ? main.paneSize() : null; if (ps && (q.x >= ps.width || q.y >= ps.height)) return; const td = e.target && e.target.closest ? e.target.closest('td') : null; if (td) { const row = el.querySelector('tr'); if (td.parentElement !== row || td !== row.children[1]) return; }  // 10-12 使用者：拖右邊價格軸會連底下的圖一起拉 → 價格軸／時間軸上的點擊交給圖表自己，不進畫圖
+    const t = xT(q.x), p = magnet(q.x, q.y, pref(UD.tool)); if (t === null || p === null) return; const B = bars(), tf = tfOf();
+    if (UD.tool === 'sel') { const h = hitTest(q.x, q.y); if (!h) { if (UD.sel) setSel(null); return; } setSel(h.d); UD.drag = { kind: h.kind, d: h.d, x0: q.x, y0: q.y, L0: xL(q.x), P0: cs.coordinateToPrice(q.y), snap: JSON.parse(JSON.stringify(udClean(h.d))) }; main.applyOptions({ handleScroll: false, handleScale: false }); try { el.setPointerCapture(e.pointerId); } catch (x) {} return; }
+    const d = { id: uid(), type: UD.tool, sym, tf, t0: t, t1: t, p0: p, p1: p, label: '', note: '', created: Math.floor(Date.now() / 1000) };
+    if (selIdx >= 0) { const tr = current().find(z => z.f === selIdx); if (tr) d.trade = { f: tr.f, t: B.t[tr.f], side: tr.side, e: tr.e != null ? tr.e : tr.lvl, tag: tr.tag || '', why: tr.why || '' }; }
+    if (d.type === 'liq_b' || d.type === 'liq_s') { d.side = d.type === 'liq_b' ? -1 : 1; d.type = 'liq'; d.label = d.side === -1 ? 'Buyside Liquidity' : 'Sellside Liquidity'; }
+    if (d.type === 'fvg') d.label = 'FVG'; if (d.type === 'ifvg') { d.type = 'fvg'; d.label = 'IFVG'; } if (d.type === 'box') d.label = 'Zone'; if (d.type === 'vp') d.label = 'VP'; if (d.type === 'text') d.label = '註';
+    if (d.type === 'pos_l' || d.type === 'pos_s') { d.side = d.type === 'pos_l' ? 1 : -1; d.type = 'pos'; d.label = d.side === 1 ? 'Long' : 'Short'; d.p2 = p; d.t1 = t + 12 * tf; }
+    UD.list.push(d); UD.drag = { kind: 'new', d, x0: q.x, y0: q.y }; setSel(d); try { el.setPointerCapture(e.pointerId); } catch (x) {} });
+  el.addEventListener('pointermove', e => { const g = UD.drag; if (!g) return; const q = pt(e); const t = xT(q.x), p = magnet(q.x, q.y, g.kind === 'h:p0' ? pref(null, g.d) : null); if (t === null || p === null) return; const d = g.d, tf = d.tf || tfOf();
+    if (g.kind === 'new') { if (d.type === 'pos') { d.p1 = p; d.t1 = Math.max(t, d.t0 + 3 * tf); const r = Math.abs(d.p0 - d.p1); d.p2 = d.side === 1 ? d.p0 + 2 * r : d.p0 - 2 * r; } else if (d.type === 'text') { d.t0 = d.t1 = t; d.p0 = d.p1 = p; } else { d.t1 = t; d.p1 = p; } }
+    else if (g.kind === 'move') { const s = g.snap, dL = Math.round(xL(q.x) - g.L0), dp = Math.round((cs.coordinateToPrice(q.y) - g.P0) * 4) / 4; d.t0 = idxT(tIdx(s.t0) + dL); d.t1 = idxT(tIdx(s.t1) + dL); if (d.type !== 'vp') { d.p0 = s.p0 + dp; d.p1 = s.p1 + dp; if (s.p2 != null) d.p2 = s.p2 + dp; } }
+    else { const k = g.kind.slice(2); if (k.includes('t0')) d.t0 = t; if (k.includes('t1')) d.t1 = t; if (k.includes('p0')) d.p0 = p; if (k.includes('p1')) d.p1 = p; if (k.includes('p2')) d.p2 = p; if (d.type === 'pos' && k === 'p0') { const dp = p - g.snap.p0; d.p1 = g.snap.p1 + dp; d.p2 = g.snap.p2 + dp; } }
+    if (udraw.req) udraw.req(); if (UD.sel === d) document.getElementById('pinfo').textContent = TYPE_NAME[d.type] + ' · ' + fmtY(d.t0) + (d.t1 !== d.t0 ? ' → ' + fmtY(d.t1) : ''); });
+  const up = e => { const g = UD.drag; if (!g) return; UD.drag = null; const d = g.d, q = pt(e), tf = d.tf || tfOf(); try { el.releasePointerCapture(e.pointerId); } catch (x) {}
+    if (g.kind === 'new') { const click = Math.abs(q.x - g.x0) < 4 && Math.abs(q.y - g.y0) < 4;
+      if (click) { if (d.type === 'liq') d.t1 = d.t0 + 24 * tf; else if (d.type === 'pos') { const r = 20; d.p1 = d.side === 1 ? d.p0 - r : d.p0 + r; d.p2 = d.side === 1 ? d.p0 + 2 * r : d.p0 - 2 * r; } else if (d.type !== 'text') { UD.list = UD.list.filter(z => z !== d); setSel(null); if (!document.getElementById('stay').checked) setTool('sel'); udStat(); return; } }
+      if (!document.getElementById('stay').checked) setTool('sel'); }
+    else main.applyOptions({ handleScroll: true, handleScale: true });
+    if (d.t1 < d.t0) { const s = d.t0; d.t0 = d.t1; d.t1 = s; } if ((d.type === 'fvg' || d.type === 'box') && d.p1 < d.p0) { const s = d.p0; d.p0 = d.p1; d.p1 = s; }
+    if (d.type === 'vp') udProfile(d); if (d.type === 'text') { setTimeout(() => { const i = document.getElementById('plabel'); i.focus(); i.select(); }, 0); }
+    renderProps(); udSave(); };
+  el.addEventListener('pointerup', up); el.addEventListener('pointercancel', up);
+  udLoad();
+}
+
+function fillLevels() {
+  const L = (D.syms[sym].levels || []), box = document.getElementById('lv'); box.innerHTML = '';
+  const kinds = [...new Set(L.map(b => b.kind))];
+  kinds.forEach(k => { if (lvOn[k] == null) lvOn[k] = !(D.levels_off || []).includes(k) && !D.entries_only; const lab = document.createElement('label'); lab.className = 'ck';
+    const inp = document.createElement('input'); inp.type = 'checkbox'; inp.checked = lvOn[k];
+    inp.onchange = e => { lvOn[k] = e.target.checked; levels.set(levels.list); };
+    const sw = document.createElement('span'); sw.style.color = LV_COLOR[k] || '#999'; sw.textContent = ' ━ ';
+    lab.appendChild(inp); lab.appendChild(sw); lab.appendChild(document.createTextNode(k)); box.appendChild(lab); });
+  levels.set(L.map(b => ({ t0: b.t0 + TZ, t1: b.t1 + TZ, p: b.p, kind: b.kind, label: b.label })));
+}
 function init() {
   main = mkChart(document.getElementById('main')); cs = main.addCandlestickSeries({ upColor: css('--up'), downColor: css('--down'), borderVisible: false, wickUpColor: css('--up'), wickDownColor: css('--down') });
-  cs.attachPrimitive(boxes);
+  cs.attachPrimitive(sessBoxes); cs.attachPrimitive(setups); cs.attachPrimitive(boxes); cs.attachPrimitive(levels);
+  volS = main.addHistogramSeries({ priceScaleId: 'vol', priceFormat: { type: 'volume' }, lastValueVisible: false, priceLineVisible: false });
+  main.priceScale('vol').applyOptions({ scaleMargins: { top: 0.82, bottom: 0 } });
+  ['dmode', 'd_sess', 'd_vp', 'd_fvg', 'd_liq', 'd_pos', 'd_vol'].forEach(id => { document.getElementById(id).onchange = () => drawSetups(); }); document.getElementById('d_mark').onchange = () => render();
+  if (D.entries_only) { document.getElementById('dmode').value = 'none'; document.getElementById('d_mark').checked = false; }  // 10-12 使用者：「只要留各時段的那些框框就好其他都清空」→ 進場專用頁預設只畫時段框，程式的結構與箭頭要自己打開
   eq = mkChart(document.getElementById('eq'), { rightPriceScale: { scaleMargins: { top: 0.15, bottom: 0.1 } } }); eqS = eq.addLineSeries({ color: css('--accent'), lineWidth: 2, priceLineVisible: false, lastValueVisible: true });
   main.timeScale().subscribeVisibleTimeRangeChange(r => { if (r && eqHas) { try { eq.timeScale().setVisibleRange(r); } catch (e) {} } });
   const S = document.getElementById('sym'); Object.keys(D.syms).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = k; S.appendChild(o); });
-  S.onchange = () => { sym = S.value; fillGrids(); render(); };
+  S.onchange = () => { sym = S.value; fillGrids(); fillLevels(); render(); };
   document.getElementById('grid').onchange = e => { grid = e.target.value; render(); };
   document.getElementById('acc').onchange = e => { acc = e.target.value; render(); };
   document.getElementById('sess').onchange = e => { sess = e.target.value; render(); };
@@ -95,8 +451,9 @@ function init() {
   document.getElementById('dir').onchange = e => { dir = e.target.value; render(); };
   document.getElementById('noamb').onchange = e => { noAmb = e.target.checked; render(); };
   if (D.legend) document.getElementById('legend').textContent = D.legend;
+  if (D.default_days != null) { days = D.default_days; document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', +x.dataset.days === days)); }
   document.querySelectorAll('#per button').forEach(b => b.onclick = () => { days = +b.dataset.days; document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', x === b)); setRange(); });
-  sym = S.value; fillGrids(); render();
+  sym = S.value; fillGrids(); fillLevels(); render(); udInit();
 }
 function fillGrids() {
   const G = document.getElementById('grid'); G.innerHTML = ''; Object.keys(D.syms[sym].grids).forEach(k => { const o = document.createElement('option'); o.value = k; o.textContent = (D.grid_prefix != null ? D.grid_prefix : '停損 ') + k; G.appendChild(o); }); const pref = Object.keys(D.syms[sym].grids).find(k => /ATR×3R/.test(k)) || Object.keys(D.syms[sym].grids).find(k => /3R/.test(k)); if (D.default_grid && D.syms[sym].grids[D.default_grid]) G.value = D.default_grid; else if (pref) G.value = pref; grid = G.value;
@@ -120,32 +477,46 @@ function stats(tr, pt) {
 function render() {
   syncAcc(); const R = D.syms[sym], B = R.bars, tr = current(); selIdx = -1; lines.forEach(l => cs.removePriceLine(l)); lines = [];
   cs.setData(B.t.map((t, i) => ({ time: t + TZ, open: B.o[i], high: B.h[i], low: B.l[i], close: B.c[i] })));
+  document.getElementById('draw').hidden = !(R.sessions || tr.some(t => t.setup));
+  if (volS) volS.setData(B.v ? B.t.map((t, i) => ({ time: t + TZ, value: B.v[i], color: B.c[i] >= B.o[i] ? 'rgba(38,166,154,0.45)' : 'rgba(239,83,80,0.45)' })) : []);
+  sessBoxes.set(R.sessions || [], B); if (udraw.req) udraw.req(); ohlc(null);
   const mk = [];
   tr.forEach((t, k) => {
     const up = t.side === 1, col = up ? css('--up') : css('--down');
     const ent = t.e != null ? t.e : t.lvl, rr = t.Rr != null ? t.Rr : (t.tgt != null ? (t.pts + R.cost) / Math.abs(t.lvl - t.stop) : null);
     if (t.j !== t.f && D.mark_j !== false) mk.push({ time: B.t[t.j] + TZ, position: up ? 'belowBar' : 'aboveBar', color: css('--lvl'), shape: 'circle', size: 1 });
     mk.push({ time: B.t[t.f] + TZ, position: up ? 'belowBar' : 'aboveBar', color: col, shape: up ? 'arrowUp' : 'arrowDown', size: 2, text: (up ? 'L ' : 'S ') + String(+(+ent).toFixed(2)) + (t.tag ? ' ' + t.tag : '') });
+    if (D.entries_only) return;
     const why = t.xr ? t.xr + ' ' : (t.st ? '停損 ' : (t.tgt != null && Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標 ' : ''));
     mk.push({ time: B.t[t.x] + TZ, position: t.pts >= 0 ? 'aboveBar' : 'belowBar', color: t.amb ? '#9aa0a6' : (t.pts >= 0 ? css('--up') : css('--down')), shape: 'square', size: 1, text: (t.amb ? '? ' : '') + why + (t.pts >= 0 ? '+' : '') + t.pts.toFixed(1) + (rr != null ? ' (' + rr.toFixed(1) + 'R)' : '') });
   });
-  mk.sort((a, b) => a.time - b.time); cs.setMarkers(mk);
-  boxes.set(tr.filter(t => t.stop != null).map(t => ({ t0: B.t[t.f] + TZ, t1: B.t[t.x] + TZ, e: t.e != null ? t.e : t.lvl, s: t.stop, g: t.tgt != null ? t.tgt : null, k: t.f })));
+  mk.sort((a, b) => a.time - b.time); cs.setMarkers(document.getElementById('d_mark').checked ? mk : []);
+  boxes.set(tr.filter(t => t.stop != null).map(t => ({ t0: B.t[t.f] + TZ, t1: B.t[t.x] + TZ, e: t.e != null ? t.e : t.lvl, s: t.stop, g: t.tgt != null ? t.tgt : (t.setup && t.setup.tgt != null ? t.setup.tgt : null), k: t.f, lab: !!D.entries_only })));
+  drawSetups();
   const sorted = [...tr].sort((a, b) => B.t[a.x] - B.t[b.x]); let cum = 0; const ed = []; let lastT = -1;
   sorted.forEach(t => { cum += t.pts; const tt = B.t[t.x] + TZ; if (tt === lastT) ed[ed.length - 1].value = +cum.toFixed(1); else ed.push({ time: tt, value: +cum.toFixed(1) }); lastT = tt; });
   eqS.setData(ed); eqHas = ed.length > 0;
   const s = stats(tr, R.pt_usd); const C = document.getElementById('chips'); C.innerHTML = '';
   const chip = (k, v) => { const e = document.createElement('span'); e.className = 'chip'; e.innerHTML = '<b>' + k + '</b>' + v; C.appendChild(e); };
-  if (s.n) { chip('筆數', s.n); chip('勝率', (s.wr * 100).toFixed(1) + '%'); chip('每筆淨點', (s.avg >= 0 ? '+' : '') + s.avg.toFixed(1)); chip('每筆 $', (s.usd >= 0 ? '+' : '') + s.usd.toFixed(0)); chip('合計點', (s.sum >= 0 ? '+' : '') + s.sum.toFixed(0)); chip('PF', isFinite(s.pf) ? s.pf.toFixed(2) : '∞'); chip('被停損', (s.stopped * 100).toFixed(0) + '%'); if (tr.some(t => t.tgt != null)) chip('打到目標', (tr.filter(t => t.tgt != null && !t.st && Math.abs(t.exit_px - t.tgt) < 0.01).length / s.n * 100).toFixed(0) + '%'); chip('最長連輸', s.maxrun); const rs = tr.filter(t => t.Rr != null).map(t => t.Rr); if (rs.length) { const mr = rs.reduce((a, b) => a + b, 0) / rs.length; chip('每筆 R', (mr >= 0 ? '+' : '') + mr.toFixed(2)); } if (tr.some(t => t.amb != null)) chip('分不出先後', (tr.filter(t => t.amb).length / s.n * 100).toFixed(0) + '%'); chip('最大回撤(點)', s.mdd.toFixed(0)); }
+  if (D.entries_only) { document.getElementById('eq').style.display = 'none'; if (s.n) { chip('進場', s.n); chip('多', tr.filter(t => t.side === 1).length); chip('空', tr.filter(t => t.side === -1).length); chip('0 口', tr.filter(t => t.zero).length); } }
+  else if (s.n) { chip('筆數', s.n); chip('勝率', (s.wr * 100).toFixed(1) + '%'); chip('每筆淨點', (s.avg >= 0 ? '+' : '') + s.avg.toFixed(1)); chip('每筆 $', (s.usd >= 0 ? '+' : '') + s.usd.toFixed(0)); chip('合計點', (s.sum >= 0 ? '+' : '') + s.sum.toFixed(0)); chip('PF', isFinite(s.pf) ? s.pf.toFixed(2) : '∞'); chip('被停損', (s.stopped * 100).toFixed(0) + '%'); if (tr.some(t => t.tgt != null)) chip('打到目標', (tr.filter(t => t.tgt != null && !t.st && Math.abs(t.exit_px - t.tgt) < 0.01).length / s.n * 100).toFixed(0) + '%'); chip('最長連輸', s.maxrun); const rs = tr.filter(t => t.Rr != null).map(t => t.Rr); if (rs.length) { const mr = rs.reduce((a, b) => a + b, 0) / rs.length; chip('每筆 R', (mr >= 0 ? '+' : '') + mr.toFixed(2)); } if (tr.some(t => t.amb != null)) chip('分不出先後', (tr.filter(t => t.amb).length / s.n * 100).toFixed(0) + '%'); chip('最大回撤(點)', s.mdd.toFixed(0)); }
   const tb = document.querySelector('#tbl tbody'); tb.innerHTML = '';
   [...tr].sort((a, b) => B.t[b.f] - B.t[a.f]).forEach(t => {
     const r = document.createElement('tr'); const cls = t.pts >= 0 ? 'pos' : 'neg';
-    r.innerHTML = `<td>${fmtY(B.t[t.f])}</td><td>${t.side === 1 ? '多' : '空'}</td><td>${t.e != null ? (+t.e).toFixed(2) : t.lvl}</td><td>${t.stop != null ? (+t.stop).toFixed(2) : '—'}</td><td>${t.wait} 根</td><td>${t.tag || (t.fvg ? 'FVG' : '—')}${t.amb ? ' ?' : ''}</td><td>${t.sess}</td><td>${t.xr || (t.st ? '停損' : (t.tgt ? (Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標' : '時間') : '第 8 根'))}${t.roll ? ' ·換月' : ''}</td><td class="${cls}">${(t.pts >= 0 ? '+' : '') + t.pts.toFixed(1)}</td><td class="${cls}">${(t.pts * R.pt_usd >= 0 ? '+' : '') + (t.pts * R.pt_usd).toFixed(0)}</td>`;
-    r.onclick = () => select(t, r); tb.appendChild(r);
+    r.innerHTML = `<td>${fmtY(B.t[t.f])}</td><td>${t.side === 1 ? '多' : '空'}</td><td>${t.e != null ? (+t.e).toFixed(2) : t.lvl}</td><td>${t.stop != null ? (+t.stop).toFixed(2) : '—'}</td><td>${t.wait} 根</td><td>${t.tag || (t.fvg ? 'FVG' : '—')}${t.amb ? ' ?' : ''}</td><td>${t.sess}</td><td>${D.entries_only ? (t.why || '') : (t.xr || (t.st ? '停損' : (t.tgt ? (Math.abs(t.exit_px - t.tgt) < 0.01 ? '目標' : '時間') : '第 8 根')))}${t.roll ? ' ·換月' : ''}</td><td class="${cls}">${D.entries_only ? '—' : (t.pts >= 0 ? '+' : '') + t.pts.toFixed(1)}</td><td class="${cls}">${D.entries_only ? '—' : (t.pts * R.pt_usd >= 0 ? '+' : '') + (t.pts * R.pt_usd).toFixed(0)}</td>`;
+    r.onclick = () => select(t, r); t._row = r; tb.appendChild(r);
   });
   if (R.sub) document.getElementById('sub').textContent = R.sub + ` · ${grid} · 建於 ${D.built}`; else document.getElementById('sub').textContent = `${sym}=F 1h · 規則 PIVOT ${D.rule.PIVOT} / W ${D.rule.W} / HOLD ${D.rule.HOLD} · 停損 ${grid} · 成本 ${R.cost} 點 · 建於 ${D.built}`;
   if (D.note) document.getElementById('note').textContent = D.note; else document.getElementById('note').textContent = `資料 Yahoo 連續合約 1h（730 天上限），1 口。規則 2026-07-28 凍結、前向紙上 2026-10-07 起（Arb_NqSweepPaper）。「保守」把成交那根棒內逆向超過停損的都算停損，「樂觀」不查，真值在兩者之間（1h 看不出棒內順序）。換月週（季月第三個週五 ±5 天）預設剔除。時段依進場時間（ET）。紙上、不下單。`;
   setRange();
+}
+function drawSetups() {
+  const R = D.syms[sym], B = R.bars, tr = current();
+  const mode = document.getElementById('dmode').value;
+  const show = document.getElementById('d_pos').checked;
+  boxes.list.forEach(b => b.hide = !show || mode === 'none' || (mode === 'sel' && selIdx >= 0 && b.k !== selIdx)); boxes.set(boxes.list);
+  setups.set(mode === 'none' ? [] : tr.filter(t => t.setup && (mode === 'all' || t.f === selIdx)).map(t => t.setup), B);
+  if (volS) volS.applyOptions({ visible: document.getElementById('d_vol').checked && !!B.v });
 }
 function setRange() {
   const B = D.syms[sym].bars, last = B.t[B.t.length - 1] + TZ;
@@ -154,12 +525,14 @@ function setRange() {
 function select(t, row) {
   const B = D.syms[sym].bars; document.querySelectorAll('#tbl tr.sel').forEach(r => r.classList.remove('sel')); row.classList.add('sel');
   lines.forEach(l => cs.removePriceLine(l)); lines = [];
-  boxes.list.forEach(b => b.sel = (b.k === t.f)); boxes.set(boxes.list);
+  boxes.list.forEach(b => b.sel = (b.k === t.f)); boxes.set(boxes.list); selIdx = t.f; drawSetups();
+  if (document.getElementById('d_mark').checked) {
   lines.push(cs.createPriceLine({ price: t.e != null ? t.e : t.lvl, color: css('--lvl'), lineWidth: 1, lineStyle: 2, axisLabelVisible: true, title: t.e != null ? '進場' : '價位' }));
   if (t.stop != null) lines.push(cs.createPriceLine({ price: t.stop, color: css('--down'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '停損' }));
-  if (t.tgt) lines.push(cs.createPriceLine({ price: t.tgt, color: css('--up'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '目標' }));
+  if (t.tgt) lines.push(cs.createPriceLine({ price: t.tgt, color: css('--up'), lineWidth: 1, lineStyle: 1, axisLabelVisible: true, title: '目標' })); }
   const tf = D.syms[sym].tf || 3600, span = tf >= 3600 ? 6 : 30;
-  try { main.timeScale().setVisibleRange({ from: B.t[Math.min(t.o, t.f)] + TZ - span * tf, to: B.t[t.x] + TZ + 2 * span * tf }); } catch (e) {}
+  const from0 = (t.setup && t.setup.vp) ? snapT(B, t.setup.vp.t0) - 12 * tf : ((t.setup && t.setup.liq) ? snapT(B, t.setup.liq.t0) - 6 * tf : B.t[Math.min(t.o, t.f)] + TZ - span * tf);
+  try { main.timeScale().setVisibleRange({ from: Math.min(from0, B.t[t.f] + TZ - 10 * tf), to: B.t[t.x] + TZ + (t.setup ? 1.2 : 2) * span * tf }); } catch (e) {}
   document.querySelectorAll('#per button').forEach(x => x.setAttribute('aria-pressed', 'false'));
 }
 fetch('data.json?v=' + Date.now()).then(r => r.json()).then(d => { D = d; init(); }).catch(e => { document.getElementById('sub').textContent = '資料載入失敗：' + e; });
